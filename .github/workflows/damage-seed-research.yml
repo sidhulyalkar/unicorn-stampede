@@ -1,0 +1,27 @@
+name: v0.39-damage-seed-grammar
+on:
+  pull_request:
+    paths:
+      - 'src/render.js'
+      - 'scripts/damage-seed-research.mjs'
+      - '.github/workflows/damage-seed-research.yml'
+      - 'scripts/build.mjs'
+      - 'package.json'
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Syntax-check damage grammar benchmark
+        run: node --check scripts/damage-seed-research.mjs
+      - name: Benchmark deterministic damage candidates
+        run: node scripts/damage-seed-research.mjs
+      - run: cat research/damage-seed-results.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v0.39-damage-seed-results
+          path: research/damage-seed-results.json
