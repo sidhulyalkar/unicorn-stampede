@@ -1,11 +1,13 @@
 let whip=0,suggested=-1,guide=0;
 /* YELLOW: CLICK MALLOW RING */
 function roadAt(u){if(!u||!PM)return 0;let x=cl(u.x/PS|0,0,PW-1),y=cl(u.y/PS|0,0,PH-1);return PM[y*PW+x]}
+function nextLive(j=caps[0]){let o=j;do j=(j+1)%unis.length;while(!unis[j].live&&j!==o);return j}
+const need=q=>q.distract*8+(Math.hypot(q.vx,q.vy)<55&&!q.order)*4+(!roadAt(q))*2+(q.cool||0)/8;
 const _soloStart=startLevel;startLevel=function(n){_soloStart(n);guide=0;caps=[0,-1];suggested=-1;if(!n)ups=[];if(n)for(let u of unis)u.live=1;for(let u of unis)u.power=u.tap=u.tapT=0};
 capSide=i=>i===caps[0]?1:0;
 const _soloAI=moveAI;moveAI=function(u,d){let c=caps[1];caps[1]=caps[0];let a=_soloAI(u,d);caps[1]=c;return a};
 const _soloDistract=distractForce;distractForce=function(u){let f=_soloDistract(u);if(u!==unis[caps[0]]&&roadAt(u))f[0]*=.55,f[1]*=.55;return f};
-cycle=function(){if(state!=='play')return;let o=caps[0],u=unis[o];if(Math.hypot(u.vx,u.vy)>35)u.order=roadAt(u)?5.2:4,u.ox=Math.cos(u.a),u.oy=Math.sin(u.a);if(level)dmask|=dmask&16?32:16;let j=-1,b=-1;for(let i=unis.length;i--;){let q=unis[i];if(q.live&&i!==o){let n=q.distract*8+(Math.hypot(q.vx,q.vy)<55&&!q.order)*4+(!roadAt(q))*2+(q.cool||0)/8;if(n>b)b=n,j=i}}caps[0]=j;u=unis[j];u.order=u.cool=0;u.distract=Math.max(0,u.distract-.2);if(!level){if(intro.step===3&&j!==intro.o)intro.step=4,intro.l=0;else if(intro.step===5&&j===intro.o)intro.step=6,intro.rescue=0}};
+cycle=function(){if(state!=='play')return;let o=caps[0],u=unis[o];if(Math.hypot(u.vx,u.vy)>35)u.order=roadAt(u)?5.2:4,u.ox=Math.cos(u.a),u.oy=Math.sin(u.a);if(level)dmask|=dmask&16?32:16;let j=nextLive(o),b=need(unis[j]);for(let i=unis.length;i--;){let q=unis[i];if(q.live&&i!==o&&need(q)>b)b=need(q),j=i}caps[0]=j;u=unis[j];u.order=u.cool=0;u.distract=Math.max(0,u.distract-.2);if(!level){if(intro.step===3&&j!==intro.o)intro.step=4,intro.l=0;else if(intro.step===5&&j===intro.o)intro.step=6,intro.rescue=0}};
 const _soloWave=waveUp;waveUp=function(w){_soloWave(w);if(level)msg=w===2?'TOWN FIGHTS BACK':'FULL EMERGENCY',msgT=2};
 function dashSolo(){if(state!=='play')return;let u=unis[caps[0]],n=u.power|0;if(n<2){msg='WHIP 2X → DASH';msgT=.7;return}u.dash=.2+n*.07;let v=570+n*95;u.vx=Math.cos(u.a)*v;u.vy=Math.sin(u.a)*v;paintStamp(u,u.x,u.y,38+n*12);fx(u.x,u.y,6+n*2,120);tone(150+n*35,.1,'sawtooth',.03);u.power=u.tap=u.tapT=0;if(n===5)award('MAX DASH',850);if(!level&&intro.step===2){intro.step=3;msg='SHIFT → SWITCH';msgT=1}else if(!level&&intro.step===8){msg='SMASH THE BAKERY!';msgT=.7}}
 C.addEventListener('mousedown',e=>{if(state!=='play'||e.button)return;e.preventDefault();e.stopImmediatePropagation();audio();if(!level&&intro.step<7&&intro.step!==1){msg=intro.step?'FOLLOW LESSON':'MOVE FIRST';msgT=.5;return}let u=unis[caps[0]],x=(mx-ox)/z,y=(my-oy)/z,d=Math.hypot(x-u.x,y-u.y);if(d>38&&d<180)whip={x,y,i:caps[0],l:.13,hit:0},crackWhip();else msg='CLICK WHITE RING',msgT=.5},true);
