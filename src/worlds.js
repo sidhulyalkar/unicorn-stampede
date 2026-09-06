@@ -11,5 +11,5 @@ const _crackW=crackWhip;crackWhip=function(){let u=unis[whip.i],n=u&&u.tapT?u.ta
 function updateZone(dt){if(!level||zone!==2)return;windT-=dt;if(windT<=0){windT=4;wind*=-1;lmText=wind>0?'CROSSWIND →':'← CROSSWIND';lmTextT=1}for(let u of unis)if(u.live)u.vx+=wind*(90+stamp*8)*dt}
 const _updateW=update;update=function(dt){let before=state;_updateW(dt);if(state==='play'&&!paused)updateZone(dt);if(before==='play'&&state==='end')finishZone()};
 const _worldW=world;world=function(){_worldW();if(!level||zone!==2)return;X.save();X.translate(ox,oy);X.scale(z,z);X.fillStyle='rgba(245,250,255,.09)';for(let i=0;i<7;i++){let x=(i*510+clock*wind*45)%3500-120,y=180+(i%3)*560;X.beginPath();X.ellipse(x,y,180,70,0,0,T);X.fill()}X.restore()};
-const _townDraw=drawObjs;drawObjs=function(){if(level)for(let o of objs)if(o.t==='b'){X.fillStyle='#d8d8d0';X.fillRect(o.x-7,o.y-7,o.w+14,o.h+14);X.fillStyle='#0003';X.fillRect(o.x+7,o.y+7,o.w,o.h)}_townDraw()};
+const _townDraw=drawObjs;drawObjs=function(){if(level)for(let o of objs)if(o.t==='b'){X.fillStyle='#d8d8d0';X.fillRect(o.x-7,o.y-7,o.w+14,o.h+14);X.fillStyle='#0003';X.fillRect(o.x+7,o.y+7,o.w,o.h)}_townDraw();if(level){X.fillStyle='#3e4651';for(let o of objs)if(o.t==='b'&&o.hp){let g=o.x+o.y|0;X.fillRect(o.x+12+g%37,o.y+9,18+(g&15),9);if(g&1)X.fillRect(o.x+o.w-24,o.y+11,9,14)}}};
 const _titleW=title;
