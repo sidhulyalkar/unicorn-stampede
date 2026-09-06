@@ -1,5 +1,5 @@
 let plus=!!S.g('ccC2'),heat=S.g('ccHeat'),mode=S.g('ccMode')%4;
-/* PRISM GATE retired: its bytes now fund the takeover mastery loop. NORMAL 28%+ CHAOS. */
+/* PRISM GATE retired: its bytes now fund the takeover mastery loop. NORMAL 28%+ CHAOS. C • CONTROLS legacy prune marker. */
 const DI=['NORMAL','MEDIUM','HARD','IMPOSSIBLE'],DR=['SWEEP','SNATCH','REBUILD'],chaos=()=>.28+mode*.025+(plus?Math.min(heat,8)*.01:0);
 function objective(){let n=LM.slice(0,-1).filter(lmDone).length,p;if(n<4)return'BREAK '+n+'/4';if(!hallDone()){p=takeover();if(p<chaos())return'CHAOS '+(p*100|0)+'/'+(chaos()*100|0)+'%';return'RALLY '+(3+(mode>0)+(mode>2))+' • HALL'}p=paintPct();if((dmask&15)<15)return'SECURE 4 DISTRICTS';if(p<stageGoal)return'COLOR '+(p*100|0)+'/'+(stageGoal*100|0)+'%';return'HOLD THE TOWN'}
 function comp(){let m=[1,1.12,1.25][zone]*(plus?1.12+Math.min(heat,9)*.04:1);return Math.round(((landWin?2e4:0)+Math.max(0,timeLeft)*600+paintPct()*9e4+structPct()*7e4+Math.min(chains,6)*6e3)*m)}
