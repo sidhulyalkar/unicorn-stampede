@@ -19,11 +19,11 @@ jobs:
         with:
           node-version: 22
       - run: npm install --no-audit --no-fund
-      - name: Syntax-check benchmark
+      - name: Syntax-check architecture contract
         run: node --check scripts/grammar-research.mjs
-      - name: Benchmark exact v0.34 renderer against grammar candidates
+      - name: Verify integrated architectural grammar
         run: node scripts/grammar-research.mjs
-      - name: Show research report
+      - name: Show architecture contract report
         run: cat research/grammar-results.json
       - uses: actions/upload-artifact@v4
         with:
