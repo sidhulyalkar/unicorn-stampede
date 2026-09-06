@@ -3,12 +3,12 @@ on:
   pull_request:
     paths:
       - 'src/render.js'
-      - 'scripts/road-grammar-research.mjs'
+      - 'scripts/road-grammar-smoke.mjs'
       - '.github/workflows/road-grammar-research.yml'
       - 'scripts/build.mjs'
       - 'package.json'
 jobs:
-  benchmark:
+  contract:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,12 +16,18 @@ jobs:
         with:
           node-version: 22
       - run: npm install --no-audit --no-fund
-      - name: Syntax-check road grammar benchmark
-        run: node --check scripts/road-grammar-research.mjs
-      - name: Benchmark road grammar candidates
-        run: node scripts/road-grammar-research.mjs
-      - run: cat research/road-grammar-results.json
+      - name: Verify integrated road-edge grammar
+        run: node scripts/road-grammar-smoke.mjs
+      - name: Build exact cartridge
+        run: node scripts/build.mjs
+      - name: Verify packed runtime
+        run: node scripts/packed-smoke.mjs
+      - name: Enforce 13 kB cap
+        run: node scripts/size.mjs
+      - run: cat dist/compression.json
       - uses: actions/upload-artifact@v4
         with:
-          name: v0.38-road-grammar-results
-          path: research/road-grammar-results.json
+          name: v0.38-road-edge-qualified
+          path: |
+            dist/unicorn-stampede.zip
+            dist/compression.json
