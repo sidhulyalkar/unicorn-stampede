@@ -1,0 +1,29 @@
+name: promote-v0.38-road-runtime
+on:
+  push:
+    branches: [agent/v0.38-road-edge-grammar]
+    paths:
+      - '.github/workflows/promote-road38-runtime.yml'
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.38-road-edge-grammar
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/promote-road38.mjs
+      - run: node --check src/render.js
+      - name: Commit exact promoted renderer
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/render.js
+          git diff --cached --quiet && exit 1
+          git commit -m "feat: v0.38 compressed road-edge grammar"
+          git push origin HEAD:agent/v0.38-road-edge-grammar
