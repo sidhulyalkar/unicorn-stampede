@@ -1,0 +1,27 @@
+name: v0.38-road-edge-grammar
+on:
+  pull_request:
+    paths:
+      - 'src/render.js'
+      - 'scripts/road-grammar-research.mjs'
+      - '.github/workflows/road-grammar-research.yml'
+      - 'scripts/build.mjs'
+      - 'package.json'
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Syntax-check road grammar benchmark
+        run: node --check scripts/road-grammar-research.mjs
+      - name: Benchmark road grammar candidates
+        run: node scripts/road-grammar-research.mjs
+      - run: cat research/road-grammar-results.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v0.38-road-grammar-results
+          path: research/road-grammar-results.json
