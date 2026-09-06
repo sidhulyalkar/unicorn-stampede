@@ -1,215 +1,262 @@
 # 🦄 Unicorn Stampede
 
-**A six-unicorn arcade-strategy game built for js13kGames 2026.** You directly control one unicorn at a time while the rest of the herd keeps moving, gets distracted, follows your painted Rainbow Highways, wrecks landmarks, and occasionally makes extremely poor life choices.
+**A six-unicorn arcade-strategy game built for js13kGames 2026.** You control one unicorn at a time while the rest of the herd keeps moving, follows the routes you leave behind, gets distracted, fights the town, gets captured, and occasionally creates a crisis you have to rescue.
 
-The core rhythm is:
+The central question is not **how fast can you click?** It is:
 
-**steer → whip → charge → dash → Shift → trust the old route → rescue the next disaster**
+> **Can you keep a chaotic six-unicorn stampede useful long enough to conquer a town that is actively fighting back?**
 
-The goal is not to micromanage six units. The goal is to keep several useful plans alive at once while the town keeps inventing reasons for unicorns to stop paying attention.
+The game is designed around recovery. A bad route, a distracted unicorn, or even two captures do **not** mean the run is dead. Save the herd, rebuild the plan, and keep going.
 
-## 🎮 Play it
+## The complete game in 30 seconds
 
-The draft release candidate lives on PR #12. Qualified builds contain:
+### You win by conquering and holding the town
 
-- `dist/local.html` — browser-safe standalone build.
-- `dist/unicorn-stampede.zip` — exact js13k submission archive.
-- `dist/index.html` — aggressively packed competition HTML.
-- `dist/preview.html` — browser-safe self-contained preview.
-- `dist/compression.json` — compression provenance and exact size.
+A real run has one authoritative victory path:
 
-The v0.26 release is qualified below the **13,312-byte** js13k ceiling. `dist/compression.json` is the authoritative exact-size record for each qualified artifact.
+1. **Break the four outer landmarks**: Bakery, Market, Greenhouse, Clock Tower.
+2. Build enough combined **paint + destruction** to reach the required **Chaos** threshold.
+3. Bring enough unicorns together for the required **Rally** and smash **Town Hall**.
+4. Survive **Final Cleanup**.
+5. Secure all **four districts**.
+6. Reach the mode's town-wide **paint target**.
+7. **Rescue any captured unicorns**.
+8. Hold the town briefly.
 
-## ⚡ The 20-second mental model
+Then the run ends with **TOWN CONQUERED**.
 
-- The **big white ring** marks the unicorn you currently control.
-- **WASD** steers that unicorn and paints the road behind it.
-- **Click beside the white ring** to crack the Rainbow Whip.
-- Each successful whip adds one charge, from **1/5 → 5/5**.
-- **Two Whips unlock Dash. Space at 2/5 through 5/5 always spends the stored charge on a directional dash.** More charge means a longer, stronger dash; 5/5 is MAX.
-- **Shift** switches to the next live unicorn at any time. Charge belongs to each unicorn and survives switching away and back.
-- A moving unicorn keeps following its last useful direction after you switch away.
-- Painted ground becomes a **Rainbow Highway**, helping unattended unicorns resist distractions and maintain useful routes.
-- **NEXT** is only a recommendation. It points toward a unicorn that may need attention. It never switches for you.
+There is no hidden timer defeat. You are allowed to recover from mistakes.
 
-You can play carefully and orchestrate the herd, or Shift like a caffeinated conductor and manufacture your own emergency.
+### You lose when the herd collapses
 
-## 🕹️ Controls
+Cleanup trucks using the **SNATCH** doctrine can capture distracted unattended unicorns.
+
+- **1 captured:** emergency, but fully recoverable.
+- **2 captured:** critical. You should usually stop expanding and organize a rescue.
+- **3 captured:** **HERD COLLAPSE**. Half the herd is gone, the remaining unicorns panic, cleanup accelerates, and the town overwhelms the stampede.
+
+This is the game's only normal defeat condition.
+
+The point is to make losing understandable. You should be able to look at a failed run and say, “I let the herd cluster near the cleaners,” or “I ignored the second prisoner too long,” rather than, “the screen suddenly reset.”
+
+## Controls
 
 | Input | Action |
 | --- | --- |
-| **WASD** | steer the active unicorn + paint |
-| **Mouse** | aim the coiled Rainbow Whip cursor |
-| **Left click beside active ring** | crack Whip and add charge |
-| **Space** | dash whenever the active unicorn has **2+ Whips**; consumes its charge |
-| **Shift** | switch to the next live unicorn |
-| **A / D on title** | select unlocked world |
-| **C on title** | controls |
-| **P / Esc** | pause |
-| **M** | mute |
+| **WASD** | steer the active unicorn and paint |
+| **Left click beside the active white ring** | crack the Rainbow Whip |
+| **Space** | spend 2/5–5/5 Whip charge on Dash |
+| **Shift** | smart-switch to the herd mate that most needs attention |
+| **P / Esc** | pause and read the Rules page |
+| **A / D on title** | change unlocked world |
+| **M on title** | change difficulty |
 
-The Whip is intentionally positional. Clicking from different sides changes the launch direction, so a good crack should do more than raise the meter. It should line the unicorn up with a landmark, empty street, cleaner, powerup, Prism Gate, or escape path.
+## The three verbs that matter most
 
-## 🦄 The herd
+### 1. Steer and paint
 
-All six unicorns are available in real runs:
+Moving paints Rainbow Highway behind the active unicorn. Paint is both **territory** and **infrastructure**.
 
-- **Bolt** — fast and direct.
-- **Daisy** — steadier movement.
-- **Bumper** — heavier impact.
-- **Mallow** — controlled and strong.
-- **Comet** — quick and reactive.
-- **Pickles** — wonderfully questionable momentum.
+Unattended unicorns behave better on painted routes, so a strong player does not merely color the map. They build routes that remain useful after switching away.
 
-Each now has its own hue-driven mane/forelock treatment in the procedural renderer, so the characters remain visually distinct without shipping image assets.
+### 2. Whip and Dash
 
-## 🌈 Distraction is the game
+Click beside the active unicorn's white ring to crack the Rainbow Whip.
 
-Unicorns are not disciplined RTS units. They are attracted to things.
+Each successful Whip adds charge:
 
-Existing distraction and pressure systems include:
+**1/5 → 2/5 → 3/5 → 4/5 → 5/5**
 
-- fountains;
-- duck ponds;
-- flower patches;
-- moving butterflies;
-- traffic collisions;
-- cleanup crews that erase Rainbow Highways;
-- world-specific wind pressure;
-- temporary powerups that can change priorities;
-- the herd's own tendency to become idle or wander when you stop maintaining useful routes.
+At **2/5 or more**, Space always Dashes. More charge produces a longer, stronger Dash.
 
-The strategy comes from deciding which problem actually deserves control. A distracted unicorn near a fountain may be harmless. A distracted unicorn beside the final unpainted district while cleaners erase your best highway is not.
+Whip direction matters. Use it to line up a unicorn with:
 
-## 🛣️ Rainbow Highways
+- a landmark;
+- an empty road;
+- a cleaner truck;
+- a powerup;
+- a rescue interception;
+- a district that still needs paint.
 
-Paint is infrastructure, not just decoration.
+Repeated Whips can also trigger Prism effects and area damage.
 
-An unattended unicorn on painted ground:
+### 3. Smart Shift
 
-- gets a movement advantage;
-- is less strongly pulled by environmental distractions;
-- keeps a switched-away route alive longer.
+Shift is not a blind next-unit button.
 
-Cleanup crews erase that infrastructure, creating a recurring tactical loop:
+It prioritizes the herd in this order:
 
-**build route → hand off → exploit route → notice cleanup → defend or repaint**
+**DISTRACTED > STALLED > OFF-ROUTE > NEGLECTED**
 
-This is one of the main systems that makes controlling six agents manageable instead of random.
+Equal-urgency situations cycle predictably through the live herd.
 
-## 💥 Landmarks and the strategic time bank
+A useful habit is to think of Shift as asking:
 
-A run asks you to break four outer landmarks before Town Hall becomes structurally available:
+> **Who needs me most right now?**
 
-1. Bakery
-2. Market
-3. Greenhouse
-4. Clock Tower
-5. Town Hall
+## Why leaving a unicorn can be good
 
-Town Hall also requires enough overall town chaos, combining painted territory and destruction. Sniping only the objectives is not enough.
+When you switch away from a moving unicorn, it keeps following its last useful direction for a while.
 
-v0.26 also makes progression buy time rather than simply consume it:
+That means good play has a rhythm:
 
-- real runs receive a larger opening time window;
-- every outer landmark smash adds **+6 seconds**;
-- the four outer landmarks can therefore return up to **24 seconds** to a strong run.
+**set route → switch → solve another problem → return before the old plan decays**
 
-This makes successful routing extend the session. Better play gives you more time to create bigger, stranger stampedes instead of simply ending faster.
+You are conducting parallel plans rather than micromanaging six bodies every second.
 
-## 🌍 Campaign worlds
+## Herd interference and BICKER
 
-The campaign deliberately reuses the same systemic town rather than spending precious bytes on three unrelated maps.
+Unattended unicorns that bunch together become socially distracted. If they are too distracted, they can stop contributing useful structural damage and may trigger **BICKER!**
 
-### Prisborough
+Loose formations are therefore valuable.
 
-Baseline orchestration. Learn switching, highways, distractions, traffic, landmarks and cleanup pressure.
+Painted roads help because they let different herd members continue useful trajectories without collapsing into one glittery traffic jam.
 
-### Washwater Bay
+## Town response: SWEEP, SNATCH, REBUILD
 
-Cleanup pressure is stronger. The central question becomes whether you can preserve the infrastructure you already created while still advancing objectives.
+The town rotates through three defensive doctrines during a run.
 
-### Cloudtop Heights
+### SWEEP
 
-Crosswinds destabilize routes and tighten execution. Prediction becomes more important than pure reaction.
+Cleanup trucks erase painted infrastructure faster.
 
-The procedural town varies its building placement and geometry between runs, so tactical layouts change without requiring separate authored maps.
+This punishes a single fragile highway. Good players build redundant routes and repaint strategically instead of assuming old territory is permanent.
 
-## 🔥 Stampede+ Heat 1/10 → Heat 10/10
+### SNATCH
 
-Clearing the tour unlocks **Stampede+**, a ten-step mastery ladder.
+Cleanup trucks hunt socially distracted unattended unicorns.
 
-Higher Heat progressively combines:
+A captured unicorn rides with the truck and is removed from the controllable herd.
 
-- less starting time;
+To rescue it:
+
+1. intercept the prison truck with Dash, Frenzy, or Boost;
+2. stun it;
+3. bring **two live unicorns** within the rescue radius.
+
+`RESCUE 1/2` means you stopped the truck but still need a second unicorn.
+
+Successful rescues now earn score because recovering a broken plan is skill, not wasted time.
+
+### REBUILD
+
+Cleanup trucks can rebuild ordinary destroyed buildings.
+
+That reverses part of your structural progress and forces you to revisit territory you thought was solved.
+
+Landmarks themselves remain authoritative and are never rebuilt.
+
+## Landmarks and Rally
+
+The outer landmarks are:
+
+1. **Bakery**
+2. **Market**
+3. **Greenhouse**
+4. **Clock Tower**
+
+Town Hall is the fifth and final landmark.
+
+Clock Tower and Town Hall require **Rally**, meaning several live unicorns must be close enough to participate. Harder modes increase Rally requirements.
+
+This stops the optimal strategy from becoming “solo one super-unicorn through every objective.”
+
+## The final takeover
+
+Smashing Town Hall is not the end.
+
+It starts **Final Cleanup**.
+
+To actually win you must still:
+
+- secure all four districts;
+- meet the global paint requirement;
+- free any prisoners;
+- hold the town briefly while cleaners continue attacking your infrastructure.
+
+The final seconds should feel like maintaining a living network under pressure, not watching a victory cutscene after one last building breaks.
+
+## Difficulty
+
+Difficulty changes the strategic burden rather than merely shrinking a clock.
+
+Higher modes combine:
+
+- higher coverage requirements;
+- tougher structures;
+- higher Rally requirements;
+- fewer powerups;
 - faster traffic;
 - stronger cleanup pressure;
-- greater environmental interference;
-- higher Town Hall chaos requirements;
-- optional Prism Gate routing opportunities;
-- a larger score multiplier.
+- tighter rescue geometry;
+- more environmental interference.
 
-Heat stops escalating at **10/10**. Heat 10 remains available for mastery and score chasing rather than turning into an infinite numerical treadmill.
+The game remains winnable by conquest. Harder modes ask you to maintain more simultaneous structure with fewer recovery tools.
 
-## 🏁 Score without a leaderboard
+## Score philosophy
 
-The external/local top-50 leaderboard has been removed. It added product surface without improving the minute-to-minute game.
+There is no leaderboard requirement and there is no time-remaining bonus.
 
-The **score itself remains** because it is useful feedback. It rewards multiple dimensions of skill:
+Score rewards doing useful things inside the run:
 
-- time remaining;
-- paint coverage;
-- structural destruction;
-- Prism/Whip chains;
-- keeping several unicorns productively active;
-- stunning cleanup crews;
-- Prism Gate routing in Stampede+.
+- painting territory;
+- destroying structures;
+- breaking landmarks;
+- Whip / Prism chains;
+- stunning cleaners;
+- rescuing captured unicorns;
+- completing the conquest.
 
-The score is best understood as a personal optimization target: finish the same town with cleaner routes, more simultaneous herd activity, better Whips and fewer rescue emergencies.
+A messy run is therefore still worth finishing. Recovering from two captures and eventually winning should feel better, and score better, than restarting because the opening was imperfect.
 
-## 🧪 Training
+## Strategy: how to think about a run
 
-Training starts with two unicorns and teaches the permanent verbs in a small town:
+### Opening
 
-1. move the active unicorn;
-2. Whip twice to unlock Dash;
-3. press Space to Dash, or keep charging toward 5/5 MAX;
-4. Shift control;
-5. leave an old route running;
+Do not immediately stack the herd on the same objective.
+
+Establish two or three useful directions and paint corridors that future unattended unicorns can exploit.
+
+### Midgame
+
+Ask three questions repeatedly:
+
+1. **Which landmark or district advances the win condition?**
+2. **Which herd member is becoming dangerous to ignore?**
+3. **Which route will still be useful after I Shift away?**
+
+### First capture
+
+Do not panic, but identify the prison truck and decide whether the rescue fits naturally into your current route.
+
+### Second capture
+
+This is the strategic red alert.
+
+Stop treating territory as the highest priority. Preserve the herd. One more capture ends the run.
+
+### Final Cleanup
+
+Spread enough to maintain district paint, but not so far that you cannot assemble a rescue or Rally. Your goal is a resilient loose network, not maximum separation.
+
+## Training
+
+Training teaches the permanent verbs in a small town:
+
+1. steer;
+2. Whip twice;
+3. Dash;
+4. Shift;
+5. leave a route running;
 6. rescue a distracted unicorn;
-7. Whip twice again;
-8. dash into the Bakery;
-9. unleash all six unicorns in the miniature town;
-10. spend a short free-play burst using **Shift + Whip + Dash** before entering the real city.
+7. Whip again;
+8. smash the Bakery;
+9. unleash all six unicorns;
+10. free-play with Shift + Whip + Dash before entering the real city.
 
-The Dash rule never changes during Training: **if the active unicorn has 2/5 or more charge, Space works.** The tutorial does not silently lock Dash at intermediate lesson steps.
+The controls do not secretly change between Training and campaign play.
 
-That final six-herd moment is fully interactive. Whipping and 2+ Dash remain enabled after all six appear, specifically so the tutorial ends with experimentation rather than a locked cinematic.
-
-## 🎨 Visual philosophy
-
-The game intentionally avoids external sprites and bitmaps. Buildings, roads, people, cars, flowers, butterflies, fountain, unicorns, manes, trails, Whip and UI are all procedural Canvas shapes.
-
-The title screen reuses the actual tutorial town renderer. Six real unicorns stare inward at the fountain and butterflies while the existing townspeople continue wandering in the background. The title therefore previews the actual game instead of advertising artwork the cartridge cannot reproduce.
-
-## 📦 Compression philosophy
-
-The 13 KB limit is treated as a design constraint, not an excuse to remove feel.
-
-The release build tournaments several combinations of:
-
-- Terser transforms;
-- property mangling;
-- enum/string substitution;
-- Roadroller;
-- Zopfli;
-- AdvZIP.
-
-Behavioral tests run against both readable source and the packed artifact. Size optimizations are rejected if they silently break controls, Whip animation, title rendering, tutorial switching, campaign progression or Heat behavior.
-
-The most important rule is **experience bytes beat novelty bytes**. A few bytes that make the Whip readable or the unicorns expressive are more valuable than a bespoke world object that appears once.
-
-## 🛠️ Development
+## Development and qualification
 
 ```bash
 npm install
@@ -218,4 +265,6 @@ npm test
 npm run build
 ```
 
-`npm test` covers source syntax, tutorial progression, the **2+ Whip Dash contract across tutorial steps 0–9**, free six-herd switching, Whip charging/dash scaling, refocus-safe Whipping, campaign progression, competitive score invariants, compression, packed browser behavior, archive integrity and the 13,312-byte ceiling.
+The test suite protects source behavior, packed browser behavior, the 13,312-byte js13k ceiling, smart Shift, Dash availability, herd interference, town-response doctrines, rescue behavior, difficulty separation, Prism geometry, explicit victory/defeat semantics, and the rule that **the timer must never end a v0.32 run**.
+
+The project treats the 13 KB limit as a design constraint: mechanics that improve understanding, recovery, strategy, and feel are worth bytes; hidden failure states are not.
