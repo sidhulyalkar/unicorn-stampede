@@ -1,0 +1,31 @@
+name: v0.35-architectural-grammar
+on:
+  pull_request:
+    paths:
+      - 'scripts/grammar-research.mjs'
+      - 'src/render.js'
+      - 'scripts/build.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/grammar-research.yml'
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Syntax-check benchmark
+        run: node --check scripts/grammar-research.mjs
+      - name: Benchmark exact v0.34 renderer against grammar candidates
+        run: node scripts/grammar-research.mjs
+      - name: Show research report
+        run: cat research/grammar-results.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v0.35-architectural-grammar-results
+          path: research/grammar-results.json
