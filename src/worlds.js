@@ -1,7 +1,7 @@
 let zone=S.g('ccZone')%3,runN=S.g('ccRun'),seedZone=0,wind=1,windT=0,chains=0,crowns=0;
 const _rain=paintStamp;paintStamp=(u,x=u.x,y=u.y,r=28)=>_rain(u,x,y,r+(level?stamp:0));
 const ZN=['PRISMBOROUGH','WASHWATER BAY','CLOUDTOP HEIGHTS'],_day=today;today=()=>_day()+seedZone*173+runN*19;
-function flipTown(n){for(let o of objs){if(n&1)o.x=3260-o.x-o.w;if(n&2)o.y=1860-o.y-o.h}for(let a of [ups,flowers,unis])for(let q of a){if(n&1)q.x=3260-q.x;if(n&2)q.y=1860-q.y}for(let u of unis){if(n&1)u.tx=3260-u.tx,u.a=Math.PI-u.a;if(n&2)u.ty=1860-u.ty,u.a=-u.a}}
+function flipTown(n){for(let a of [objs,ups,flowers,unis])for(let q of a){if(n&1)q.x=3260-q.x-(q.w||0);if(n&2)q.y=1860-q.y-(q.h||0)}for(let u of unis){if(n&1)u.tx=3260-u.tx,u.a=Math.PI-u.a;if(n&2)u.ty=1860-u.ty,u.a=-u.a}}
 function grade(){let p=paintPct()>stageGoal+.07;return landWin?1+p+(p&&chains>[1,1,2][zone]):0}
 function finishZone(){crowns=grade();let k='ccC'+zone;if(crowns>S.g(k))S.s(k,crowns)}
 function canZone(z){return !z||S.g('ccC'+(z-1))}
@@ -11,5 +11,5 @@ const _crackW=crackWhip;crackWhip=function(){let u=unis[whip.i],n=u&&u.tapT?u.ta
 function updateZone(dt){if(!level||zone!==2)return;windT-=dt;if(windT<=0){windT=4;wind*=-1;lmText=wind>0?'CROSSWIND →':'← CROSSWIND';lmTextT=1}for(let u of unis)if(u.live)u.vx+=wind*(90+stamp*8)*dt}
 const _updateW=update;update=function(dt){let before=state;_updateW(dt);if(state==='play'&&!paused)updateZone(dt);if(before==='play'&&state==='end')finishZone()};
 const _worldW=world;world=function(){_worldW();if(!level||zone!==2)return;X.save();X.translate(ox,oy);X.scale(z,z);X.fillStyle='rgba(245,250,255,.09)';for(let i=0;i<7;i++){let x=(i*510+clock*wind*45)%3500-120,y=180+(i%3)*560;X.beginPath();X.ellipse(x,y,180,70,0,0,T);X.fill()}X.restore()};
-const _townDraw=drawObjs;drawObjs=function(){if(level)for(let o of objs)if(o.t==='b'){X.fillStyle='#d8d8d0';X.fillRect(o.x-7,o.y-7,o.w+14,o.h+14);X.fillStyle='#0003';X.fillRect(o.x+7,o.y+7,o.w,o.h)}_townDraw();if(level){X.fillStyle='#3e4651';for(let o of objs)if(o.t==='b'&&o.hp){let g=o.x+o.y|0;X.fillRect(o.x+12+g%37,o.y+9,18+(g&15),9);if(g&1)X.fillRect(o.x+o.w-24,o.y+11,9,14)}}};
+const _townDraw=drawObjs;drawObjs=function(){if(level)for(let o of objs)if(o.t==='b'){X.fillStyle='#d8d8d0';X.fillRect(o.x-7,o.y-7,o.w+14,o.h+14);X.fillStyle='#0003';X.fillRect(o.x+7,o.y+7,o.w,o.h)}_townDraw();if(level){X.fillStyle='#3e4651';for(let o of objs)if(o.t==='b'&&o.hp)X.fillRect(o.x+12+(o.x+o.y|0)%37,o.y+9,27,9)}};
 const _titleW=title;
