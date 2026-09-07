@@ -1,0 +1,10 @@
+import fs from'node:fs';
+let f='src/whip.js',s=fs.readFileSync(f,'utf8'),m='const _soloDraw=draw;';
+if(s.split(m).length!==2||!s.includes('whip={x,y,i:caps[0],l:.2,hit:0}'))throw Error('unexpected whip source');
+let tail=`const _soloHud=hud;hud=function(){if(state==='play'){X.save();X.translate(ox,oy);X.scale(z,z);let u=unis[caps[0]],s=unis[suggested],n=u.power|0,p=1/z;X.strokeStyle='#fff';X.lineWidth=(7+n)*p;X.beginPath();X.arc(u.x,u.y,78+n*3,0,T);X.stroke();X.fillStyle='#fff';text((n>1?'DASH ':'WHIP ')+n+'/5',u.x,u.y-94-n*3,14*p,'center');let q=u.tapT?['','OW!','RUDE!','WHEE!','AGAIN?!','MAX!'][n]:!level&&(intro.step===1||intro.step===7&&caps[0]===intro.o)?'WHIP ME!':'';if(q)text(q,u.x,u.y-120-n*3,15*p,'center');if(!level&&intro.step===5&&s){X.fillStyle='#ffb7e8';text('▼ STUCK! • SHIFT',s.x,s.y-58,14*p,'center')}if(!level&&intro.step===8&&LM[0]&&LM[0].os[0]){let o=LM[0].os[0];X.fillStyle='#ffe77d';text('TARGET • BAKERY',o.x+o.w/2,o.y-48,15*p,'center')}if(!level&&intro.step===9){let o=objs.find(o=>o.m);X.fillStyle='#ffe77d';text('TOWN HALL • TEAM '+team(o)+'/3',o.x+o.w/2,o.y-48,15*p,'center')}if(whip){let q=unis[whip.i];if(q){let dx=q.x-whip.x,dy=q.y-whip.y,d=Math.hypot(dx,dy)||1,b=8e3*whip.l*(.2-whip.l),cx=(whip.x+q.x)/2-dy/d*b,cy=(whip.y+q.y)/2+dx/d*b;X.lineCap='round';X.beginPath();X.moveTo(whip.x,whip.y);X.quadraticCurveTo(cx,cy,q.x,q.y);X.strokeStyle='#24152e';X.lineWidth=15*p;X.stroke();X.strokeStyle=\`hsl(\${clock*220+n*55} 100% 72%)\`;X.lineWidth=7*p;X.stroke();X.fillStyle='#fff';X.beginPath();X.arc(whip.x,whip.y,7*p,0,T);X.fill()}}X.restore()}_soloHud()};
+const _soloDraw=draw;draw=function(){_soloDraw();if(paused)return rules();X.save();X.translate(mx,my);for(let i=3;i--;){X.strokeStyle=\`hsl(\${clock*90+i*120} 100% 65%)\`;X.lineWidth=4+i*3;X.beginPath();X.arc(-7,7,14+i*7,.2,5.6);X.stroke()}X.fillStyle='#fff';X.beginPath();X.arc(0,0,6,0,T);X.fill();X.restore()};
+`;
+s=s.slice(0,s.indexOf(m))+tail;fs.writeFileSync(f,s);
+let g='scripts/smoke.mjs',t=fs.readFileSync(g,'utf8');
+t=t.replace("!ws.includes('whip.l*340')","!ws.includes('8e3*whip.l*(.2-whip.l)')");
+fs.writeFileSync(g,t);
