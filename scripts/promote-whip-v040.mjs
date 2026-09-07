@@ -5,6 +5,9 @@ let tail=`const _soloHud=hud;hud=function(){if(state==='play'){X.save();X.transl
 const _soloDraw=draw;draw=function(){_soloDraw();if(paused)return rules();X.save();X.translate(mx,my);for(let i=3;i--;){X.strokeStyle=\`hsl(\${clock*90+i*120} 100% 65%)\`;X.lineWidth=4+i*3;X.beginPath();X.arc(-7,7,14+i*7,.2,5.6);X.stroke()}X.fillStyle='#fff';X.beginPath();X.arc(0,0,6,0,T);X.fill();X.restore()};
 `;
 s=s.slice(0,s.indexOf(m))+tail;fs.writeFileSync(f,s);
+let w='src/worlds.js',v=fs.readFileSync(w,'utf8');
+v=v.replace("'EAST DOCKS'","'DOCKS'").replace("msg='HARBOR DISTRICT • OPEN QUAYS'","msg='HARBOR • OPEN QUAYS'");
+fs.writeFileSync(w,v);
 let g='scripts/smoke.mjs',t=fs.readFileSync(g,'utf8');
 t=t.replace("!ws.includes('whip.l*340')","!ws.includes('8e3*whip.l*(.2-whip.l)')");
 fs.writeFileSync(g,t);
