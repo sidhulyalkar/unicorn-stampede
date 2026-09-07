@@ -25,6 +25,6 @@ jobs:
       - run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/render.js src/worlds.js package.json scripts/washwater-smoke.mjs scripts/whip-render-smoke.mjs scripts/graphics-v041-smoke.mjs
+          git add src/render.js src/worlds.js package.json scripts/washwater-smoke.mjs scripts/whip-render-smoke.mjs scripts/packed-smoke.mjs scripts/graphics-v041-smoke.mjs
           git commit -m 'feat: v0.41 architecture-first graphics polish'
           git push origin HEAD:agent/v0.41-architecture-first-polish
