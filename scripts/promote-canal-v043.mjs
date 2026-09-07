@@ -23,4 +23,6 @@ s=swap(s,"if(e('msg')!=='HARBOR • OPEN QUAYS')throw Error('Washwater launch fr
 s=swap(s,"if(!rects.some(r=>r[0]==='#567f8c'&&r[1]===1540&&r[2]===0&&r[3]===180&&r[4]===1800))throw Error('flooded central quay missing');","if(rects.filter(r=>r[0]==='#567f8c'&&r[1]===1540&&r[3]===180).length!==6)throw Error('segmented canal water missing');if(rects.some(r=>r[0]==='#567f8c'&&r[4]===1800))throw Error('canal must leave bridge openings');",'segmented canal render contract');
 s=swap(s,"console.log('Washwater Bay v0.42: PASS streetWidths=140/160/190 themedStores=5 compactCaptain=1 crosswalks=32 floodedQuay=1 baseWorldUnchanged=1');","console.log('Washwater Bay v0.43: PASS canalSegments=6 bridges=2 blockedWater=1 bridgeCleaners=1 bridgePowerups=2 streetWidths=140/160/190 themedStores=5 baseWorldUnchanged=1');",'v043 report');fs.writeFileSync(f,s);
 
+f='scripts/graphics-v041-smoke.mjs';s=fs.readFileSync(f,'utf8');s=swap(s,"msg='HARBOR • OPEN QUAYS'","msg='CANAL QUARTER • 2 BRIDGES'",'graphics framing contract');fs.writeFileSync(f,s);
+
 f='package.json';let j=JSON.parse(fs.readFileSync(f,'utf8'));j.version='0.43.0';fs.writeFileSync(f,JSON.stringify(j)+'\n');
