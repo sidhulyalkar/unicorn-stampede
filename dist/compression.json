@@ -1,122 +1,152 @@
 [
   {
     "variant": "road-enum-wide-hard+zopfli",
-    "html": 17448,
-    "zip": 13188
-  },
-  {
-    "variant": "road-enum-wide-hard+adv",
-    "html": 17448,
-    "zip": 13188
+    "html": 17473,
+    "zip": 13203
   },
   {
     "variant": "road-enum-wide-hard+zopfli+adv",
-    "html": 17448,
-    "zip": 13188
+    "html": 17473,
+    "zip": 13203
+  },
+  {
+    "variant": "road-enum-wide-hard+adv",
+    "html": 17473,
+    "zip": 13205
   },
   {
     "variant": "road-enum-wide+zopfli",
-    "html": 17477,
-    "zip": 13206
+    "html": 17487,
+    "zip": 13215
   },
   {
     "variant": "road-enum-wide+zopfli+adv",
-    "html": 17477,
-    "zip": 13206
+    "html": 17487,
+    "zip": 13215
   },
   {
     "variant": "road-enum-wide+adv",
-    "html": 17477,
-    "zip": 13211
+    "html": 17487,
+    "zip": 13217
   },
   {
     "variant": "road-wide+zopfli",
-    "html": 17581,
-    "zip": 13286
+    "html": 17587,
+    "zip": 13291
+  },
+  {
+    "variant": "road-aggr-enum+adv",
+    "html": 17590,
+    "zip": 13291
   },
   {
     "variant": "road-wide+zopfli+adv",
-    "html": 17581,
-    "zip": 13286
+    "html": 17587,
+    "zip": 13291
   },
   {
     "variant": "road-wide+adv",
-    "html": 17581,
-    "zip": 13288
+    "html": 17587,
+    "zip": 13298
   },
   {
     "variant": "road-enum-wide-hard",
-    "html": 17448,
-    "zip": 13292
+    "html": 17473,
+    "zip": 13310
   },
   {
     "variant": "road-enum-wide",
-    "html": 17477,
-    "zip": 13314
+    "html": 17487,
+    "zip": 13322
   },
   {
     "variant": "road-props+adv",
-    "html": 17642,
-    "zip": 13334
+    "html": 17631,
+    "zip": 13328
+  },
+  {
+    "variant": "road-aggr-wide+adv",
+    "html": 17651,
+    "zip": 13341
   },
   {
     "variant": "road-unsafe-props+adv",
-    "html": 17710,
-    "zip": 13386
+    "html": 17689,
+    "zip": 13366
   },
   {
     "variant": "road-wide",
-    "html": 17581,
-    "zip": 13399
+    "html": 17587,
+    "zip": 13409
+  },
+  {
+    "variant": "road-aggr-enum",
+    "html": 17590,
+    "zip": 13409
   },
   {
     "variant": "road-safe+adv",
     "html": 17755,
-    "zip": 13419
+    "zip": 13418
   },
   {
     "variant": "road-props",
-    "html": 17642,
-    "zip": 13455
+    "html": 17631,
+    "zip": 13442
+  },
+  {
+    "variant": "road-aggr-wide",
+    "html": 17651,
+    "zip": 13459
   },
   {
     "variant": "road-unsafe-props",
-    "html": 17710,
-    "zip": 13508
+    "html": 17689,
+    "zip": 13491
   },
   {
     "variant": "road-safe",
     "html": 17755,
-    "zip": 13544
+    "zip": 13541
   },
   {
     "variant": "terser-enum-wide",
-    "html": 39994,
-    "zip": 16446
+    "html": 39626,
+    "zip": 16469
+  },
+  {
+    "variant": "terser-aggr-enum",
+    "html": 39884,
+    "zip": 16473
   },
   {
     "variant": "terser-wide",
-    "html": 40600,
-    "zip": 16581
+    "html": 40213,
+    "zip": 16609
   },
   {
-    "variant": "terser-unsafe-props",
-    "html": 40496,
-    "zip": 16607
+    "variant": "terser-aggr-wide",
+    "html": 40471,
+    "zip": 16616
   },
   {
     "variant": "terser-props",
-    "html": 40813,
-    "zip": 16617
+    "html": 40420,
+    "zip": 16626
+  },
+  {
+    "variant": "terser-unsafe-props",
+    "html": 40084,
+    "zip": 16629
   },
   {
     "variant": "terser-safe",
-    "html": 41660,
-    "zip": 16732
+    "html": 41294,
+    "zip": 16721
   },
   {
     "variant": "raw",
-    "html": 47812,
-    "zip": 17852
+    "html": 47961,
+    "zip": 18134
   }
 ]
