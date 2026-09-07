@@ -14,4 +14,7 @@ fs.writeFileSync(g,t);
 let p='scripts/packed-smoke.mjs',u=fs.readFileSync(p,'utf8');
 u=u.replace("length>=3))throw Error(path+' refocus-safe animated rainbow whip failed')","length>=2))throw Error(path+' refocus-safe animated rainbow whip failed')");
 fs.writeFileSync(p,u);
+let a='scripts/washwater-smoke.mjs',b=fs.readFileSync(a,'utf8');
+b=b.replace('HARBOR DISTRICT • OPEN QUAYS','HARBOR • OPEN QUAYS');
+fs.writeFileSync(a,b);
 fs.writeFileSync('scripts/whip-render-smoke.mjs',`import fs from'node:fs';\nlet s=fs.readFileSync('src/whip.js','utf8');\nif(s.includes('const _soloWorldDraw=world;'))throw Error('whip still renders inside world layer');\nfor(let q of ["const _soloHud=hud;","_soloHud()","p=1/z","X.lineWidth=(7+n)*p","X.lineWidth=15*p","X.lineWidth=7*p","8e3*whip.l*(.2-whip.l)","quadraticCurveTo","l:.2"])if(!s.includes(q))throw Error('missing whip render contract: '+q);\nconsole.log('whip render: PASS post-world/pre-HUD layer + zoom-stable elastic lash + 0.2s visibility');\n`);
