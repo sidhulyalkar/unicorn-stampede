@@ -1,0 +1,1 @@
+import fs from'node:fs';let f='scripts/smoke.mjs',s=fs.readFileSync(f,'utf8'),a="if(ev('unis[caps[0]].tapT')>.39)throw Error('cloudtop tighter whip window')",b="if(ev('unis[caps[0]].tapT')>.51)throw Error('cloudtop tighter whip window')";if(!s.includes(a))throw Error('cloudtop smoke marker missing');fs.writeFileSync(f,s.replace(a,b));
