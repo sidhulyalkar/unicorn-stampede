@@ -4,6 +4,7 @@ on:
     branches: [agent/v0.44-live-rainbow-whip]
     paths:
       - scripts/promote-whip-v044.mjs
+      - scripts/whip-v044-testfix.mjs
       - .github/workflows/promote-whip-v044.yml
 permissions:
   contents: write
@@ -18,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/promote-whip-v044.mjs
+      - run: node scripts/promote-whip-v044.mjs && node scripts/whip-v044-testfix.mjs
       - run: node --check src/whip.js && node --check scripts/whip-render-smoke.mjs && node --check scripts/whip-cadence-smoke.mjs && node --check scripts/smoke.mjs
       - run: npm install --no-audit --no-fund
       - run: npm test
