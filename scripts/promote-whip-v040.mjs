@@ -8,3 +8,4 @@ s=s.slice(0,s.indexOf(m))+tail;fs.writeFileSync(f,s);
 let g='scripts/smoke.mjs',t=fs.readFileSync(g,'utf8');
 t=t.replace("!ws.includes('whip.l*340')","!ws.includes('8e3*whip.l*(.2-whip.l)')");
 fs.writeFileSync(g,t);
+fs.writeFileSync('scripts/whip-render-smoke.mjs',`import fs from'node:fs';\nlet s=fs.readFileSync('src/whip.js','utf8');\nif(s.includes('const _soloWorldDraw=world;'))throw Error('whip still renders inside world layer');\nfor(let q of ["const _soloHud=hud;","_soloHud()","p=1/z","X.lineWidth=(7+n)*p","X.lineWidth=15*p","X.lineWidth=7*p","8e3*whip.l*(.2-whip.l)","quadraticCurveTo","l:.2"])if(!s.includes(q))throw Error('missing whip render contract: '+q);\nconsole.log('whip render: PASS post-world/pre-HUD layer + zoom-stable elastic lash + 0.2s visibility');\n`);
