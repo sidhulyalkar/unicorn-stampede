@@ -1,0 +1,27 @@
+name: v0.40-sign-massing-research
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/render.js'
+      - 'scripts/v040-sign-massing-research.mjs'
+      - '.github/workflows/v040-sign-massing-research.yml'
+      - 'scripts/build.mjs'
+      - 'package*.json'
+  workflow_dispatch:
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: node --check scripts/v040-sign-massing-research.mjs
+      - run: node scripts/v040-sign-massing-research.mjs
+      - run: cat research/v040-sign-massing-results.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v040-sign-massing-results
+          path: research/v040-sign-massing-results.json
