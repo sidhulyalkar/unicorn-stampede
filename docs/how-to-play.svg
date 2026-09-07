@@ -1,79 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
-<title id="t">Unicorn Stampede: how to play</title>
-<desc id="d">A visual guide showing Blue WASD route planning, Yellow rainbow whip chaining, herd escalation from two to six unicorns, landmark destruction, and advanced strategy.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-labelledby="t d">
+<title id="t">Unicorn Stampede competitive how-to-play guide</title>
+<desc id="d">Clean visual guide for Blue route planning, Yellow Prism Chase, six-unicorn orchestration, competitive scoring, Town Hall chaos gating, and world progression.</desc>
 <defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07142d"/><stop offset=".55" stop-color="#17152f"/><stop offset="1" stop-color="#441738"/></linearGradient>
-  <linearGradient id="panel" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#18233f" stop-opacity=".96"/><stop offset="1" stop-color="#0b1021" stop-opacity=".96"/></linearGradient>
-  <linearGradient id="rainbow" x1="0" x2="1"><stop stop-color="#ff5f83"/><stop offset=".28" stop-color="#ffe56d"/><stop offset=".55" stop-color="#73eda0"/><stop offset=".78" stop-color="#64dcff"/><stop offset="1" stop-color="#d782ff"/></linearGradient>
-  <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  <style>
-    .h{font:700 46px system-ui,sans-serif;fill:#fff}.sub{font:600 19px system-ui,sans-serif;fill:#cbd6ef}.ph{font:800 25px system-ui,sans-serif;fill:#fff}.b{font:600 17px system-ui,sans-serif;fill:#dce7ff}.small{font:600 14px system-ui,sans-serif;fill:#afbdd8}.key{font:800 20px system-ui,sans-serif;fill:#08101f}.num{font:900 30px system-ui,sans-serif;fill:#fff}.label{font:800 13px system-ui,sans-serif;letter-spacing:1.5px;fill:#93a5c9}.center{text-anchor:middle}.round{stroke-linejoin:round;stroke-linecap:round}
-  </style>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07142d"/><stop offset=".55" stop-color="#17152f"/><stop offset="1" stop-color="#441738"/></linearGradient>
+ <linearGradient id="p" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#192542"/><stop offset="1" stop-color="#0a1021"/></linearGradient>
+ <linearGradient id="r" x1="0" x2="1"><stop stop-color="#ff6489"/><stop offset=".25" stop-color="#ffe56d"/><stop offset=".5" stop-color="#73eda0"/><stop offset=".75" stop-color="#64dcff"/><stop offset="1" stop-color="#d782ff"/></linearGradient>
+ <filter id="g"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <style>.H{font:800 50px system-ui,sans-serif;fill:#fff}.S{font:600 19px system-ui,sans-serif;fill:#cbd6ef}.L{font:800 13px system-ui,sans-serif;letter-spacing:1.5px;fill:#9fb0d2}.P{font:800 24px system-ui,sans-serif;fill:#fff}.B{font:600 16px system-ui,sans-serif;fill:#e2eaff}.M{font:600 13px system-ui,sans-serif;fill:#b5c2dc}.N{font:900 29px system-ui,sans-serif;fill:#fff}.K{font:800 20px system-ui,sans-serif;fill:#071120}.C{text-anchor:middle}.R{stroke-linecap:round;stroke-linejoin:round}</style>
 </defs>
-<rect width="1200" height="720" fill="url(#bg)"/>
-<circle cx="1065" cy="78" r="115" fill="#ff5f83" opacity=".05"/><circle cx="1140" cy="155" r="125" fill="#64dcff" opacity=".04"/>
-<text x="60" y="70" class="h">UNICORN STAMPEDE</text>
-<text x="60" y="104" class="sub">Control two. Leave four working. Turn the whole town into a rainbow emergency.</text>
-<rect x="45" y="145" width="345" height="330" rx="28" fill="url(#panel)" stroke="#73dfff" stroke-width="2"/>
-<text x="75" y="185" class="label">BLUE ROSTER · ROUTE PLANNING</text>
-<text x="75" y="222" class="ph" style="font-size:22px">STEER → RELEASE → NEXT</text>
-<g transform="translate(76 250)">
-  <rect width="52" height="45" rx="9" fill="#d9f8ff"/><rect x="58" width="52" height="45" rx="9" fill="#d9f8ff"/><rect x="116" width="52" height="45" rx="9" fill="#d9f8ff"/><rect x="58" y="51" width="52" height="45" rx="9" fill="#d9f8ff"/>
-  <text x="26" y="29" class="key center">A</text><text x="84" y="29" class="key center">W</text><text x="142" y="29" class="key center">D</text><text x="84" y="80" class="key center">S</text>
-</g>
-<g transform="translate(284 286)"><ellipse rx="34" ry="21" fill="#fff"/><circle cx="32" cy="-18" r="17" fill="#fff"/><path d="M38-32 53-66 48-27" fill="#73dfff"/><path d="M-31 0 Q-78 2 -94 28" fill="none" stroke="#73dfff" stroke-width="12" class="round"/><circle cx="37" cy="-21" r="3" fill="#11192b"/></g>
-<path d="M80 375 C155 325 220 430 326 365" fill="none" stroke="#73dfff" stroke-width="8" stroke-dasharray="14 12" class="round" opacity=".85"/>
-<path d="M314 354 339 363 320 380" fill="none" stroke="#73dfff" stroke-width="8" class="round"/>
-<text x="75" y="416" class="b">Release the last WASD key to leave</text>
-<text x="75" y="440" class="b">that unicorn running its route.</text>
-<text x="75" y="462" class="small">Set it up, then spend attention elsewhere.</text>
-<rect x="810" y="145" width="345" height="330" rx="28" fill="url(#panel)" stroke="#ffe56d" stroke-width="2"/>
-<text x="840" y="185" class="label">YELLOW ROSTER · PRISM CHASE</text>
-<text x="840" y="222" class="ph" style="font-size:21px">AIM BESIDE → CLICK ×3</text>
-<g transform="translate(960 300)"><ellipse rx="34" ry="21" fill="#fff"/><circle cx="32" cy="-18" r="17" fill="#fff"/><path d="M38-32 53-66 48-27" fill="#ffe56d"/><path d="M-31 0 Q-78 2 -94 28" fill="none" stroke="#ffe56d" stroke-width="12" class="round"/><circle cx="37" cy="-21" r="3" fill="#11192b"/></g>
-<circle cx="960" cy="300" r="88" fill="none" stroke="#ffe56d" stroke-width="5" stroke-dasharray="15 10" opacity=".7"/>
-<g transform="translate(866 280) rotate(-18)" filter="url(#glow)">
- <path d="M0 18 A34 34 0 1 1 45 48" fill="none" stroke="#ff5f83" stroke-width="12" class="round"/>
- <path d="M7 18 A27 27 0 1 1 43 43" fill="none" stroke="#ffe56d" stroke-width="8" class="round"/>
- <path d="M14 18 A20 20 0 1 1 40 38" fill="none" stroke="#64dcff" stroke-width="4" class="round"/>
- <path d="M-7 18 H7 M0 11 V25" stroke="#fff" stroke-width="3" class="round"/>
-</g>
-<path d="M900 305 Q930 255 960 300" fill="none" stroke="url(#rainbow)" stroke-width="9" class="round"/>
-<text x="840" y="385" class="b">The whip launches Yellow away from</text>
-<text x="840" y="409" class="b">the cursor. Use the angle on purpose.</text>
-<g transform="translate(842 430)"><circle cx="18" cy="0" r="18" fill="#ff5f83"/><circle cx="74" cy="0" r="18" fill="#ffe56d"/><circle cx="130" cy="0" r="18" fill="#64dcff"/><text x="18" y="7" class="key center">1</text><text x="74" y="7" class="key center">2</text><text x="130" y="7" class="key center">3X</text><path d="M38 0 H54 M94 0 H110" stroke="#fff" stroke-width="4"/></g>
-<text x="1005" y="436" class="small">3X = Prism + switch</text>
-<rect x="420" y="145" width="360" height="330" rx="28" fill="url(#panel)" stroke="#a785ff" stroke-width="2"/>
-<text x="600" y="184" class="label center">THE REAL GAME</text>
-<text x="600" y="220" class="ph center" style="font-size:18px">BUILD MOMENTUM</text><text x="600" y="244" class="small center">NOT MICROMANAGEMENT</text>
-<g transform="translate(468 272)">
-  <circle cx="28" cy="15" r="23" fill="#73dfff"/><circle cx="66" cy="15" r="23" fill="#ffe56d"/>
-  <text x="47" y="70" class="num center">2</text><text x="47" y="92" class="small center">learn</text>
-  <path d="M96 15 H124" stroke="#fff" stroke-width="4"/><path d="m118 7 11 8-11 8" fill="none" stroke="#fff" stroke-width="4"/>
-  <circle cx="150" cy="0" r="17" fill="#73dfff"/><circle cx="184" cy="0" r="17" fill="#73dfff" opacity=".6"/><circle cx="150" cy="36" r="17" fill="#ffe56d"/><circle cx="184" cy="36" r="17" fill="#ffe56d" opacity=".6"/>
-  <text x="167" y="87" class="num center">4</text><text x="167" y="109" class="small center">switch</text>
-  <path d="M211 15 H239" stroke="#fff" stroke-width="4"/><path d="m233 7 11 8-11 8" fill="none" stroke="#fff" stroke-width="4"/>
-  <g transform="translate(254 -2)"><circle cx="12" cy="0" r="12" fill="#73dfff"/><circle cx="38" cy="0" r="12" fill="#73dfff" opacity=".7"/><circle cx="64" cy="0" r="12" fill="#73dfff" opacity=".45"/><circle cx="12" cy="30" r="12" fill="#ffe56d"/><circle cx="38" cy="30" r="12" fill="#ffe56d" opacity=".7"/><circle cx="64" cy="30" r="12" fill="#ffe56d" opacity=".45"/></g>
-  <text x="292" y="87" class="num center">6</text><text x="292" y="109" class="small center">orchestrate</text>
-</g>
-<text x="600" y="398" class="b center">Keep several unicorns ACTIVE at once.</text>
-<text x="600" y="423" class="b center">More activity = more paint + more pressure.</text>
-<rect x="485" y="441" width="230" height="25" rx="12" fill="#252d45"/><rect x="485" y="441" width="185" height="25" rx="12" fill="url(#rainbow)"/><text x="600" y="460" class="small center" fill="#fff">ACTIVE 5/6</text>
-<rect x="45" y="505" width="1110" height="165" rx="28" fill="#090f20" stroke="#ffffff" stroke-opacity=".18"/>
-<text x="70" y="540" class="label">WIN THE TOWN</text>
-<g transform="translate(72 562)">
- <g><rect width="120" height="62" rx="14" fill="#24162a" stroke="#ff829f"/><text x="60" y="28" class="b center">BAKERY</text><text x="60" y="49" class="small center">smash</text></g>
- <path d="M130 31 H154" stroke="#8ea0bf" stroke-width="3"/>
- <g transform="translate(164)"><rect width="120" height="62" rx="14" fill="#2b2215" stroke="#ffd46d"/><text x="60" y="28" class="b center">MARKET</text><text x="60" y="49" class="small center">powerups</text></g>
- <path d="M294 31 H318" stroke="#8ea0bf" stroke-width="3"/>
- <g transform="translate(328)"><rect width="135" height="62" rx="14" fill="#13251c" stroke="#74e5a1"/><text x="67" y="28" class="b center">GREENHOUSE</text><text x="67" y="49" class="small center">territory</text></g>
- <path d="M473 31 H497" stroke="#8ea0bf" stroke-width="3"/>
- <g transform="translate(507)"><rect width="120" height="62" rx="14" fill="#142334" stroke="#78cfff"/><text x="60" y="28" class="b center">CLOCK</text><text x="60" y="49" class="small center">anger</text></g>
- <path d="M637 31 H661" stroke="#8ea0bf" stroke-width="3"/>
- <g transform="translate(671)"><rect width="170" height="62" rx="14" fill="#302514" stroke="#ffe56d" stroke-width="2"/><text x="85" y="27" class="ph center" style="font-size:22px">TOWN HALL</text><text x="85" y="49" class="small center">after all four</text></g>
- </g>
-<line x1="930" y1="548" x2="930" y2="648" stroke="#ffffff" stroke-opacity=".12"/>
-<text x="1038" y="540" class="label center">EXPERT PLAY</text>
-<text x="954" y="574" class="small">• Route through future targets</text><text x="954" y="597" class="small">• Whip for useful launch angles</text><text x="954" y="620" class="small">• Stun cleanup while boosted</text><text x="954" y="643" class="small">• Space = two interventions</text>
-<text x="600" y="700" class="small center">The best run feels like controlled chaos: set a plan, let it run, intervene somewhere else, then surf the consequences.</text>
+<rect width="1400" height="860" fill="url(#bg)"/><circle cx="1270" cy="70" r="140" fill="#ff6489" opacity=".045"/><circle cx="1350" cy="170" r="150" fill="#64dcff" opacity=".035"/>
+<text x="58" y="68" class="H">UNICORN STAMPEDE</text><text x="60" y="103" class="S">Control two. Leave four working. Build chaos fast enough to climb the scoreboard.</text>
+<!-- blue -->
+<rect x="45" y="135" width="395" height="365" rx="28" fill="url(#p)" stroke="#73dfff" stroke-width="2"/>
+<text x="72" y="174" class="L">BLUE ROSTER • ROUTE PLANNING</text><text x="72" y="210" class="P">STEER → RELEASE → NEXT</text>
+<g transform="translate(74 238)"><rect width="56" height="46" rx="9" fill="#d9f8ff"/><rect x="64" width="56" height="46" rx="9" fill="#d9f8ff"/><rect x="128" width="56" height="46" rx="9" fill="#d9f8ff"/><rect x="64" y="54" width="56" height="46" rx="9" fill="#d9f8ff"/><text x="28" y="30" class="K C">A</text><text x="92" y="30" class="K C">W</text><text x="156" y="30" class="K C">D</text><text x="92" y="84" class="K C">S</text></g>
+<g transform="translate(344 285)"><ellipse rx="37" ry="22" fill="#fff"/><circle cx="35" cy="-18" r="17" fill="#fff"/><path d="M41-32 57-70 51-26" fill="#73dfff"/><path d="M-34 0 Q-70 2-95 27" fill="none" stroke="#73dfff" stroke-width="12" class="R"/><circle cx="40" cy="-21" r="3" fill="#10182b"/></g>
+<path d="M78 365 C150 320 232 422 372 350" fill="none" stroke="#73dfff" stroke-width="8" stroke-dasharray="15 12" class="R"/><path d="M355 341 382 350 361 370" fill="none" stroke="#73dfff" stroke-width="8" class="R"/>
+<line x1="70" y1="400" x2="414" y2="400" stroke="#fff" stroke-opacity=".09"/><text x="72" y="430" class="B">Release the final WASD key.</text><text x="72" y="456" class="B">That unicorn keeps running its route.</text><text x="72" y="482" class="M">Set useful motion, then spend attention elsewhere.</text>
+<!-- center -->
+<rect x="465" y="135" width="470" height="365" rx="28" fill="url(#p)" stroke="#a785ff" stroke-width="2"/>
+<text x="700" y="174" class="L C">THE REAL GAME</text><text x="700" y="210" class="P C">BUILD MOMENTUM</text><text x="700" y="233" class="M C">NOT MICROMANAGEMENT</text>
+<g transform="translate(515 264)"><circle cx="34" cy="20" r="25" fill="#73dfff"/><circle cx="78" cy="20" r="25" fill="#ffe56d"/><text x="56" y="83" class="N C">2</text><text x="56" y="105" class="M C">learn</text><path d="M116 20h44" stroke="#fff" stroke-width="4"/><path d="m151 11 13 9-13 9" fill="none" stroke="#fff" stroke-width="4"/>
+<g transform="translate(185)"><circle cx="0" cy="2" r="17" fill="#73dfff"/><circle cx="38" cy="2" r="17" fill="#73dfff" opacity=".6"/><circle cx="0" cy="40" r="17" fill="#ffe56d"/><circle cx="38" cy="40" r="17" fill="#ffe56d" opacity=".6"/><text x="19" y="88" class="N C">4</text><text x="19" y="110" class="M C">switch</text></g><path d="M250 20h44" stroke="#fff" stroke-width="4"/><path d="m285 11 13 9-13 9" fill="none" stroke="#fff" stroke-width="4"/>
+<g transform="translate(320 3)"><circle cx="0" cy="0" r="12" fill="#73dfff"/><circle cx="29" cy="0" r="12" fill="#73dfff" opacity=".7"/><circle cx="58" cy="0" r="12" fill="#73dfff" opacity=".45"/><circle cx="0" cy="34" r="12" fill="#ffe56d"/><circle cx="29" cy="34" r="12" fill="#ffe56d" opacity=".7"/><circle cx="58" cy="34" r="12" fill="#ffe56d" opacity=".45"/><text x="29" y="85" class="N C">6</text><text x="29" y="107" class="M C">orchestrate</text></g></g>
+<line x1="495" y1="390" x2="905" y2="390" stroke="#fff" stroke-opacity=".09"/><text x="700" y="420" class="B C">Keep several unicorns ACTIVE at the same time.</text><text x="700" y="447" class="B C">More ACTIVE = more paint, more opportunities, more pressure.</text><rect x="555" y="466" width="290" height="22" rx="11" fill="#27304a"/><rect x="555" y="466" width="238" height="22" rx="11" fill="url(#r)"/><text x="700" y="482" class="M C" style="fill:#fff">ACTIVE 5 / 6</text>
+<!-- yellow -->
+<rect x="960" y="135" width="395" height="365" rx="28" fill="url(#p)" stroke="#ffe56d" stroke-width="2"/>
+<text x="988" y="174" class="L">YELLOW ROSTER • PRISM CHASE</text><text x="988" y="210" class="P">AIM BESIDE → CLICK ×3</text>
+<g transform="translate(1195 294)"><ellipse rx="37" ry="22" fill="#fff"/><circle cx="35" cy="-18" r="17" fill="#fff"/><path d="M41-32 57-70 51-26" fill="#ffe56d"/><path d="M-34 0 Q-67 2-91 25" fill="none" stroke="#ffe56d" stroke-width="12" class="R"/><circle cx="40" cy="-21" r="3" fill="#10182b"/></g><circle cx="1195" cy="294" r="82" fill="none" stroke="#ffe56d" stroke-width="4" stroke-dasharray="14 10" opacity=".6"/>
+<g transform="translate(1044 266) rotate(-18)" filter="url(#g)"><path d="M0 18a34 34 0 1 1 45 48" fill="none" stroke="#ff6489" stroke-width="12" class="R"/><path d="M7 18a27 27 0 1 1 36 25" fill="none" stroke="#ffe56d" stroke-width="8" class="R"/><path d="M14 18a20 20 0 1 1 26 20" fill="none" stroke="#64dcff" stroke-width="4" class="R"/><path d="M-8 18H8M0 10v16" stroke="#fff" stroke-width="3" class="R"/></g><path d="M1082 304 Q1134 250 1181 291" fill="none" stroke="url(#r)" stroke-width="9" class="R"/>
+<line x1="985" y1="385" x2="1330" y2="385" stroke="#fff" stroke-opacity=".09"/><text x="988" y="415" class="B">Cursor position sets the launch direction.</text><text x="988" y="440" class="M">Aim beside Yellow, not directly on top of it.</text><g transform="translate(1000 472)"><circle cx="0" cy="0" r="17" fill="#ff6489"/><circle cx="55" cy="0" r="17" fill="#ffe56d"/><circle cx="110" cy="0" r="17" fill="#64dcff"/><text x="0" y="6" class="K C">1</text><text x="55" y="6" class="K C">2</text><text x="110" y="6" class="K C">3X</text><path d="M20 0h15M75 0h15" stroke="#fff" stroke-width="3"/></g><text x="1140" y="478" class="M">3X Prism = reward + switch</text>
+<!-- objectives -->
+<rect x="45" y="525" width="1310" height="175" rx="28" fill="#081020" stroke="#fff" stroke-opacity=".16"/><text x="72" y="563" class="L">CONQUEST PATH</text><text x="72" y="590" class="M">Destroy all four outer landmarks, then build at least 28% town chaos to drop Town Hall's final shield.</text>
+<g transform="translate(72 612)"><g><rect width="132" height="58" rx="13" fill="#24162a" stroke="#ff829f"/><text x="66" y="26" class="B C">BAKERY</text><text x="66" y="46" class="M C">smash</text></g><path d="M140 29h24" stroke="#8293b2" stroke-width="3"/><g transform="translate(172)"><rect width="132" height="58" rx="13" fill="#2b2215" stroke="#ffd46d"/><text x="66" y="26" class="B C">MARKET</text><text x="66" y="46" class="M C">powerups</text></g><path d="M312 29h24" stroke="#8293b2" stroke-width="3"/><g transform="translate(344)"><rect width="146" height="58" rx="13" fill="#13251c" stroke="#74e5a1"/><text x="73" y="26" class="B C">GREENHOUSE</text><text x="73" y="46" class="M C">territory</text></g><path d="M498 29h24" stroke="#8293b2" stroke-width="3"/><g transform="translate(530)"><rect width="132" height="58" rx="13" fill="#142334" stroke="#78cfff"/><text x="66" y="26" class="B C">CLOCK</text><text x="66" y="46" class="M C">anger</text></g><path d="M670 29h24" stroke="#8293b2" stroke-width="3"/><g transform="translate(702)"><rect width="176" height="58" rx="13" fill="#1d263d" stroke="#a785ff"/><text x="88" y="25" class="B C">28% CHAOS</text><text x="88" y="45" class="M C">paint + damage</text></g><path d="M886 29h24" stroke="#8293b2" stroke-width="3"/><g transform="translate(918)"><rect width="190" height="58" rx="13" fill="#302514" stroke="#ffe56d" stroke-width="2"/><text x="95" y="25" class="P C" style="font-size:20px">TOWN HALL</text><text x="95" y="46" class="M C">finish the conquest</text></g></g>
+<!-- competitive -->
+<rect x="45" y="724" width="1310" height="105" rx="25" fill="#090d1b" stroke="url(#r)" stroke-width="2"/><text x="72" y="758" class="L">CLIMB THE SCOREBOARD</text><text x="72" y="786" class="B">Go faster • paint more • destroy more • chain Prisms • keep the herd ACTIVE • stun cleanup</text><text x="72" y="812" class="M">Prismborough → Washwater Bay → Cloudtop Heights → Stampede+ • harder worlds multiply the same skill score</text><g transform="translate(1080 753)"><text x="0" y="0" class="M">LOW</text><text x="0" y="22" class="M">MEDIUM</text><text x="88" y="0" class="M">HIGH</text><text x="88" y="22" class="M">HIGHER</text><text x="178" y="11" class="B" style="fill:#ffe56d">HIGHEST</text></g>
+<text x="700" y="850" class="M C">The best run is controlled chaos: make a plan, leave it running, intervene elsewhere, then cash in the consequences.</text>
 </svg>

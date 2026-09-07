@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.21.0 - Competitive conquest / top-50 foundation
+
+- separated **conquest** from **score excellence**: Town Hall now requires all four outer landmarks **and 28% combined town chaos**, so minimal landmark sniping no longer produces a valid fast finish
+- added a deterministic competitive score combining time remaining, paint coverage, structural destruction, capped 3X Prism chains, average ACTIVE herd, cleanup stuns, and Stampede+ Prism Gates
+- added world difficulty multipliers so Washwater Bay, Cloudtop Heights, and Stampede+ reward carrying the same core skills into harder pressure
+- added player-facing `LOW`, `MEDIUM`, `HIGH`, `HIGHER`, and `HIGHEST` score bands plus a live projected score in the readable/local HUD
+- made the results screen expose the major run metrics and explicitly identify the next campaign world or Stampede+ unlock
+- added explicit progression regressions for Prismborough → Washwater Bay → Cloudtop Heights → Stampede+
+- added a hosted leaderboard client with name entry, top-50 display, run-metric payloads, and an honest local top-50 fallback when no shared service is reachable
+- kept leaderboard networking/UI outside the 13 KB competition payload while retaining the authoritative competitive score formula inside the packed game
+- redesigned `docs/how-to-play.svg` at 1400×860 with dedicated non-overlapping layout zones and the new conquest/score progression explained visually
+- documented the score economy, leaderboard contract, and server-side recomputation requirements in `docs/COMPETITIVE_SCORING.md`
+- qualified the first exact v0.21 competitive head at **13,092 / 13,312 bytes**, leaving **220 bytes free**; a second unchanged-source compression pass is used as the variance gate before merge
+
 ## 0.20.0 - Whip reticle / Stampede+ encore
 
 - replaced the tiny native crosshair with a large animated three-band rainbow whip cursor and a crisp white precision center at the exact click origin
