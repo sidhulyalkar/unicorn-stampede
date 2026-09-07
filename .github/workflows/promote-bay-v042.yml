@@ -1,0 +1,30 @@
+name: promote-bay-v042
+on:
+  push:
+    branches: [agent/v0.42-washwater-street-identity]
+    paths:
+      - scripts/promote-bay-v042.mjs
+      - .github/workflows/promote-bay-v042.yml
+permissions:
+  contents: write
+jobs:
+  promote:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.42-washwater-street-identity
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/promote-bay-v042.mjs
+      - run: node --check src/render.js && node --check src/worlds.js && node --check scripts/washwater-smoke.mjs
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/render.js src/worlds.js scripts/washwater-smoke.mjs package.json
+          git commit -m 'feat: v0.42 Washwater street hierarchy and beach identity'
+          git push origin HEAD:agent/v0.42-washwater-street-identity
