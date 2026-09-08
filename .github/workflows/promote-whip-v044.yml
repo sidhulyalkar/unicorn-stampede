@@ -7,6 +7,7 @@ on:
       - scripts/whip-v044-testfix.mjs
       - scripts/whip-v044-golf.mjs
       - scripts/whip-v044-pause.mjs
+      - scripts/difficulty-smoke.mjs
       - .github/workflows/promote-whip-v044.yml
 permissions:
   contents: write
