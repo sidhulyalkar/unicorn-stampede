@@ -1,0 +1,32 @@
+name: revert-whip-main
+on:
+  push:
+    branches: [agent/v0.44-live-rainbow-whip]
+    paths:
+      - scripts/revert-whip-main.mjs
+      - .github/workflows/revert-whip-main.yml
+permissions:
+  contents: write
+jobs:
+  revert:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.44-live-rainbow-whip
+          fetch-depth: 0
+      - run: git fetch origin main agent/v0.43-canal-quarter --depth=1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/revert-whip-main.mjs
+      - run: node --check src/whip.js && node --check src/worlds.js && node --check scripts/whip-render-smoke.mjs && node --check scripts/whip-cadence-smoke.mjs && node --check scripts/packed-smoke.mjs
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/whip.js src/worlds.js scripts/smoke.mjs scripts/packed-smoke.mjs scripts/whip-render-smoke.mjs scripts/whip-cadence-smoke.mjs
+          git commit -m 'fix: restore exact main whip behavior and rendering'
+          git push origin HEAD:agent/v0.44-live-rainbow-whip
