@@ -1,0 +1,33 @@
+name: apply-v048-cloudtop
+on:
+  push:
+    branches: [agent/v0.48-cloudtop-terraces]
+    paths:
+      - scripts/apply-v048-cloudtop.mjs
+      - scripts/v048-cloudtop-smoke.mjs
+      - .github/workflows/apply-v048-cloudtop.yml
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.48-cloudtop-terraces
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/apply-v048-cloudtop.mjs
+      - run: node --check src/worlds.js && node --check src/render.js && node --check scripts/v048-cloudtop-smoke.mjs
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: node scripts/v048-cloudtop-smoke.mjs
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/worlds.js src/render.js scripts/v048-cloudtop-smoke.mjs
+          git commit -m 'feat: rebuild Cloudtop as cliff-pass ridge city'
+          git push origin HEAD:agent/v0.48-cloudtop-terraces
