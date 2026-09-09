@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/apply-v047-waterfront.mjs
-      - run: node --check src/worlds.js && node --check src/render.js && node --check scripts/washwater-smoke.mjs && node --check scripts/v047-waterfront-smoke.mjs
+      - run: node --check src/worlds.js && node --check src/render.js && node --check scripts/washwater-smoke.mjs && node --check scripts/v046-antistuck-smoke.mjs && node --check scripts/v047-waterfront-smoke.mjs
       - run: npm install --no-audit --no-fund
       - run: npm test
       - run: |
