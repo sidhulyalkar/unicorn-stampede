@@ -4,7 +4,7 @@ const ZN=['PRISMBOROUGH','WASHWATER BAY','CLOUDTOP HEIGHTS'],_day=today;today=()
 function grade(){let p=paintPct()>stageGoal+.07;return landWin?1+p+(p&&chains>[1,1,2][zone]):0}
 function finishZone(){let c=grade(),k='ccC'+zone;if(c>S.g(k))S.s(k,c)}
 function canZone(z){return !z||S.g('ccC'+(z-1))}
-function harbor(){roads.splice(1,1);roads[0][2]=140;roads[1][2]=160;let h=objs.filter(o=>o.t==='hedge'),a=[0,270,730,930,1320,1560];for(let i=6;i--;)h[i].x=1540,h[i].y=a[i],h[i].w=180,h[i].h=i<2?270:i<4?200:240;cars=cars.filter(c=>c.dir||c.x<1200||c.x>2e3);ups[2].x=ups[6].x=1630;ups[2].y=630;ups[6].y=1225}
+function harbor(){roads.splice(1,1);roads[0][2]=140;roads[1][2]=160;let h=objs.filter(o=>o.t==='hedge'),a=[0,270,730,930,1320,1560],x=[1380,1450,1510,1470,1400,1340];for(let i=6;i--;)h[i].x=x[i],h[i].y=a[i],h[i].w=220,h[i].h=i<2?270:i<4?200:240;cars=cars.filter(c=>c.dir||c.x<1200||c.x>2e3);ups[2].x=ups[6].x=1630;ups[2].y=630;ups[6].y=1225;a=[BN[0],BN[4],BN[2],'HARBOR CLOCK',BN[1]];for(let i=5;i--;)for(let o of LM[i].os)o.ln=LM[i].n=a[i];objs.find(o=>o.t==='pond').ln='MARINA'}
 addEventListener('keydown',e=>{if(state==='title'&&S.g('ccIntro16')&&(e.code==='KeyA'||e.code==='KeyD')){let n=(zone+(e.code==='KeyD'?1:2))%3;if(canZone(n)){zone=n;S.s('ccZone',zone);tone(280,.05,'triangle',.012,420)}}});
 const _startW=startLevel;startLevel=function(n){seedZone=n?zone:0;if(n)S.s('ccRun',++runN);_startW(n);if(n&&zone===1)harbor();wind=1;windT=2;chains=0;if(n){if(zone===1){addClean(2);for(let c of cleaners)c.v*=1.35}lmText=ZN[zone];lmTextT=2}};
 const _crackW=crackWhip;crackWhip=function(){let u=unis[whip.i],n=u&&u.tapT?u.tap+1:1;_crackW();if(whip&&whip.hit>0){u=unis[whip.i];if(n>2)chains++;if(zone===2&&level&&u){u.tapT=Math.min(u.tapT,.5);u.vx*=1.14;u.vy*=1.14}}};
