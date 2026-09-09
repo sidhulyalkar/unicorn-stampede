@@ -1,0 +1,31 @@
+name: apply-v046-antistuck
+on:
+  push:
+    branches: [agent/v0.46-anti-stuck-collisions]
+    paths:
+      - scripts/apply-v046-antistuck.mjs
+      - .github/workflows/apply-v046-antistuck.yml
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.46-anti-stuck-collisions
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/apply-v046-antistuck.mjs
+      - run: node --check src/herd.js && node --check scripts/v046-antistuck-smoke.mjs
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/herd.js package.json scripts/v046-antistuck-smoke.mjs
+          git commit -m 'fix: stop unicorn collision ping-pong'
+          git push origin HEAD:agent/v0.46-anti-stuck-collisions
