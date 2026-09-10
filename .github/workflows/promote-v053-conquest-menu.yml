@@ -4,6 +4,7 @@ on:
     branches: [agent/v0.53-conquest-clarity-menu-clicks]
     paths:
       - scripts/apply-v053-conquest-menu.mjs
+      - scripts/apply-v053-packed-pointer-testfix.mjs
       - scripts/v053-conquest-menu-smoke.mjs
       - .github/workflows/promote-v053-conquest-menu.yml
 permissions:
@@ -20,7 +21,7 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund --no-package-lock
       - name: Apply v0.53 candidate
-        run: node scripts/apply-v053-conquest-menu.mjs
+        run: node scripts/apply-v053-conquest-menu.mjs && node scripts/apply-v053-packed-pointer-testfix.mjs
       - name: Explicit v0.53 contract
         run: node scripts/v053-conquest-menu-smoke.mjs
       - name: Full regression and 13kb qualification
