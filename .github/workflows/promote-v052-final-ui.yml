@@ -61,6 +61,7 @@ jobs:
             ["WASD • MOVE ACTIVE","WASD • MOVE"],
             ["SHIFT • HELP THE HERD","SHIFT • CHECK HERD"]
           ]);
+          edits('scripts/whip-cadence-smoke.mjs',[["CLICK WHITE RING","CLICK RING"]]);
           NODE
       - name: Requalify exact candidate
         run: npm test
@@ -68,7 +69,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/whip.js scripts/rules-v044-smoke.mjs scripts/shift-rules-smoke.mjs scripts/packed-smoke.mjs
+          git add src/whip.js scripts/rules-v044-smoke.mjs scripts/shift-rules-smoke.mjs scripts/packed-smoke.mjs scripts/whip-cadence-smoke.mjs
           git diff --cached --check
           git commit -m 'perf: tighten tutorial copy for robust 13kb margin'
           git push origin HEAD:agent/v0.52-gameplay-liveness
