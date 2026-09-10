@@ -1,0 +1,26 @@
+name: qualify-v052-clean
+on:
+  push:
+    branches: [agent/v0.52-gameplay-liveness]
+    paths: [.github/workflows/qualify-v052-clean.yml]
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.52-gameplay-liveness
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --no-package-lock
+      - name: Exact clean qualification
+        run: npm test
+      - name: Upload qualified game
+        uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v052-clean
+          path: dist/
+          if-no-files-found: error
