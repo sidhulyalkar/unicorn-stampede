@@ -1,0 +1,35 @@
+name: promote-v052-final-ui
+on:
+  push:
+    branches: [agent/v0.52-gameplay-liveness]
+    paths: [.github/workflows/promote-v052-final-ui.yml]
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.52-gameplay-liveness
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --no-package-lock
+      - name: Apply deduplicated tutorial prompts
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),p='src/whip.js';let s=fs.readFileSync(p,'utf8');
+          for(let [a,b] of [["else if(!level&&intro.step===8){msg='SMASH THE BAKERY!';msgT=.7}",""],[";msg=u.name+' IS STUCK • SHIFT';msgT=1.4}","}"],[";msg='FREE! • CLICK RING ×2';msgT=1}","}"]]){if(!s.includes(a))throw Error('missing final-ui anchor');s=s.replace(a,b)}
+          fs.writeFileSync(p,s);
+          NODE
+      - name: Requalify exact committed candidate
+        run: npm test
+      - name: Promote final UI bytes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/whip.js
+          git diff --cached --check
+          git commit -m 'perf: dedupe tutorial prompts for final 13kb build'
+          git push origin HEAD:agent/v0.52-gameplay-liveness
