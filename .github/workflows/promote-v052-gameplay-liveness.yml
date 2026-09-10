@@ -33,6 +33,13 @@ jobs:
           s=s.replace('return[u.x,u.vx,u.ai]',"let e=u.cap?32:20;return[!(u.x>o.x-e&&u.x<o.x+o.w+e&&u.y>o.y-e&&u.y<o.y+o.h+e),u.vx,u.vy,u.ai]");
           s=s.replace("if(q[0]!==1519||q[1]||q[2])throw Error('canal collision rollback drifted');","if(!q[0]||q[1]||Math.abs(q[2])<100||q[3])throw Error('canal collision escape contract drifted');");
           if(!s.includes('canal collision escape contract drifted'))throw Error('Washwater assertion anchor missing');fs.writeFileSync(p,s);
+          p='scripts/v048-cloudtop-smoke.mjs';s=fs.readFileSync(p,'utf8');
+          s=s.replace(`pond=e("objs.find(o=>o.t==='pond').ln")`,`pond=e("!!objs.find(o=>o.t==='pond')")`);
+          if(!s.includes(`pond=e("!!objs.find(o=>o.t==='pond')")`))throw Error('v048 pond contract anchor missing');fs.writeFileSync(p,s);
+          p='scripts/v049-world-identity-smoke.mjs';s=fs.readFileSync(p,'utf8');
+          s=s.replace("pond:objs.find(o=>o.t==='pond').ln||'',hedges:","pond:objs.find(o=>o.t==='pond')?.ln||'',ponds:objs.filter(o=>o.t==='pond').length,hedges:");
+          s=s.replace("if(c.roads!==3||c.flowers||c.flies||c.h||!c.v||c.cleaners||!c.wind)","if(c.roads!==3||c.flowers||c.flies||c.h||!c.v||c.cleaners||c.ponds||!c.wind)");
+          if(!s.includes('c.cleaners||c.ponds||!c.wind'))throw Error('v049 Cloudtop pond contract anchor missing');fs.writeFileSync(p,s);
           p='package.json';let j=JSON.parse(fs.readFileSync(p,'utf8')),t=j.scripts.test;
           if(!t.includes('v052-gameplay-liveness-smoke.mjs'))t=t.replace('&& node scripts/smoke.mjs','&& node --check scripts/v052-gameplay-liveness-smoke.mjs && node scripts/smoke.mjs').replace('&& node scripts/prune-audit.mjs','&& node scripts/v052-gameplay-liveness-smoke.mjs && node scripts/prune-audit.mjs');
           j.scripts.test=t;fs.writeFileSync(p,JSON.stringify(j));
@@ -45,7 +52,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/core.js src/herd.js src/expansion.js src/worlds.js scripts/v046-antistuck-smoke.mjs scripts/washwater-smoke.mjs scripts/v052-gameplay-liveness-smoke.mjs package.json
+          git add src/core.js src/herd.js src/expansion.js src/worlds.js scripts/v046-antistuck-smoke.mjs scripts/washwater-smoke.mjs scripts/v048-cloudtop-smoke.mjs scripts/v049-world-identity-smoke.mjs scripts/v052-gameplay-liveness-smoke.mjs package.json
           git diff --cached --check
           git commit -m 'fix: guarantee herd liveness across all worlds'
           git push origin HEAD:agent/v0.52-gameplay-liveness
