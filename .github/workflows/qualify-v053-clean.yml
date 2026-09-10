@@ -1,0 +1,26 @@
+name: qualify-v053-clean
+on:
+  push:
+    branches: [agent/v0.53-conquest-clarity-menu-clicks]
+    paths: [.github/workflows/qualify-v053-clean.yml]
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 590b9f7266f0ad86c0174480fceda8671ac69707
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --no-package-lock
+      - name: Exact committed-source qualification
+        run: npm test
+      - name: Upload v0.53 clean artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v053-clean
+          path: dist/
+          if-no-files-found: error
