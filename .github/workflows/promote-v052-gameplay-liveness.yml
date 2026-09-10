@@ -1,0 +1,49 @@
+name: promote-v052-gameplay-liveness
+on:
+  push:
+    branches: [agent/v0.52-gameplay-liveness]
+    paths:
+      - .github/workflows/promote-v052-gameplay-liveness.yml
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.52-gameplay-liveness
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --no-package-lock
+      - name: Apply qualified gameplay candidate
+        run: node scripts/apply-v052-distraction-liveness.mjs
+      - name: Upgrade regression contracts
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          let p='scripts/v046-antistuck-smoke.mjs',s=fs.readFileSync(p,'utf8');
+          s=s.replaceAll('return[u.x-x,u.vx,u.vy,u.ai]','return[!(u.x>o.x-ex&&u.x<o.x+o.w+ex&&u.y>o.y-ex&&u.y<o.y+o.h+ex),u.vx,u.vy,u.ai]');
+          let k=s.indexOf('if(L.some(Boolean)||R.some(Boolean))');if(k<0)throw Error('v046 assertion anchor missing');
+          s=s.slice(0,k)+"if(!L[0]||!R[0]||L[1]||R[1]||Math.abs(L[2])<100||Math.abs(R[2])<100||L[3]||R[3])throw Error('blocked collision must resolve outside geometry, preserve tangential escape, and clear stale AI');console.log('anti-stuck v0.52: PASS legal boundary projection + tangential escape + AI retarget');\n";fs.writeFileSync(p,s);
+          p='scripts/washwater-smoke.mjs';s=fs.readFileSync(p,'utf8');
+          s=s.replace('return[u.x,u.vx,u.ai]','return[!(u.x>o.x-ex&&u.x<o.x+o.w+ex&&u.y>o.y-ex&&u.y<o.y+o.h+ex),u.vx,u.vy,u.ai]');
+          s=s.replace("if(q[0]!==1519||q[1]||q[2])throw Error('canal collision rollback drifted');","if(!q[0]||q[1]||Math.abs(q[2])<100||q[3])throw Error('canal collision escape contract drifted');");
+          if(!s.includes('canal collision escape contract drifted'))throw Error('Washwater assertion anchor missing');fs.writeFileSync(p,s);
+          p='package.json';let j=JSON.parse(fs.readFileSync(p,'utf8')),t=j.scripts.test;
+          if(!t.includes('v052-gameplay-liveness-smoke.mjs'))t=t.replace('&& node scripts/smoke.mjs','&& node --check scripts/v052-gameplay-liveness-smoke.mjs && node scripts/smoke.mjs').replace('&& node scripts/prune-audit.mjs','&& node scripts/v052-gameplay-liveness-smoke.mjs && node scripts/prune-audit.mjs');
+          j.scripts.test=t;fs.writeFileSync(p,JSON.stringify(j));
+          NODE
+      - name: Permanent liveness gate
+        run: node scripts/v052-gameplay-liveness-smoke.mjs
+      - name: Full historical and packed qualification
+        run: npm test
+      - name: Promote production sources
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/core.js src/herd.js src/expansion.js src/worlds.js scripts/v046-antistuck-smoke.mjs scripts/washwater-smoke.mjs scripts/v052-gameplay-liveness-smoke.mjs package.json
+          git diff --cached --check
+          git commit -m 'fix: guarantee herd liveness across all worlds'
+          git push origin HEAD:agent/v0.52-gameplay-liveness
