@@ -1,8 +1,8 @@
 import fs from'node:fs';function edit(p,a,b){let s=fs.readFileSync(p,'utf8');if(!s.includes(a))throw Error(p+' anchor missing');fs.writeFileSync(p,s.replace(a,b))}function move(p,b,a){let s=fs.readFileSync(p,'utf8');if(!s.includes(b)||!s.includes(a))throw Error(p+' move anchor missing');s=s.replace(b,'').replace(a,b+a);fs.writeFileSync(p,s)}
 let fixed="for(let a of [[1495,785],[235,820],[2760,860]])addObj('fountain',a[0],a[1],140,140,999,0,190);for(let a of [[720,370,330,55],[720,1370,330,55],[2260,370,330,55],[2260,1370,330,55],[1260,520,55,290],[1880,1100,55,300]])addObj('hedge',...a,999,0,110);";
 move('src/core.js',fixed,"let pos=[[270,270],[950,870],[1450,1500],[2000,360],[2570,950],[2920,1580]],bx=");
-edit('src/core.js',"let pos=[[270,270],[950,870],[1450,1500],[2000,360],[2570,950],[2920,1580]],bx=", "let pos=[[270,270],[950,870],[1450,1500],[2000,360],[2570,950],[2920,1580]],fl=[[520,285],[600,950],[2040,260],[2730,1470],[1610,1450],[2930,650]],bx=");
-edit('src/core.js','||pos.some(p=>Math.abs(p[0]-x-w/2)<w/2+60&&Math.abs(p[1]-y-h/2)<h/2+60))continue','||pos.concat(fl).some(p=>Math.abs(p[0]-x-w/2)<w/2+60&&Math.abs(p[1]-y-h/2)<h/2+60))continue');
+edit('src/core.js',"let pos=[[270,270],[950,870],[1450,1500],[2000,360],[2570,950],[2920,1580]],bx=", "let pos=[[270,270],[950,870],[1450,1500],[2000,360],[2570,950],[2920,1580]],fl=[[520,285],[600,950],[2040,260],[2730,1470],[1610,1450],[2930,650]],rs=zone===1?[[1380,0,220,270],[1450,270,220,270],[1510,730,220,200],[1470,930,220,200],[1400,1320,220,240],[1340,1560,220,240]]:zone===2?Array.from({length:6},(_,i)=>[400+i*460,(i&1)*800,70,1e3]):[],bx=");
+edit('src/core.js','||pos.some(p=>Math.abs(p[0]-x-w/2)<w/2+60&&Math.abs(p[1]-y-h/2)<h/2+60))continue','||pos.concat(fl).some(p=>Math.abs(p[0]-x-w/2)<w/2+60&&Math.abs(p[1]-y-h/2)<h/2+60)||rs.some(r=>x<r[0]+r[2]+30&&x+w>r[0]-30&&y<r[1]+r[3]+30&&y+h>r[1]-30))continue');
 edit('src/core.js','for(let a of [[520,285],[1100,940],[2040,260],[2730,1470],[1610,1450],[2930,650]])flowers.push','for(let a of fl)flowers.push');
 edit('src/herd.js','function distractForce(u){let ax=0','function distractForce(u){if(u.cool>5)return[0,0];let ax=0');
 edit('src/herd.js','u.frenzy||u.anger>.57?nearestObj','u.frenzy||u.anger>.72?nearestObj');
@@ -10,4 +10,4 @@ edit('src/herd.js',"let sp=Math.hypot(u.vx,u.vy),des=o.t==='b'||o.t==='clock'||o
 edit('src/expansion.js','Math.hypot(q.x-u.x,q.y-u.y)<260+mode*20))u.distract=2','Math.hypot(q.x-u.x,q.y-u.y)<260+mode*20&&(u.cool||0)<5))u.distract=2');
 edit('src/worlds.js',"objs.find(o=>o.t==='pond').ln='MARINA';flowers=[]}","objs.find(o=>o.t==='pond').ln='MARINA';flowers=[];objs=objs.filter(o=>o.t!=='fountain')}");
 edit('src/worlds.js',"cars=cars.filter(c=>!c.dir);flowers=[];flies=[]}","cars=cars.filter(c=>!c.dir);flowers=[];flies=[];objs=objs.filter(o=>o.t!=='fountain'&&o.t!=='pond')}");
-console.log('staged valid base geometry + world-specific scenery cleanup + legal-boundary moving smash');
+console.log('staged transformed-barrier reservations + valid scenery + legal-boundary moving smash');
