@@ -1,0 +1,33 @@
+name: apply-v049-world-identity
+on:
+  push:
+    branches: [agent/v0.49-world-identity]
+    paths:
+      - scripts/apply-v049-world-identity.mjs
+      - scripts/v049-world-identity-smoke.mjs
+      - .github/workflows/apply-v049-world-identity.yml
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.49-world-identity
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/apply-v049-world-identity.mjs
+      - run: node --check src/worlds.js && node --check src/render.js && node --check src/expansion.js && node --check scripts/v049-world-identity-smoke.mjs
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: node scripts/v049-world-identity-smoke.mjs
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/worlds.js src/render.js src/expansion.js scripts/v049-world-identity-smoke.mjs
+          git commit -m 'feat: separate world gameplay identities'
+          git push origin HEAD:agent/v0.49-world-identity
