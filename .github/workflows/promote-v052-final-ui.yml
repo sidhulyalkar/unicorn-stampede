@@ -16,20 +16,59 @@ jobs:
         with:
           node-version: 22
       - run: npm install --no-audit --no-fund --no-package-lock
-      - name: Apply deduplicated tutorial prompts
+      - name: Tighten tutorial and rules copy
         run: |
           node <<'NODE'
-          const fs=require('fs'),p='src/whip.js';let s=fs.readFileSync(p,'utf8');
-          for(let [a,b] of [["else if(!level&&intro.step===8){msg='SMASH THE BAKERY!';msgT=.7}",""],[";msg=u.name+' IS STUCK • SHIFT';msgT=1.4}","}"],[";msg='FREE! • CLICK RING ×2';msgT=1}","}"]]){if(!s.includes(a))throw Error('missing final-ui anchor');s=s.replace(a,b)}
-          fs.writeFileSync(p,s);
+          const fs=require('fs');
+          function edits(p,pairs){let s=fs.readFileSync(p,'utf8');for(let [a,b] of pairs){if(!s.includes(a))throw Error(p+' missing: '+a);s=s.replaceAll(a,b)}fs.writeFileSync(p,s)}
+          edits('src/whip.js',[
+            ["else if(!level&&intro.step===8){msg='SMASH THE BAKERY!';msgT=.7}",""],
+            [";msg=u.name+' IS STUCK • SHIFT';msgT=1.4}","}"],
+            [";msg='FREE! • CLICK RING ×2';msgT=1}","}"],
+            ["CLICK WHITE RING","CLICK RING"],
+            ["WASD • MOVE ACTIVE","WASD • MOVE"],
+            ["CLICK WHITE RING ×2","CLICK RING ×2"],
+            ["SHIFT • HELP THE HERD","SHIFT • CHECK HERD"],
+            ["WASD • PAINT WITH NEW UNICORN","WASD • PAINT"],
+            ["STUCK UNICORN • SHIFT","STUCK • SHIFT"],
+            ["WASD • PULL THEM FREE","WASD • PULL FREE"],
+            ["GOAL • MANAGE HERD • DESTROY TOWN","GOAL • HERD • DESTROY TOWN"],
+            ["WIN • BREAK 4 → CHAOS → TEAM 3 HALL → SECURE 4 → PAINT + HOLD","WIN • BREAK 4 → CHAOS → HALL → SECURE 4 → PAINT"],
+            ["CLICK RING • LANDED WHIP = +1/5","CLICK RING • WHIP = +1/5"],
+            ["SHIFT • FIND STUCK / LOST / POWER-UP HERD","SHIFT • CHECK HERD"],
+            ["TEAM 2/3 = BRING 2 • TEAM 3/3 = BRING 3","TEAM 2/3 → BRING 2 • 3/3 → BRING 3"],
+            ["CLEANERS • ERASE PAINT + SNATCH UNICORNS","CLEANERS • ERASE + SNATCH"],
+            ["RESCUE • HIT PRISON TRUCK + BRING 2","RESCUE • HIT TRUCK + BRING 2"]
+          ]);
+          edits('scripts/rules-v044-smoke.mjs',[
+            ["GOAL • MANAGE HERD","GOAL • HERD"],
+            ["LANDED WHIP = +1/5","WHIP = +1/5"],
+            ["TEAM 2/3 = BRING 2","TEAM 2/3 → BRING 2"],
+            ["CLEANERS • ERASE PAINT + SNATCH UNICORNS","CLEANERS • ERASE + SNATCH"],
+            ["RESCUE • HIT PRISON TRUCK","RESCUE • HIT TRUCK"]
+          ]);
+          edits('scripts/shift-rules-smoke.mjs',[
+            ["GOAL • MANAGE HERD • DESTROY TOWN","GOAL • HERD • DESTROY TOWN"],
+            ["CLICK RING • LANDED WHIP = +1/5","CLICK RING • WHIP = +1/5"],
+            ["SHIFT • FIND STUCK / LOST / POWER-UP HERD","SHIFT • CHECK HERD"],
+            ["TEAM 2/3 = BRING 2 • TEAM 3/3 = BRING 3","TEAM 2/3 → BRING 2 • 3/3 → BRING 3"],
+            ["CLEANERS • ERASE PAINT + SNATCH UNICORNS","CLEANERS • ERASE + SNATCH"],
+            ["RESCUE • HIT PRISON TRUCK + BRING 2","RESCUE • HIT TRUCK + BRING 2"]
+          ]);
+          edits('scripts/packed-smoke.mjs',[
+            ["LANDED WHIP = +1/5","WHIP = +1/5"],
+            ["CLEANERS • ERASE PAINT","CLEANERS • ERASE + SNATCH"],
+            ["WASD • MOVE ACTIVE","WASD • MOVE"],
+            ["SHIFT • HELP THE HERD","SHIFT • CHECK HERD"]
+          ]);
           NODE
-      - name: Requalify exact committed candidate
+      - name: Requalify exact candidate
         run: npm test
-      - name: Promote final UI bytes
+      - name: Promote final margin
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/whip.js
+          git add src/whip.js scripts/rules-v044-smoke.mjs scripts/shift-rules-smoke.mjs scripts/packed-smoke.mjs
           git diff --cached --check
-          git commit -m 'perf: dedupe tutorial prompts for final 13kb build'
+          git commit -m 'perf: tighten tutorial copy for robust 13kb margin'
           git push origin HEAD:agent/v0.52-gameplay-liveness
