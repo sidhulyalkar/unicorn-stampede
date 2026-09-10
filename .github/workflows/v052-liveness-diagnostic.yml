@@ -1,15 +1,16 @@
-name: v052-liveness-trace
+name: v052-liveness-qualification
 on:
   push:
     branches: [agent/v0.52-gameplay-liveness]
     paths:
       - scripts/apply-v052-distraction-liveness.mjs
       - scripts/v052-stall-trace.mjs
+      - scripts/v052-liveness-diagnostic.mjs
       - .github/workflows/v052-liveness-diagnostic.yml
 permissions:
   contents: read
 jobs:
-  trace:
+  qualify:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -18,6 +19,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: npm ci
       - run: node scripts/apply-v052-distraction-liveness.mjs
       - run: node --check src/core.js && node --check src/herd.js && node --check src/expansion.js
       - run: node scripts/v052-stall-trace.mjs
+      - run: node scripts/v052-liveness-diagnostic.mjs
+      - run: npm test
