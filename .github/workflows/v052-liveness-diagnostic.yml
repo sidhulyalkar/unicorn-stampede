@@ -1,16 +1,14 @@
-name: v052-liveness-diagnostic
+name: v052-stall-trace
 on:
   push:
     branches: [agent/v0.52-gameplay-liveness]
     paths:
-      - scripts/v052-liveness-diagnostic.mjs
-      - scripts/apply-v052-ai-escape.mjs
+      - scripts/v052-stall-trace.mjs
       - .github/workflows/v052-liveness-diagnostic.yml
 permissions:
-  contents: write
+  contents: read
 jobs:
-  diagnose:
-    if: github.actor != 'github-actions[bot]'
+  trace:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -19,13 +17,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/apply-v052-ai-escape.mjs
-      - run: node scripts/v052-liveness-diagnostic.mjs
-      - run: npm install --no-audit --no-fund
-      - run: npm test
-      - run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/herd.js
-          git commit -m 'fix: keep AI herd moving around obstacles'
-          git push origin HEAD:agent/v0.52-gameplay-liveness
+      - run: node scripts/v052-stall-trace.mjs
