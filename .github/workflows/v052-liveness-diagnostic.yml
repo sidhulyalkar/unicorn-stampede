@@ -1,14 +1,14 @@
-name: v052-latest-stall-trace
+name: v052-projected-collision-liveness
 on:
   push:
     branches: [agent/v0.52-gameplay-liveness]
     paths:
-      - scripts/v052-stall-trace.mjs
+      - scripts/apply-v052-distraction-liveness.mjs
       - .github/workflows/v052-liveness-diagnostic.yml
 permissions:
   contents: read
 jobs:
-  trace:
+  diagnose:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -19,4 +19,4 @@ jobs:
           node-version: 22
       - run: node scripts/apply-v052-distraction-liveness.mjs
       - run: node --check src/core.js && node --check src/herd.js && node --check src/expansion.js
-      - run: node scripts/v052-stall-trace.mjs
+      - run: node scripts/v052-liveness-diagnostic.mjs
