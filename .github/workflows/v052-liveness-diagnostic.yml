@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm ci
+      - run: npm install --no-package-lock
       - run: node scripts/apply-v052-distraction-liveness.mjs
       - run: node --check src/core.js && node --check src/herd.js && node --check src/expansion.js
       - run: node scripts/v052-stall-trace.mjs
