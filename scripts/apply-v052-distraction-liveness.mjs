@@ -8,4 +8,7 @@ edit('src/herd.js',"let sp=Math.hypot(u.vx,u.vy),des=o.t==='b'||o.t==='clock'||o
 edit('src/expansion.js','Math.hypot(q.x-u.x,q.y-u.y)<260+mode*20))u.distract=2','Math.hypot(q.x-u.x,q.y-u.y)<260+mode*20&&(u.cool||0)<5))u.distract=2');
 edit('src/worlds.js',"objs.find(o=>o.t==='pond').ln='MARINA';flowers=[]}","objs.find(o=>o.t==='pond').ln='MARINA';flowers=[];objs=objs.filter(o=>o.t!=='fountain')}");
 edit('src/worlds.js',"cars=cars.filter(c=>!c.dir);flowers=[];flies=[]}","cars=cars.filter(c=>!c.dir);objs.find(o=>o.t==='clock').x=1e3;for(let o of objs)if(o.t==='stall')o.x+=80;ups[2].x=1900;ups[5].x=800;ups[2].y=ups[5].y=700;flowers=[];flies=[];objs=objs.filter(o=>o.t!=='fountain'&&o.t!=='pond')}");
-console.log('staged compact topology + opening runway + boulevard flowerbeds + value-coded liveness physics');
+edit('src/whip.js',"else if(!level&&intro.step===8){msg='SMASH THE BAKERY!';msgT=.7}",'');
+edit('src/whip.js',";msg=u.name+' IS STUCK • SHIFT';msgT=1.4}",'}');
+edit('src/whip.js',";msg='FREE! • CLICK RING ×2';msgT=1}",'}');
+console.log('staged compact topology + opening runway + boulevard flowerbeds + value-coded liveness physics + deduped tutorial prompts');
