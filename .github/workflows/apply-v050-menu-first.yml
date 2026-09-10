@@ -28,6 +28,6 @@ jobs:
       - run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/worlds.js src/whip.js src/expansion.js scripts/release-prune.mjs scripts/v050-menu-smoke.mjs scripts/smoke.mjs package.json
+          git add src/worlds.js src/whip.js src/expansion.js scripts/release-prune.mjs scripts/v050-menu-smoke.mjs scripts/smoke.mjs scripts/packed-smoke.mjs package.json
           git commit -m 'feat: make title screen the game hub'
           git push origin HEAD:agent/v0.50-menu-first
