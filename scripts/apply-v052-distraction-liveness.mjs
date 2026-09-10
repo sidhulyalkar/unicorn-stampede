@@ -5,6 +5,6 @@ edit('src/core.js','for(let a of [[520,285],[1100,940],[2040,260],[2730,1470],[1
 edit('src/herd.js','function distractForce(u){let ax=0','function distractForce(u){if(u.cool>5)return[0,0];let ax=0');
 edit('src/herd.js','u.frenzy||u.anger>.57?nearestObj','u.frenzy||u.anger>.72?nearestObj');
 edit('src/herd.js',"let sp=Math.hypot(u.vx,u.vy),des=o.t==='b'||o.t==='clock'||o.t==='stall',can=des&&(u.dash||u.frenzy||u.boost||u.anger>.72&&sp>125);", "let des=o.t==='b'||o.t==='clock'||o.t==='stall',can=des&&(u.dash||u.frenzy||u.boost||u.anger>.72);");
-edit('src/herd.js',"else{u.x-=u.vx*dt;u.y-=u.vy*dt;u.vx=u.vy=u.ai=0;if(o.t==='fountain'||o.t==='pond')", "else{let x=u.x-o.x-o.w/2,y=u.y-o.y-o.h/2;if(Math.abs(x/o.w)>Math.abs(y/o.h))u.x=o.x+(x>0?o.w+ex:-ex);else u.y=o.y+(y>0?o.h+ex:-ex);if(!des){let v=o.h>o.w;u.order=1;u.ox=v?0:u.x<o.x+o.w/2?-1:1;u.oy=v?u.y<o.y+o.h/2?-1:1:0}u.vx=u.vy=u.ai=0;if(u.cool<5&&(o.t==='fountain'||o.t==='pond'))");
+edit('src/herd.js',"else{u.x-=u.vx*dt;u.y-=u.vy*dt;u.vx=u.vy=u.ai=0;if(o.t==='fountain'||o.t==='pond')", "else{let x=u.x-o.x-o.w/2,y=u.y-o.y-o.h/2;if(Math.abs(x/o.w)>Math.abs(y/o.h))u.x=o.x+(x>0?o.w+ex:-ex),u.vx=0;else u.y=o.y+(y>0?o.h+ex:-ex),u.vy=0;u.ai=0;if(u.cool<5&&(o.t==='fountain'||o.t==='pond'))");
 edit('src/expansion.js','Math.hypot(q.x-u.x,q.y-u.y)<260+mode*20))u.distract=2','Math.hypot(q.x-u.x,q.y-u.y)<260+mode*20&&u.cool<5))u.distract=2');
-console.log('staged spawn/scenery clearance + finite distractions + aligned aggression + projection + bypass');
+console.log('staged spawn/scenery clearance + finite distractions + aligned aggression + wall-slide projection');
