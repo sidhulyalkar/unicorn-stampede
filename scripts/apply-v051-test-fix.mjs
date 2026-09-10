@@ -1,0 +1,1 @@
+import fs from'node:fs';let p='scripts/difficulty-smoke.mjs',s=fs.readFileSync(p,'utf8'),a="DI=['NORMAL','MEDIUM','HARD','IMPOSSIBLE']",b="DI=['EASY','MEDIUM','HARD','IMPOSSIBLE']";if(!s.includes(a))throw Error('difficulty label anchor missing');fs.writeFileSync(p,s.replace(a,b));console.log('updated difficulty smoke for EASY baseline');
