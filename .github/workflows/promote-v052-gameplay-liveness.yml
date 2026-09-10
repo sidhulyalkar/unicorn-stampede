@@ -3,6 +3,8 @@ on:
   push:
     branches: [agent/v0.52-gameplay-liveness]
     paths:
+      - scripts/apply-v052-distraction-liveness.mjs
+      - scripts/v052-gameplay-liveness-smoke.mjs
       - .github/workflows/promote-v052-gameplay-liveness.yml
 permissions:
   contents: write
