@@ -1,0 +1,20 @@
+name: v052-liveness-diagnostic
+on:
+  push:
+    branches: [agent/v0.52-gameplay-liveness]
+    paths:
+      - scripts/v052-liveness-diagnostic.mjs
+      - .github/workflows/v052-liveness-diagnostic.yml
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.52-gameplay-liveness
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/v052-liveness-diagnostic.mjs
