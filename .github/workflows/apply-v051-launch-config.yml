@@ -1,0 +1,32 @@
+name: apply-v051-launch-config
+on:
+  push:
+    branches: [agent/v0.51-launch-config]
+    paths:
+      - scripts/apply-v051-launch-config.mjs
+      - scripts/v051-launch-config-smoke.mjs
+      - .github/workflows/apply-v051-launch-config.yml
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.51-launch-config
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/apply-v051-launch-config.mjs
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: node scripts/v051-launch-config-smoke.mjs
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/whip.js src/expansion.js scripts/release-prune.mjs scripts/smoke.mjs scripts/packed-smoke.mjs scripts/v050-menu-smoke.mjs scripts/v051-launch-config-smoke.mjs package.json
+          git commit -m 'feat: make Start follow launch configuration'
+          git push origin HEAD:agent/v0.51-launch-config
