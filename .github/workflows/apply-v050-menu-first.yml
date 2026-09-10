@@ -1,0 +1,33 @@
+name: apply-v050-menu-first
+on:
+  push:
+    branches: [agent/v0.50-menu-first]
+    paths:
+      - scripts/apply-v050-menu-first.mjs
+      - scripts/v050-menu-smoke.mjs
+      - .github/workflows/apply-v050-menu-first.yml
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.50-menu-first
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/apply-v050-menu-first.mjs
+      - run: node --check src/worlds.js && node --check src/whip.js && node --check src/expansion.js && node --check scripts/v050-menu-smoke.mjs
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - run: node scripts/v050-menu-smoke.mjs
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/worlds.js src/whip.js src/expansion.js scripts/release-prune.mjs scripts/v050-menu-smoke.mjs package.json
+          git commit -m 'feat: make title screen the game hub'
+          git push origin HEAD:agent/v0.50-menu-first
