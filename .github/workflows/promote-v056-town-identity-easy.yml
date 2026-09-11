@@ -17,7 +17,9 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund
       - name: Apply v0.56 candidate
-        run: node scripts/apply-v056-town-identity-easy.mjs
+        run: |
+          node scripts/apply-v056-town-identity-easy.mjs
+          cp scripts/v056-town-difficulty-smoke-template.mjs scripts/v056-town-difficulty-smoke.mjs
       - name: Prove syntax + dedicated contract
         run: |
           node --check src/render.js
