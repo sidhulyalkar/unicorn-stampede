@@ -5,6 +5,7 @@ patch('src/render.js','g=k&1||k>3','g=83>>k&1');
 patch('src/render.js','hsl(${o.hue} 34% ${50+d*20}%)','hsl(${o.hue} 42% ${50+d*20}%)');
 patch('src/render.js','X.fillRect(x,y+h-65,w,10)','X.fillRect(x,y+h-65,w,8+(57>>k&1)*5)');
 patch('src/render.js',"'O$#~*+%@'[k]","'B$=C*MTA'[k]");
+patch('scripts/smoke.mjs',"!rs.includes('g=k&1||k>3')","!rs.includes('g=83>>k&1')");
 patch('scripts/v055-structured-storefronts-smoke.mjs','"y+h-65,w,10"','"y+h-65,w,"');
 patch('scripts/v056-town-difficulty-smoke.mjs',',"\'O$#~*+%@\'[k]"','');
 patch('package.json','"version":"0.56.0"','"version":"0.57.0"');
