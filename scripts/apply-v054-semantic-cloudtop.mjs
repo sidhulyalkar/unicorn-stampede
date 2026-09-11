@@ -1,6 +1,6 @@
 import fs from'node:fs';
 let p='src/render.js',s=fs.readFileSync(p,'utf8');
-function r(a,b){if(!s.includes(a))throw Error('render anchor missing: '+a.slice(0,80));s=s.replace(a,b)}function ra(a,b){if(!s.includes(a))throw Error('render fragment missing: '+a.slice(0,80));s=s.split(a).join(b)}
+function r(a,b){if(!s.includes(a))throw Error('render anchor missing: '+a.slice(0,80));s=s.replace(a,()=>b)}function ra(a,b){if(!s.includes(a))throw Error('render fragment missing: '+a.slice(0,80));s=s.split(a).join(b)}
 r("X.stroke();X.setLineDash([])}if(level&&!zone)","X.stroke();X.setLineDash([]);if(level&&zone==2)for(let q of [38,r[2]-42])X.fillStyle='#9ca0a0',X.fillRect(r[0]+q,r[1],4,r[3])}if(level&&!zone)");
 r("function drawObjs(){let shops=zone===1?BN:['BAKERY','BANK','BOOKS','CAFE','FLORIST'];","function sign(k,x,y,f){if(!k){X.fillStyle='#fff';rr(x-27,y-11,54,22,11);return}text(f&&k==1?'<>':['','$','▤','☕',f?'✦':'✿'][k],x,y+11,32,'center')}function drawObjs(){let f=level&&zone==2,shops=level&&zone===1?BN:f?'BAKERY,STARTUP,BOOKS,COFFEE,YOGA'.split(','):['BAKERY','BANK','BOOKS','CAFE','FLORIST'];");
 r("text(o.ln||'MARKET',o.x+o.w/2,o.y+o.h-14,16,'center')","text(o.ln||(f?'FARMERS':'MARKET'),o.x+o.w/2,o.y+o.h-14,16,'center')");
