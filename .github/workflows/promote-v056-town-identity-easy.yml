@@ -37,7 +37,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/render.js src/worlds.js src/expansion.js src/top10.js package.json scripts/smoke.mjs scripts/difficulty-smoke.mjs scripts/washwater-smoke.mjs scripts/v049-world-identity-smoke.mjs scripts/v054-semantic-cloudtop-smoke.mjs scripts/v055-structured-storefronts-smoke.mjs scripts/v056-town-difficulty-smoke.mjs
+          git add src/render.js src/worlds.js src/expansion.js src/top10.js package.json scripts/smoke.mjs scripts/difficulty-smoke.mjs scripts/washwater-smoke.mjs scripts/v047-waterfront-smoke.mjs scripts/v049-world-identity-smoke.mjs scripts/v054-semantic-cloudtop-smoke.mjs scripts/v055-structured-storefronts-smoke.mjs scripts/v056-town-difficulty-smoke.mjs
           git diff --cached --quiet || git commit -m "feat: stabilize towns and rebalance Easy"
           git push origin HEAD:agent/v0.56-town-identity-easy
       - uses: actions/upload-artifact@v4
