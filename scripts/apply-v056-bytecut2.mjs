@@ -8,7 +8,7 @@ rw('src/worlds.js',[
 ]);
 rw('src/render.js',[
 ["for(let i=0;i<5;i++)X.fillRect(o.x+i*o.w/5,o.y+o.h-18-(i%2)*10,o.w/6,18+(i%2)*10)","X.fillRect(o.x,o.y+o.h-18,o.w,18)"],
-["for(let i=0;i<8;i++){X.fillStyle=i%2?'#fff3d0':`hsl(${o.hue+60} 80% 58%)`;X.fillRect(o.x+i*o.w/8,o.y-18,o.w/8,24)}","X.fillStyle='#fff3d0';X.fillRect(o.x,o.y-18,o.w,24)"],
+["for(let i=0;i<8;i++){X.fillStyle=i%2?'#fff3d0':`hsl(${o.hue+60} 80% 58%)`;X.fillRect(o.x+i*o.w/8,o.y-18,o.w/8,24)}","X.fillStyle='#fff3d0';X.fillRect(o.x,o.y-18,o.w,24);"],
 ["N[8+(zone-1)*4+(objs.indexOf(o)&3)]","N[13+(zone-1)*4+(objs.indexOf(o)&3)]"],
 ["o.ln||N[k]","o.ln||N[k+5]"]
 ]);
