@@ -1,0 +1,50 @@
+name: promote-v057-semantic-storefront-grammar
+on:
+  push:
+    branches: [agent/v0.57-semantic-storefront-grammar]
+permissions:
+  contents: write
+concurrency:
+  group: promote-v057-semantic-storefront-grammar
+  cancel-in-progress: true
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.57-semantic-storefront-grammar
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Apply semantic storefront grammar
+        run: node scripts/apply-v057-semantic-storefront-grammar.mjs
+      - name: Prove dedicated storefront contract
+        run: |
+          node --check src/render.js
+          node --check src/worlds.js
+          node scripts/v057-semantic-storefront-smoke.mjs
+      - name: Full historical + liveness qualification
+        run: npm test
+      - name: Enforce JS13k budget
+        run: test "$(stat -c%s dist/unicorn-stampede.zip)" -le 13312
+      - name: Promote exact qualified candidate
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/render.js src/worlds.js package.json scripts/v055-structured-storefronts-smoke.mjs scripts/v056-town-difficulty-smoke.mjs scripts/v057-semantic-storefront-smoke.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m "feat: add semantic storefront component grammar"
+            git push origin HEAD:agent/v0.57-semantic-storefront-grammar
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v057-storefront-test
+          path: |
+            dist/local.html
+            dist/preview.html
+            dist/index.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
