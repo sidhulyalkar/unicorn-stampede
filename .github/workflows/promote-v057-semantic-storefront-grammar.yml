@@ -34,7 +34,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/render.js src/worlds.js package.json scripts/v055-structured-storefronts-smoke.mjs scripts/v056-town-difficulty-smoke.mjs scripts/v057-semantic-storefront-smoke.mjs
+          git add src/render.js src/worlds.js package.json scripts/smoke.mjs scripts/v055-structured-storefronts-smoke.mjs scripts/v056-town-difficulty-smoke.mjs scripts/v057-semantic-storefront-smoke.mjs
           if ! git diff --cached --quiet; then
             git commit -m "feat: add semantic storefront component grammar"
             git push origin HEAD:agent/v0.57-semantic-storefront-grammar
