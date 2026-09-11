@@ -4,8 +4,11 @@ patch('scripts/smoke.mjs',[
 ["ev('cleaners.length')!==2)throw Error('two landmarks must release Comet and act2 cleanup')","ev('cleaners.length')!==1)throw Error('two landmarks must release Comet and Easy act2 cleanup')"],
 ["ev('cleaners.length')!==4||!ev(\"msg.includes('BUMPER')\")","ev('cleaners.length')!==2||!ev(\"msg.includes('BUMPER')\")"],
 ["ev('zone')!==1||ev('cleaners.length')!==2||Math.abs(ev('cleaners[0].v'))<190","ev('zone')!==1||ev('cleaners.length')!==1||Math.abs(ev('cleaners[0].v'))<150"],
-["msg.includes('28% CHAOS')","msg.includes('25% CHAOS')"]
+["msg.includes('28% CHAOS')","msg.includes('25% CHAOS')"],
+["Math.abs(ev('chaos()')-.28)>1e-6","Math.abs(ev('chaos()')-.25)>1e-6"],
+["Math.abs(ev('chaos()')-.33)>1e-6","Math.abs(ev('chaos()')-.30)>1e-6"]
 ]);
 patch('scripts/v049-world-identity-smoke.mjs',[["w.cleaners!==2","w.cleaners!==1"]]);
 patch('scripts/washwater-smoke.mjs',[["!rs.includes(\"f*k==1?'STARTUP'\")","!rs.includes('k=o.k')||!rs.includes('BN[o.k+4]')"]]);
-console.log('v0.56 historical contracts migrated: Easy cleanup/chaos relief only; Medium+ pressure pinned separately');
+patch('scripts/v047-waterfront-smoke.mjs',[["\"f?'FARMERS':o.ln||'MARKET'\"","\"zone==1?BN[o.k+4]\""]]);
+console.log('v0.56 historical contracts migrated: Easy cleanup/chaos relief + regional venue rendering; Medium+ pressure pinned separately');
