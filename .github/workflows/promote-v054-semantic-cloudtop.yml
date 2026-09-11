@@ -21,6 +21,8 @@ jobs:
       - run: npm install --no-audit --no-fund --no-package-lock
       - name: Apply v0.54 render candidate
         run: node scripts/apply-v054-semantic-cloudtop.mjs
+      - name: Parse staged renderer
+        run: node --check src/render.js
       - name: Explicit v0.54 visual contract
         run: node scripts/v054-semantic-cloudtop-smoke.mjs
       - name: Full regression and 13kb qualification
@@ -29,7 +31,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/render.js package.json scripts/v054-semantic-cloudtop-smoke.mjs
+          git add src/render.js package.json scripts/smoke.mjs scripts/v054-semantic-cloudtop-smoke.mjs
           git diff --cached --check
           git commit -m 'feat: semantic buildings and SF-style Cloudtop'
           git push origin HEAD:agent/v0.54-semantic-buildings-cloudtop-sf
