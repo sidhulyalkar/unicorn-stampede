@@ -12,9 +12,17 @@ rw('src/render.js',[
 ["N[8+(zone-1)*4+(objs.indexOf(o)&3)]","N[13+(zone-1)*4+(objs.indexOf(o)&3)]"],
 ["o.ln||N[k]","o.ln||N[k+5]"]
 ]);
+rw('src/expansion.js',[["'< '+ZN[zone]+' >'","'< '+N[21+zone]+' >'"]]);
 rw('scripts/washwater-smoke.mjs',[
 ["eq(e('BN'),['CANDY STORE','YACHT CLUB','SURF SHOP','BOATHOUSE','BAIT SHOP'],'Washwater landmark palette drifted')","eq(e('N').slice(0,5),['CANDY STORE','YACHT CLUB','SURF SHOP','BOATHOUSE','BAIT SHOP'],'Washwater landmark palette drifted')"],
 ["N[8+(zone-1)*4+(objs.indexOf(o)&3)]","N[13+(zone-1)*4+(objs.indexOf(o)&3)]"]
 ]);
 rw('scripts/v047-waterfront-smoke.mjs',[["N[8+(zone-1)*4+(objs.indexOf(o)&3)]","N[13+(zone-1)*4+(objs.indexOf(o)&3)]"]]);
+rw('scripts/v056-town-difficulty-smoke-template.mjs',[
+["N[8+(zone-1)*4+(objs.indexOf(o)&3)]","N[13+(zone-1)*4+(objs.indexOf(o)&3)]"],
+["o.ln||(o.t==='clock'?'CLOCK TOWER':N[o.k])","o.ln||(o.t==='clock'?'CLOCK TOWER':N[o.k+5])"],
+["\"o.ln||N[k]\"","\"o.ln||N[k+5]\""],
+["\"N[8+(zone-1)*4+(objs.indexOf(o)&3)]\"","\"N[13+(zone-1)*4+(objs.indexOf(o)&3)]\""],
+["\"BAIT,DOCK,FISH,FERRY,FARMERS,STARTUP,YOGA,CAFE\"","\"BAIT,DOCK,FISH,FERRY,FARMERS,STARTUP,YOGA,CAFE,PRISMBOROUGH,WASHWATER BAY,CLOUDTOP HEIGHTS\""]
+]);
 console.log('v0.56 bytecut2 staged: unified semantic vocabulary + compact canopy/rubble rendering');
