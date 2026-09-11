@@ -1,0 +1,53 @@
+name: promote-v058-town-visual-overhaul
+on:
+  push:
+    branches: [agent/v0.58-town-visual-overhaul]
+permissions:
+  contents: write
+concurrency:
+  group: promote-v058-town-visual-overhaul
+  cancel-in-progress: true
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.58-town-visual-overhaul
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Apply mixed-use town visual grammar
+        run: node scripts/apply-v058-town-visual-overhaul.mjs
+      - name: Prove dedicated town-art contract
+        run: |
+          node --check src/render.js
+          node --check src/worlds.js
+          node scripts/v058-town-visual-smoke.mjs
+      - name: Full gameplay + liveness qualification without hard byte gate
+        run: npm run test:visual
+      - name: Record exploratory cartridge size
+        run: |
+          echo "v0.58 intentionally allows visual exploration over 13 KB"
+          stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
+          cat dist/compression.json
+      - name: Promote exact qualified visual candidate
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/render.js src/worlds.js package.json scripts/v055-structured-storefronts-smoke.mjs scripts/v056-town-difficulty-smoke.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m "feat: make Prismborough feel like a real mixed-use town"
+            git push origin HEAD:agent/v0.58-town-visual-overhaul
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v058-town-visual
+          path: |
+            dist/local.html
+            dist/preview.html
+            dist/index.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
