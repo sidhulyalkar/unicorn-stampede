@@ -23,4 +23,5 @@ patch('scripts/washwater-smoke.mjs',[
 ["!rs.includes(\"f*k==1?'STARTUP'\")","!rs.includes('k=o.k')||!rs.includes('BN[o.k+4]')"]
 ]);
 patch('scripts/v047-waterfront-smoke.mjs',[["\"f?'FARMERS':o.ln||'MARKET'\"","\"zone==1?BN[o.k+4]\""]]);
-console.log('v0.56 historical contracts migrated: full Easy pressure + eight-name Washwater/region venue rendering; Medium+ pressure pinned separately');
+patch('scripts/v055-structured-storefronts-smoke.mjs',[["\"wind*(90+stamp*8)*dt\"","\"(mode?90:58)+stamp*8\""]]);
+console.log('v0.56 historical contracts migrated: full Easy pressure + eight-name regional venue rendering + mode-aware Cloudtop wind; Medium+ pressure pinned separately');
