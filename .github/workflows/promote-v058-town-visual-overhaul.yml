@@ -27,6 +27,7 @@ jobs:
             node scripts/apply-v058-town-visual-overhaul.mjs
           fi
           node scripts/fix-v058-town-mix.mjs
+          node scripts/fix-v058-visual-contracts.mjs
       - name: Prove dedicated town-art contract
         run: |
           node --check src/render.js
@@ -43,7 +44,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/render.js src/worlds.js package.json scripts/smoke.mjs scripts/v055-structured-storefronts-smoke.mjs scripts/v056-town-difficulty-smoke.mjs
+          git add src/render.js src/worlds.js package.json scripts/smoke.mjs scripts/graphics-v041-smoke.mjs scripts/v055-structured-storefronts-smoke.mjs scripts/v056-town-difficulty-smoke.mjs
           if ! git diff --cached --quiet; then
             git commit -m "feat: make Prismborough feel like a real mixed-use town"
             git push origin HEAD:agent/v0.58-town-visual-overhaul
