@@ -21,8 +21,12 @@ jobs:
       - run: npm install --no-audit --no-fund
       - name: Apply mixed-use town visual grammar
         run: |
-          node scripts/apply-v058-town-visual-overhaul.mjs
-          sed -i 's/size<5/size<4/' scripts/v056-town-difficulty-smoke.mjs
+          if grep -q 'drawTownBuilding' src/render.js; then
+            echo 'v0.58 visual source already promoted'
+          else
+            node scripts/apply-v058-town-visual-overhaul.mjs
+          fi
+          node scripts/fix-v058-town-mix.mjs
       - name: Prove dedicated town-art contract
         run: |
           node --check src/render.js
