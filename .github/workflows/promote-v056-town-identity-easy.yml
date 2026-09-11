@@ -19,6 +19,7 @@ jobs:
       - name: Apply v0.56 candidate
         run: |
           node scripts/apply-v056-town-identity-easy.mjs
+          node scripts/apply-v056-town-market-fix.mjs
           cp scripts/v056-town-difficulty-smoke-template.mjs scripts/v056-town-difficulty-smoke.mjs
       - name: Prove syntax + dedicated contract
         run: |
