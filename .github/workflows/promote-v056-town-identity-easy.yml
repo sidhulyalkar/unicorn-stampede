@@ -22,6 +22,7 @@ jobs:
           node scripts/apply-v056-town-market-fix.mjs
           node scripts/apply-v056-history-contracts.mjs
           node scripts/apply-v056-bytecut.mjs
+          node scripts/apply-v056-bytecut2.mjs
           cp scripts/v056-town-difficulty-smoke-template.mjs scripts/v056-town-difficulty-smoke.mjs
       - name: Prove syntax + dedicated contract
         run: |
