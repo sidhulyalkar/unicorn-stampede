@@ -18,6 +18,9 @@ patch('scripts/competitive-smoke.mjs',[
 ["Math.abs(e('stageGoal')-.782)>.001||e('distGoal')<.45","Math.abs(e('stageGoal')-.642)>.001||e('distGoal')<.37"]
 ]);
 patch('scripts/v049-world-identity-smoke.mjs',[["w.cleaners!==2","w.cleaners!==1"]]);
-patch('scripts/washwater-smoke.mjs',[["!rs.includes(\"f*k==1?'STARTUP'\")","!rs.includes('k=o.k')||!rs.includes('BN[o.k+4]')"]]);
+patch('scripts/washwater-smoke.mjs',[
+["eq(e('BN'),['CANDY STORE','YACHT CLUB','SURF SHOP','BOATHOUSE','BAIT SHOP'],'Washwater shop palette drifted')","eq(e('BN'),['CANDY STORE','YACHT CLUB','SURF SHOP','BOATHOUSE','BAIT SHOP','DOCK CAFE','FISH MARKET','FERRY'],'Washwater shop palette drifted')"],
+["!rs.includes(\"f*k==1?'STARTUP'\")","!rs.includes('k=o.k')||!rs.includes('BN[o.k+4]')"]
+]);
 patch('scripts/v047-waterfront-smoke.mjs',[["\"f?'FARMERS':o.ln||'MARKET'\"","\"zone==1?BN[o.k+4]\""]]);
-console.log('v0.56 historical contracts migrated: full Easy pressure + regional venue rendering; Medium+ pressure pinned separately');
+console.log('v0.56 historical contracts migrated: full Easy pressure + eight-name Washwater/region venue rendering; Medium+ pressure pinned separately');
