@@ -18,6 +18,7 @@ rw('scripts/washwater-smoke.mjs',[
 ["N[8+(zone-1)*4+(objs.indexOf(o)&3)]","N[13+(zone-1)*4+(objs.indexOf(o)&3)]"]
 ]);
 rw('scripts/v047-waterfront-smoke.mjs',[["N[8+(zone-1)*4+(objs.indexOf(o)&3)]","N[13+(zone-1)*4+(objs.indexOf(o)&3)]"]]);
+rw('scripts/v050-menu-smoke.mjs',[["text('< '+ZN[zone]+' >'","text('< '+N[21+zone]+' >'"]]);
 rw('scripts/v056-town-difficulty-smoke-template.mjs',[
 ["N[8+(zone-1)*4+(objs.indexOf(o)&3)]","N[13+(zone-1)*4+(objs.indexOf(o)&3)]"],
 ["o.ln||(o.t==='clock'?'CLOCK TOWER':N[o.k])","o.ln||(o.t==='clock'?'CLOCK TOWER':N[o.k+5])"],
