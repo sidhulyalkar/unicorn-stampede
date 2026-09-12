@@ -31,11 +31,17 @@ jobs:
           else
             node scripts/apply-v059-kernel-dedupe.mjs
           fi
+          if grep -q "allowFreeVars:true" scripts/build.mjs; then
+            echo 'Roadroller dirty candidate search already enabled'
+          else
+            node scripts/apply-v059-packer-search.mjs
+          fi
       - name: Prove dedicated visual contract
         run: |
           node --check src/core.js
           node --check src/top10.js
           node --check src/render.js
+          node --check scripts/build.mjs
           node scripts/v059-byte-recovery-smoke.mjs
       - name: Full gameplay, world and liveness qualification
         run: npm run test:visual
@@ -50,7 +56,7 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add src/core.js src/top10.js src/render.js package.json scripts/build.mjs scripts/v058-town-visual-smoke.mjs
           if ! git diff --cached --quiet; then
-            git commit -m "perf: dedupe paint and drawing kernels without visual cuts"
+            git commit -m "perf: widen safe packer search without visual cuts"
             git push origin HEAD:agent/v0.59-byte-recovery-washwater-sand
           fi
       - uses: actions/upload-artifact@v4
