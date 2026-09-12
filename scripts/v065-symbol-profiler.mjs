@@ -23,22 +23,21 @@ function wrapMethods(s,set){for(let [name,id,args]of set)s=wrapMethod(s,name,id,
 function setters(s,set){let defs=[];for(let [name,id]of set){let r=new RegExp(`X\\.${name}=([^;]+);`,'g'),m=[...s.matchAll(r)];if(m.length>2){s=s.replace(r,(_,v)=>`${id}(${v});`);defs.push(`function ${id}(v){X.${name}=v}`)}}if(defs.length)s=insertBefore(s,'function seeded',defs.join(''));return s}
 function pulse(s){return s.replace(/if\(!done\)\{X\.strokeStyle='#fff';X\.lineWidth=2;X\.beginPath\(\);X\.arc\(sx,sy,r\+6\+(?:MM\.sin|ms)\(clock\*7\)\*2,0,T\);X\.stroke\(\)\}/,'')}
 function musicLite(s){return s.replace("if(stamp>2&&n%2)tone(220+55*(n%4),.04,3,.007)",'')}
+function pedestrianLite(s){let r=/function updatePeople\(dt\)\{.*?\}function updateParts/s,m=r.exec(s);if(!m)throw Error('people anchor missing');return s.replace(r,"function updatePeople(dt){for(let p of people){p.t-=dt;let u=unis[caps[0]],d=u&&MM.hypot(u.x-p.x,u.y-p.y);if(d<100){let a=MM.atan2(p.y-u.y,p.x-u.x);p.vx+=MM.cos(a)*dt*520;p.vy+=MM.sin(a)*dt*520}if(p.t<0)p.t=R(3,.9),p.vx+=R(45,-45),p.vy+=R(35,-35);let x=p.x,y=p.y;p.x=cl(x+p.vx*dt,18,WW-18);p.y=cl(y+p.vy*dt,18,WH-18);if(personBlocked(p.x,p.y))p.x=x,p.y=y,p.vx*=-.45,p.vy*=-.45,p.t=0;p.vx*=MM.pow(.12,dt);p.vy*=MM.pow(.12,dt)}}function updateParts")}
+function noStreet(s){return s.replace('drawTownStreetDecor();','')}
 const Mhot=[['hypot','mh'],['max','mxm'],['min','mnm'],['sin','ms'],['cos','mc']];
 const Mall=[...Mhot,['round','mr'],['floor','mf'],['ceil','me'],['atan2','ma'],['sign','mg'],['abs','mb'],['pow','mp']];
 const methodHot=[['fillRect','xf',1],['beginPath','xb',0],['fill','xz',0],['stroke','xs',0],['lineTo','xl',1],['moveTo','xm',1],['arc','xa',1]];
 const setterHot=[['fillStyle','cf'],['strokeStyle','cs'],['lineWidth','cw']];
+const safe=s=>setters(wrapMethods(circles(aliasMath(s,Mall)),methodHot),setterHot);
 const plans={
  base:s=>s,
- mathHot:s=>aliasMath(s,Mhot),
- mathAll:s=>aliasMath(s,Mall),
- circles,
- textTables,
- canvasMethods:s=>wrapMethods(s,methodHot),
- canvasSetters:s=>setters(s,setterHot),
- mathCircle:s=>circles(aliasMath(s,Mall)),
- mathCircleText:s=>textTables(circles(aliasMath(s,Mall))),
+ mathHot:s=>aliasMath(s,Mhot),mathAll:s=>aliasMath(s,Mall),circles,textTables,
+ canvasMethods:s=>wrapMethods(s,methodHot),canvasSetters:s=>setters(s,setterHot),
+ mathCircle:s=>circles(aliasMath(s,Mall)),safeSymbols:safe,safeText:s=>textTables(safe(s)),
+ peopleLite:pedestrianLite,safePeople:s=>pedestrianLite(safe(s)),
+ noStreet,safeNoStreet:s=>noStreet(safe(s)),safePeopleNoStreet:s=>noStreet(pedestrianLite(safe(s))),
  mathCircleTextPulse:s=>pulse(textTables(circles(aliasMath(s,Mall)))),
- mathCircleTextMusic:s=>musicLite(textTables(circles(aliasMath(s,Mall)))),
  fullSymbols:s=>setters(wrapMethods(musicLite(pulse(textTables(circles(aliasMath(s,Mall))))),methodHot),setterHot)
 };
 async function score(name,fn){let s=fn(base);new Function(s);let en=kinds.reduce((x,k,i)=>x.replaceAll(`'${k}'`,i),s),code=(await minify(en,opts)).code,h=shell(code);return{name,source:Buffer.byteLength(s),terser:Buffer.byteLength(code),deflate:deflateRawSync(Buffer.from(h),{level:9}).length}}
