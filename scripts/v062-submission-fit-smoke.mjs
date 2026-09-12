@@ -4,7 +4,7 @@ if(p.version!=='0.62.0')throw Error('v0.62 version not applied');
 for(let x of ["shopHue=[0,215,78,150,318,265,245,3]",'drawTownRoof','drawTownAwning','townWindow','drawShopProps',"let L=o.ln||N[shopName[k]]||'SHOP'","X.fillRect(x+10,Y,w-20,24)","k==1||k==5","k==2||k==4","k==6"])if(!r.includes(x))throw Error('semantic storefront cue missing: '+x);
 if((r.match(/drawTownStreetDecor\(\)/g)||[]).length!==1)throw Error('street decor should remain reusable but not run in cartridge');
 for(let x of ["X.fillStyle='#9fe8ef';X.fillRect(x,y,w,h);","X.fillRect(x+w/2-4,y,8,16)","X.fillRect(x+w/2-18,y+h-52,36,52)"])if(!r.includes(x))throw Error('compact facade grammar missing: '+x);
-if(h.includes('updatePeople(dt)')||h.includes('updateParts(dt);'))throw Error('trimmed simulation still active');
+if(h.includes('updateCars(dt);updatePeople(dt);')||h.includes('updateParts(dt);updateIntro(dt);')||!h.includes('updateCars(dt);updateIntro(dt);'))throw Error('trimmed simulation still active');
 if(!r.includes('drawPeople();')||!r.includes("function drawPeople(){for(let p of people)townCircle(p.x,p.y,8")||!c.includes('people.push(makePerson'))throw Error('simple visible town population was accidentally removed');
 if(r.includes('drawParts();'))throw Error('transient particle drawing still active');
 let sources=[c,h,w,t,e].join('\n'),fx=(sources.match(/\bfx\(/g)||[]).length;if(fx!==1)throw Error('particle calls remain: '+fx+' fx tokens; expected definition only');
