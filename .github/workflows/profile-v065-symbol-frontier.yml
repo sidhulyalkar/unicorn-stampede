@@ -1,0 +1,24 @@
+name: profile-v065-symbol-frontier
+on:
+  push:
+    branches: [research/v0.65-symbol-frontier]
+permissions:
+  contents: read
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/v0.65-symbol-frontier
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/v065-symbol-profiler.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v065-symbol-profile
+          path: dist/v065-symbol-profile.json
+          retention-days: 30
