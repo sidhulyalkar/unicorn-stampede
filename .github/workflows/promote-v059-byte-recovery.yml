@@ -22,12 +22,19 @@ jobs:
       - name: Apply compact town grammar and sandy Washwater
         run: |
           if grep -Fq "zone<2?'#d2bc92':'#74889a'" src/render.js; then
-            echo 'v0.59 source already promoted'
+            echo 'v0.59 town source already promoted'
           else
             node scripts/apply-v059-byte-recovery.mjs
           fi
+          if grep -q 'function paintBits' src/core.js; then
+            echo 'v0.59 kernel dedupe already promoted'
+          else
+            node scripts/apply-v059-kernel-dedupe.mjs
+          fi
       - name: Prove dedicated visual contract
         run: |
+          node --check src/core.js
+          node --check src/top10.js
           node --check src/render.js
           node scripts/v059-byte-recovery-smoke.mjs
       - name: Full gameplay, world and liveness qualification
@@ -41,9 +48,9 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/render.js package.json scripts/v058-town-visual-smoke.mjs
+          git add src/core.js src/top10.js src/render.js package.json scripts/build.mjs scripts/v058-town-visual-smoke.mjs
           if ! git diff --cached --quiet; then
-            git commit -m "perf: compress mixed-use town without flattening its identity"
+            git commit -m "perf: dedupe paint and drawing kernels without visual cuts"
             git push origin HEAD:agent/v0.59-byte-recovery-washwater-sand
           fi
       - uses: actions/upload-artifact@v4
