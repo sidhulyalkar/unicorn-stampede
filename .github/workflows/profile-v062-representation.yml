@@ -1,0 +1,24 @@
+name: profile-v062-representation
+on:
+  push:
+    branches: [research/v0.62-representation-frontier]
+    paths:
+      - 'scripts/v062-representation-profiler.mjs'
+      - '.github/workflows/profile-v062-representation.yml'
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/v0.62-representation-frontier
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/v062-representation-profiler.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v062-representation-profile
+          path: dist/v062-representation-profile.json
+          retention-days: 30
