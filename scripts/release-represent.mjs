@@ -13,8 +13,8 @@ function roof(s){
  return rep(s,'let g=drawTownRoof(x,y,w,k,v,house),b=','let g=drawTownRoof(x,y,w,k,H,house),b=')
 }
 function textAlign(s){
- s=rep(s,"function rr(x,y,w,h,r){X.beginPath();X.roundRect(x,y,w,h,r);X.fill()}function text(t,x,y,s=20,a='left',al=1){X.globalAlpha=al;X.font=`800 ${s}px system-ui`;X.textAlign=a;","function rr(x,y,w,h,r){X.beginPath();X.roundRect(x,y,w,h,r);X.fill()}function text(t,x,y,s=20,a=0,al=1){X.globalAlpha=al;X.font=`800 ${s}px system-ui`;X.textAlign=['left','center','right'][a];");
- return s.replaceAll(",'center'",',1').replaceAll(",'right'",',2')
+ s=s.replaceAll(",'center'",',1').replaceAll(",'right'",',2');
+ return rep(s,"function rr(x,y,w,h,r){X.beginPath();X.roundRect(x,y,w,h,r);X.fill()}function text(t,x,y,s=20,a='left',al=1){X.globalAlpha=al;X.font=`800 ${s}px system-ui`;X.textAlign=a;","function rr(x,y,w,h,r){X.beginPath();X.roundRect(x,y,w,h,r);X.fill()}function text(t,x,y,s=20,a=0,al=1){X.globalAlpha=al;X.font=`800 ${s}px system-ui`;X.textAlign=['left','center','right'][a];")
 }
 function toneCode(s){
  for(let[a,b]of[['sine','0'],['square','1'],['sawtooth','2'],['triangle','3']])s=s.replaceAll(`'${a}'`,b);
