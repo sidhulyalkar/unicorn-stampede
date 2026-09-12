@@ -9,7 +9,9 @@ function direct(s){
 }
 function canvas(s){return rep(s,"document.getElementById('game')||document.getElementById('c')","document.getElementById('c')")}
 function roof(s){
- s=rep(s,"function drawTownRoof(x,y,w,k,v,house){let h=house?25+v*85:shopHue[k],g=house||k&1&&k!=3;X.fillStyle=`hsl(${h} 34% 39%)`;","function drawTownRoof(x,y,w,k,H,house){let g=house||k&1&&k!=3;X.fillStyle=`hsl(${H} 34% 39%)`;");
+ let a="function drawTownRoof(x,y,w,k,v,house){let h=house?25+v*85:shopHue[k],g=house||k&1&&k!=3;X.fillStyle=`hsl(${h} 34% 39%)`;";
+ if(!s.includes(a))return s;
+ s=rep(s,a,"function drawTownRoof(x,y,w,k,H,house){let g=house||k&1&&k!=3;X.fillStyle=`hsl(${H} 34% 39%)`;");
  return rep(s,'let g=drawTownRoof(x,y,w,k,v,house),b=','let g=drawTownRoof(x,y,w,k,H,house),b=')
 }
 function textAlign(s){
