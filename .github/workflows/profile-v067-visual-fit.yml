@@ -1,0 +1,24 @@
+name: profile-v067-visual-fit
+on:
+  push:
+    branches: [research/v0.67-visual-fit]
+permissions:
+  contents: read
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/v0.67-visual-fit
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/v067-visual-fit-profiler.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v067-visual-fit-profile
+          path: dist/v067-visual-fit-profile.json
+          retention-days: 30
