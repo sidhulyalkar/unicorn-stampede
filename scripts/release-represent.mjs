@@ -25,6 +25,6 @@ function pointer(s){
  s=rep(s,a,b);s=rep(s,p,q);
  return rep(s,'function audio(){',"function point(e){let r=C.getBoundingClientRect(),s=Math.min(r.width/W,r.height/H);mx=cl((e.clientX-r.left-r.width/2)/s+W/2,0,W);my=cl((e.clientY-r.top-r.height/2)/s+H/2,0,H)}function audio(){")
 }
-function keys(s){return s.replaceAll('K[e.code]=1','K[e.code[3]]=1').replaceAll('K[e.code]=0','K[e.code[3]]=0').replaceAll('K.KeyD','K.D').replaceAll('K.KeyA','K.A').replaceAll('K.KeyS','K.S').replaceAll('K.KeyW','K.W')}
+function keys(s){let k="e.code[0]=='K'?e.code[3]:e.code";return s.replaceAll('K[e.code]=1',`K[${k}]=1`).replaceAll('K[e.code]=0',`K[${k}]=0`).replaceAll('K.KeyD','K.D').replaceAll('K.KeyA','K.A').replaceAll('K.KeyS','K.S').replaceAll('K.KeyW','K.W')}
 function math(s){s=s.replaceAll('Math.','MM.');return rep(s,'const C=','const MM=Math,C=')}
 export function compactRepresentation(s){for(let f of[direct,canvas,roof,textAlign,toneCode,pointer,keys,math])s=f(s);return s}
