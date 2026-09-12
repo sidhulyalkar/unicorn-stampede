@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/apply-v061-gameplay-polish.mjs'
       - 'scripts/v061-gameplay-polish-smoke.mjs'
+      - 'scripts/apply-v061-browser-gesture-hardening.mjs'
+      - 'scripts/v061-browser-gesture-smoke.mjs'
       - 'scripts/v060-tutorial-mastery-smoke.mjs'
       - 'scripts/v053-conquest-menu-smoke.mjs'
       - '.github/workflows/promote-v061-gameplay-polish.yml'
@@ -23,10 +25,14 @@ jobs:
       - name: Apply gameplay polish tranche
         run: |
           node --check scripts/apply-v061-gameplay-polish.mjs
+          node --check scripts/apply-v061-browser-gesture-hardening.mjs
           node --check scripts/v061-gameplay-polish-smoke.mjs
+          node --check scripts/v061-browser-gesture-smoke.mjs
           node scripts/apply-v061-gameplay-polish.mjs
+          node scripts/apply-v061-browser-gesture-hardening.mjs
       - name: Check transformed sources
         run: |
+          node --check src/core.js
           node --check src/herd.js
           node --check src/render.js
           node --check src/worlds.js
@@ -35,11 +41,14 @@ jobs:
           node --check src/expansion.js
           node --check scripts/v060-tutorial-mastery-smoke.mjs
           node --check scripts/v061-gameplay-polish-smoke.mjs
+          node --check scripts/v061-browser-gesture-smoke.mjs
           node --check scripts/v053-conquest-menu-smoke.mjs
       - name: Install
         run: npm install --no-audit --no-fund
-      - name: Dedicated gameplay polish contract
-        run: node scripts/v061-gameplay-polish-smoke.mjs
+      - name: Dedicated gameplay polish contracts
+        run: |
+          node scripts/v061-gameplay-polish-smoke.mjs
+          node scripts/v061-browser-gesture-smoke.mjs
       - name: Full historical gameplay and liveness suite
         run: |
           cp package.json /tmp/v061-package.json
@@ -55,9 +64,9 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/herd.js src/render.js src/worlds.js src/polish.js src/whip.js src/expansion.js package.json scripts/v060-tutorial-mastery-smoke.mjs scripts/v053-conquest-menu-smoke.mjs
+          git add src/core.js src/style.css src/herd.js src/render.js src/worlds.js src/polish.js src/whip.js src/expansion.js package.json scripts/v060-tutorial-mastery-smoke.mjs scripts/v053-conquest-menu-smoke.mjs
           if ! git diff --cached --quiet; then
-            git commit -m 'feat: keep townspeople safe and make objectives self-explanatory'
+            git commit -m 'feat: harden browser input and preserve gameplay clarity'
             git push origin HEAD:agent/v0.61-gameplay-polish
           fi
       - uses: actions/upload-artifact@v4
