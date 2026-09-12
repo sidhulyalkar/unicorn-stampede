@@ -1,0 +1,57 @@
+name: promote-v059-byte-recovery
+on:
+  push:
+    branches: [agent/v0.59-byte-recovery-washwater-sand]
+permissions:
+  contents: write
+concurrency:
+  group: promote-v059-byte-recovery
+  cancel-in-progress: true
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.59-byte-recovery-washwater-sand
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Apply compact town grammar and sandy Washwater
+        run: |
+          if grep -Fq "zone<2?'#d2bc92':'#74889a'" src/render.js; then
+            echo 'v0.59 source already promoted'
+          else
+            node scripts/apply-v059-byte-recovery.mjs
+          fi
+      - name: Prove dedicated visual contract
+        run: |
+          node --check src/render.js
+          node scripts/v059-byte-recovery-smoke.mjs
+      - name: Full gameplay, world and liveness qualification
+        run: npm run test:visual
+      - name: Report exact cartridge budget
+        run: |
+          stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
+          node -e "let f=require('fs'),n=f.statSync('dist/unicorn-stampede.zip').size;console.log('delta vs 13312:',n-13312,'bytes');"
+          cat dist/compression.json
+      - name: Promote exact qualified source
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/render.js package.json scripts/v058-town-visual-smoke.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m "perf: compress mixed-use town without flattening its identity"
+            git push origin HEAD:agent/v0.59-byte-recovery-washwater-sand
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v059-byte-recovery
+          path: |
+            dist/local.html
+            dist/preview.html
+            dist/index.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
