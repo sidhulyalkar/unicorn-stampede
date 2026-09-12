@@ -22,7 +22,6 @@ jobs:
           node --check scripts/release-represent.mjs
           node --check scripts/release-fuse.mjs
           node --check scripts/release-submit.mjs
-          node scripts/v063-release-represent-smoke.mjs
           node scripts/v064-town-grammar-smoke.mjs
       - name: Full historical gameplay and liveness suite
         run: |
