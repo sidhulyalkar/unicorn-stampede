@@ -21,6 +21,8 @@ jobs:
           node-version: 22
       - name: Apply tutorial mastery tranche
         run: |
+          node --check scripts/apply-v060-tutorial-mastery.mjs
+          node --check scripts/apply-v060-test-contracts.mjs
           node scripts/apply-v060-tutorial-mastery.mjs
           node scripts/apply-v060-test-contracts.mjs
       - name: Check transformed sources
@@ -34,6 +36,7 @@ jobs:
           node --check scripts/difficulty-smoke.mjs
           node --check scripts/v050-menu-smoke.mjs
           node --check scripts/v051-launch-config-smoke.mjs
+          node --check scripts/v053-conquest-menu-smoke.mjs
       - name: Install
         run: npm install --no-audit --no-fund
       - name: Dedicated tutorial mastery contract
@@ -53,7 +56,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/whip.js src/expansion.js package.json scripts/smoke.mjs scripts/difficulty-smoke.mjs scripts/v050-menu-smoke.mjs scripts/v051-launch-config-smoke.mjs scripts/shift-rules-smoke.mjs scripts/rules-v044-smoke.mjs
+          git add src/whip.js src/expansion.js package.json scripts/smoke.mjs scripts/difficulty-smoke.mjs scripts/v050-menu-smoke.mjs scripts/v051-launch-config-smoke.mjs scripts/v053-conquest-menu-smoke.mjs scripts/shift-rules-smoke.mjs scripts/rules-v044-smoke.mjs
           if ! git diff --cached --quiet; then
             git commit -m 'feat: teach herd coordination and whole-town conquest'
             git push origin HEAD:agent/v0.60-tutorial-mastery
