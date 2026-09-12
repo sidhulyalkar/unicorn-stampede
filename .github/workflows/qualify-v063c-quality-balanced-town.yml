@@ -1,0 +1,47 @@
+name: qualify-v063c-quality-balanced-town
+on:
+  push:
+    branches: [agent/v0.63c-quality-balanced-town]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply quality-balanced source tranche
+        run: node scripts/apply-v063c-quality-balanced-town.mjs
+      - name: Wire release wrapper staticizer
+        run: node scripts/apply-v063b-staticizer.mjs
+      - name: Check transformed sources
+        run: node --check src/core.js && node --check src/herd.js && node --check src/render.js && node --check src/whip.js && node --check src/top10.js && node --check src/expansion.js && node --check src/polish.js && node --check scripts/build.mjs
+      - run: npm install --no-audit --no-fund
+      - name: Full historical gameplay + visual qualification with exploratory size report
+        run: |
+          cp scripts/size.mjs /tmp/v063c-size.mjs
+          printf "%s\n" "console.log('v0.63c candidate size measured below')" > scripts/size.mjs
+          npm test
+          mv /tmp/v063c-size.mjs scripts/size.mjs
+      - name: Measure exact cartridge
+        run: |
+          stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
+          node -e "let f=require('fs'),n=f.statSync('dist/unicorn-stampede.zip').size;console.log('delta vs 13312:',n-13312,'bytes')"
+          head -120 dist/compression.json
+      - name: Verify archive root
+        run: unzip -t dist/unicorn-stampede.zip && test "$(unzip -Z1 dist/unicorn-stampede.zip)" = "index.html"
+      - name: Verify browser-safe local build
+        run: test -s dist/local.html && ! grep -q "document.write" dist/local.html && cmp dist/local.html dist/preview.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v063c-quality-balanced-town
+          path: |
+            dist/local.html
+            dist/preview.html
+            dist/index.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
+          retention-days: 30
