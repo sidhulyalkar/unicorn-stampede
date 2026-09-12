@@ -15,13 +15,10 @@ The challenge is not only steering quickly. It is keeping several chaotic plans 
 1. **Break the four outer landmarks**: Bakery, Market, Greenhouse, Clock Tower.
 2. Build enough combined paint + destruction to reach **Chaos**.
 3. **Team up enough unicorns near Town Hall** and smash it.
-4. Survive **Final Cleanup**.
-5. Secure all four districts.
-6. Reach the global color target.
-7. Rescue any prisoners.
-8. Hold the conquered town briefly.
+4. Enter **Takeover**: secure all four districts and reach the global color target.
+5. Keep the whole herd free: rescue any captured unicorns.
 
-Then Town Hall falls, the city erupts into rainbow color, and the run ends with **TOWN CONQUERED**.
+The instant Hall + districts + color + herd safety are all satisfied, conquest locks. The city erupts into rainbow color and the run resolves to **TOWN CONQUERED**. Ordinary buildings are useful for Chaos and score, but destroying every building is not a hidden win requirement.
 
 ### Lose
 
@@ -42,9 +39,11 @@ There is **no timer defeat** and no gameplay timer state.
 | **Shift** | smart-switch to the herd member that most needs attention |
 | **Shift ×3 quickly** | sweep through different herd members to scan the map |
 | **P / Esc** | pause and view Rules |
-| **A / D on title** | change unlocked world |
-| **M on title** | change difficulty |
-| **C on title** | open Rules |
+| **A / D or click world on title** | change world |
+| **M or click difficulty on title** | change difficulty |
+| **T or click Tutorial on title** | toggle tutorial |
+| **C or click Rules on title** | open Rules |
+| **Enter / Space or click Start** | launch the selected configuration |
 
 **Releasing WASD never switches unicorns. Shift is the intentional herd-handoff control.**
 
@@ -88,9 +87,9 @@ The Clock Tower introduces the idea with a smaller Team requirement. Town Hall r
 
 This keeps the mechanic concrete and visible while you play.
 
-## Contextual coaching on Normal
+## Contextual coaching on Easy
 
-Normal mode has a deliberately sparse assistance layer. It does not continuously narrate the game and it never outranks important state messages.
+Easy mode has a deliberately sparse assistance layer. It does not continuously narrate the game and it never outranks important state messages.
 
 When existing gameplay state suggests the player may have tunnel-visioned onto one unicorn, the HUD can briefly show:
 
@@ -118,7 +117,7 @@ A campaign begins with **four active unicorns**. Herd growth is event-driven, ne
 - **ACT I:** 4/6 unicorns, break outer landmarks.
 - Destroy landmark #2: **ACT II**, Comet joins, 5/6.
 - Destroy landmark #4: **ACT III**, full herd, 6/6.
-- Smash Town Hall: **FINAL CLEANUP**.
+- Smash Town Hall: **TAKEOVER** begins.
 
 The HUD briefly shows each stage card, then returns to the live objective so escalation is readable without stopping play.
 
@@ -156,31 +155,31 @@ Cleaners can rebuild ordinary destroyed structures, reversing some structural pr
 
 ## Campaign worlds
 
-### Prisborough
+### Prismborough
 
-The baseline city. It emphasizes readable streets, landmarks, district structure, and the core herd-management loop.
+The open civic-grid baseline. It emphasizes readable streets, distributed herd attention, landmarks, distractions, and free routing.
 
 ### Washwater Bay
 
-Faster cleanup pressure plus animated rain. Environmental motion is generated from the shared game clock, adding atmosphere without textures or additional runtime state.
+A waterfront world built around a winding river, two bridge corridors, marina space, and aggressive cleanup patrols. Crossing the river concentrates routes and makes rescue/territory decisions more deliberate.
 
 ### Cloudtop Heights
 
-Moving cloud banks and crosswinds alter movement and Whip timing. The environment becomes part of route planning.
+Alternating stone cliff passes and a reversing crosswind turn the map into a top/bottom slalom. Route timing and recovery matter more than generic distraction pressure.
 
 ## Difficulty
 
 Difficulty is systemic rather than a shrinking death clock. Higher settings combine higher coverage requirements, tougher structures, larger Team requirements, fewer power-ups, faster traffic, stronger cleanup pressure, tighter rescue geometry, and stronger environmental interference.
 
-Modes: **Normal, Medium, Hard, Impossible**.
+Modes: **Easy, Medium, Hard, Impossible**.
 
 ## The final takeover
 
-Town Hall is a phase transition, not an instant victory button. After the Hall falls, Final Cleanup continues attacking your infrastructure. You must still secure districts, reach the color requirement, clear all prisoners, and hold the town.
+Town Hall is the climax trigger, not the entire win condition. After the Hall falls, the HUD explicitly enters **TAKEOVER**. You must secure all four district checkpoints, reach the current global color target, and have no captured unicorns. Once those conditions are true together, victory latches immediately and cannot be stolen during the celebration.
 
 The successful transition has several readable beats:
 
-**HOLD THE TOWN → TOWN HALL FALLS! → RAINBOW TAKEOVER! → TOWN CONQUERED**
+**TAKEOVER → CONQUEST READY → TOWN HALL FALLS! → RAINBOW TAKEOVER! → TOWN CONQUERED**
 
 The explosion is anchored to the actual Town Hall geometry, the town receives a six-band rainbow wash, celebration bursts appear across the city, and the final score is overlaid on the conquered town itself.
 
@@ -249,6 +248,6 @@ npm test
 npm run build
 ```
 
-The qualification suite protects the 13,312-byte js13k ceiling, canonical release-source parity, staged 4 → 5 → 6 progression, no timer state, Shift-only handoff, Smart Shift urgency/rapid scan, Whip/Dash behavior, procedural facades, direct Team gates, Normal contextual coaching, SWEEP/SNATCH/REBUILD, rescue/collapse, difficulty separation, Final Cleanup, breakable hold, multi-frame conquest, latched results, menu replay, browser-safe preview parity, and one-root-file submission ZIP integrity.
+The qualification suite protects the 13,312-byte js13k ceiling, canonical release-source parity, staged 4 → 5 → 6 progression, no timer state, Shift-only handoff, Smart Shift urgency/rapid scan, Whip/Dash behavior, procedural facades, direct Team gates, Normal contextual coaching, SWEEP/SNATCH/REBUILD, rescue/collapse, difficulty separation, explicit Takeover objectives, immediate conquest latching, clickable title configuration, packed pointer interactions, latched results, menu replay, browser-safe preview parity, and one-root-file submission ZIP integrity.
 
 The project treats the byte limit as a design constraint: bytes should buy clearer decisions, richer feedback, stronger game feel, or reusable visual grammar. Decorative code that does not improve play has to earn its seat on the unicorn bus.

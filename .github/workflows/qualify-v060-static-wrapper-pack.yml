@@ -1,0 +1,38 @@
+name: qualify-v060-static-wrapper-pack
+on:
+  push:
+    branches: [agent/v0.60-static-wrapper-pack]
+permissions:
+  contents: read
+concurrency:
+  group: qualify-v060-static-wrapper-pack
+  cancel-in-progress: true
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Check release staticizer
+        run: |
+          node --check scripts/release-staticize.mjs
+          node --check scripts/build.mjs
+      - name: Full gameplay, visual, packed and liveness qualification
+        run: npm run test:visual
+      - name: Report exact cartridge budget
+        run: |
+          stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
+          node -e "let f=require('fs'),n=f.statSync('dist/unicorn-stampede.zip').size;console.log('delta vs 13312:',n-13312,'bytes');"
+          head -80 dist/compression.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v060-static-wrapper-pack
+          path: |
+            dist/local.html
+            dist/preview.html
+            dist/index.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
