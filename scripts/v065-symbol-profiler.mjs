@@ -11,7 +11,6 @@ const shell=j=>`<canvas id=c width=1280 height=720></canvas><style>${css}</style
 const PW=/^(x|y|id|name|vx|vy|tx|ty|hp|max|val|hue|anger|frenzy|boost|distract|spray|paint|order|rescue|live|tap|tapT|trail|cool|stun|power|dash|step|say|line|ai|cap|hot|ox|oy|bus|col|dir|on|sp|a|h|t|r|w|p|s|l|v|k|os|lm|ln|aim|dx|dy|i|hit|u|n|m|o)$/;
 const kinds=['fountain','hedge','pond','clock','stall','rage','soda','bomb','bakery','market','green','hall','b','play','title','end'];
 const opts={ecma:2020,toplevel:true,compress:{passes:4,drop_console:true},mangle:{toplevel:true,properties:{regex:PW}},format:{comments:false}};
-
 function insertBefore(s,anchor,code){let i=s.indexOf(anchor);if(i<0)throw Error('insert anchor missing '+anchor);return s.slice(0,i)+code+s.slice(i)}
 function aliasMath(s,names){let used=[];for(let [name,id]of names){let q='MM.'+name,c=s.split(q).length-1;if(c>1){s=s.replaceAll(q,id);used.push([name,id,c])}}if(!used.length)return s;let defs=used.map(([name,id])=>`${id}=MM.${name}`).join(',');return s.replace('const MM=Math,C=',`const MM=Math,${defs},C=`)}
 function splitArgs(t){let a=[],q='',d=0,start=0,esc=0;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(esc){esc=0;continue}if(c==='\\'){esc=1;continue}if(c===q)q='';continue}if(c==='"'||c==="'"||c==='`'){q=c;continue}if(c==='('||c==='['||c==='{')d++;else if(c===')'||c===']'||c==='}')d--;else if(c===','&&!d){a.push(t.slice(start,i));start=i+1}}a.push(t.slice(start));return a.map(x=>x.trim())}
@@ -20,25 +19,16 @@ function circles(s){let seek='X.beginPath();X.arc(',at=0;for(;;){let i=s.indexOf
 function textTables(s){let r=/X\.font='12px Arial';(\[[^\]]+\])\.forEach\(\(s,i\)=>X\.fillText\(s,W\/2,76\+i\*25\)\)/,m=r.exec(s);if(m){let a=Function('return '+m[1])(),q=JSON.stringify(a.join('|'));s=s.replace(m[0],`X.font='12px Arial';${q}.split('|').forEach((s,i)=>X.fillText(s,W/2,76+i*25))`)}let r2=/let m=(\[[^\]]+\]),u=unis\[caps\[0\]\]/,m2=r2.exec(s);if(m2){let a=Function('return '+m2[1])(),q=JSON.stringify(a.join('|'));s=s.replace(m2[0],`let m=${q}.split('|'),u=unis[caps[0]]`)}return s}
 function wrapMethod(s,name,id,args=1){let q=`X.${name}(`,c=s.split(q).length-1;if(c<3)return s;s=s.replaceAll(q,`${id}(`);let f=args?`function ${id}(...a){X.${name}(...a)}`:`function ${id}(){X.${name}()}`;return insertBefore(s,'function seeded',f)}
 function wrapMethods(s,set){for(let [name,id,args]of set)s=wrapMethod(s,name,id,args);return s}
+function fixedMethods(s,set){let defs=[];for(let [name,id,n]of set){let q=`X.${name}(`,c=s.split(q).length-1;if(c<3)continue;s=s.replaceAll(q,`${id}(`);let a='abcd'.slice(0,n).split('').join(','),p='abcd'.slice(0,n).split('').join(',');defs.push(`function ${id}(${a}){X.${name}(${p})}`)}return defs.length?insertBefore(s,'function seeded',defs.join('')):s}
+function boundMethods(s,set){let defs=[];for(let [name,id]of set){let q=`X.${name}(`,c=s.split(q).length-1;if(c<3)continue;s=s.replaceAll(q,`${id}(`);defs.push(`${id}=X.${name}.bind(X)`)}return defs.length?s.replace('const MM=Math,C=',`const MM=Math,${defs.join(',')},C=`):s}
 function setters(s,set){let defs=[];for(let [name,id]of set){let r=new RegExp(`X\\.${name}=([^;]+);`,'g'),m=[...s.matchAll(r)];if(m.length>2){s=s.replace(r,(_,v)=>`${id}(${v});`);defs.push(`function ${id}(v){X.${name}=v}`)}}if(defs.length)s=insertBefore(s,'function seeded',defs.join(''));return s}
-function pulse(s){return s.replace(/if\(!done\)\{X\.strokeStyle='#fff';X\.lineWidth=2;X\.beginPath\(\);X\.arc\(sx,sy,r\+6\+(?:MM\.sin|ms)\(clock\*7\)\*2,0,T\);X\.stroke\(\)\}/,'')}
-function musicLite(s){return s.replace("if(stamp>2&&n%2)tone(220+55*(n%4),.04,3,.007)",'')}
-function pedestrianLite(s){let r=/function updatePeople\(dt\)\{.*?\}function updateParts/s,m=r.exec(s);if(!m)throw Error('people anchor missing');return s.replace(r,"function updatePeople(dt){for(let p of people){p.t-=dt;let u=unis[caps[0]],d=u&&MM.hypot(u.x-p.x,u.y-p.y);if(d<100){let a=MM.atan2(p.y-u.y,p.x-u.x);p.vx+=MM.cos(a)*dt*520;p.vy+=MM.sin(a)*dt*520}if(p.t<0)p.t=R(3,.9),p.vx+=R(45,-45),p.vy+=R(35,-35);let x=p.x,y=p.y;p.x=cl(x+p.vx*dt,18,WW-18);p.y=cl(y+p.vy*dt,18,WH-18);if(personBlocked(p.x,p.y))p.x=x,p.y=y,p.vx*=-.45,p.vy*=-.45,p.t=0;p.vx*=MM.pow(.12,dt);p.vy*=MM.pow(.12,dt)}}function updateParts")}
 function noStreet(s){return s.replace('drawTownStreetDecor();','')}
-const Mhot=[['hypot','mh'],['max','mxm'],['min','mnm'],['sin','ms'],['cos','mc']];
-const Mall=[...Mhot,['round','mr'],['floor','mf'],['ceil','me'],['atan2','ma'],['sign','mg'],['abs','mb'],['pow','mp']];
-const methodHot=[['fillRect','xf',1],['beginPath','xb',0],['fill','xz',0],['stroke','xs',0],['lineTo','xl',1],['moveTo','xm',1],['arc','xa',1]];
+const Mall=[['hypot','mh'],['max','mxm'],['min','mnm'],['sin','ms'],['cos','mc'],['round','mr'],['floor','mf'],['ceil','me'],['atan2','ma'],['sign','mg'],['abs','mb'],['pow','mp']];
+const methodHot=[['fillRect','xf',4],['beginPath','xb',0],['fill','xz',0],['stroke','xs',0],['lineTo','xl',2],['moveTo','xm',2],['arc','xa',5]];
 const setterHot=[['fillStyle','cf'],['strokeStyle','cs'],['lineWidth','cw']];
-const safe=s=>setters(wrapMethods(circles(aliasMath(s,Mall)),methodHot),setterHot);
-const plans={
- base:s=>s,
- mathHot:s=>aliasMath(s,Mhot),mathAll:s=>aliasMath(s,Mall),circles,textTables,
- canvasMethods:s=>wrapMethods(s,methodHot),canvasSetters:s=>setters(s,setterHot),
- mathCircle:s=>circles(aliasMath(s,Mall)),safeSymbols:safe,safeText:s=>textTables(safe(s)),
- peopleLite:pedestrianLite,safePeople:s=>pedestrianLite(safe(s)),
- noStreet,safeNoStreet:s=>noStreet(safe(s)),safePeopleNoStreet:s=>noStreet(pedestrianLite(safe(s))),
- mathCircleTextPulse:s=>pulse(textTables(circles(aliasMath(s,Mall)))),
- fullSymbols:s=>setters(wrapMethods(musicLite(pulse(textTables(circles(aliasMath(s,Mall))))),methodHot),setterHot)
-};
+const rest=s=>setters(wrapMethods(circles(aliasMath(s,Mall)),methodHot.map(([a,b,n])=>[a,b,n>0])),setterHot);
+const fixed=s=>setters(fixedMethods(circles(aliasMath(s,Mall)),methodHot),setterHot);
+const bound=s=>setters(boundMethods(circles(aliasMath(s,Mall)),methodHot),setterHot);
+const plans={base:s=>s,mathAll:s=>aliasMath(s,Mall),circles,canvasRest:s=>wrapMethods(s,methodHot.map(([a,b,n])=>[a,b,n>0])),canvasFixed:s=>fixedMethods(s,methodHot),canvasBound:s=>boundMethods(s,methodHot),canvasSetters:s=>setters(s,setterHot),safeRest:rest,safeFixed:fixed,safeBound:bound,safeRestNoStreet:s=>noStreet(rest(s)),safeFixedNoStreet:s=>noStreet(fixed(s)),safeBoundNoStreet:s=>noStreet(bound(s)),textTables};
 async function score(name,fn){let s=fn(base);new Function(s);let en=kinds.reduce((x,k,i)=>x.replaceAll(`'${k}'`,i),s),code=(await minify(en,opts)).code,h=shell(code);return{name,source:Buffer.byteLength(s),terser:Buffer.byteLength(code),deflate:deflateRawSync(Buffer.from(h),{level:9}).length}}
 let out=[];for(let [name,fn]of Object.entries(plans))try{out.push(await score(name,fn))}catch(e){out.push({name,error:e.stack||e.message})}let b=out.find(x=>x.name==='base');for(let x of out)if(x.deflate)x.saved=b.deflate-x.deflate;out.sort((a,b)=>(b.saved??-1)-(a.saved??-1));console.table(out.map(x=>({variant:x.name,saved:x.saved,deflate:x.deflate,terser:x.terser,source:x.source,error:x.error?.split('\n')[0]})));fs.mkdirSync('dist',{recursive:true});fs.writeFileSync('dist/v065-symbol-profile.json',JSON.stringify(out,null,2));
