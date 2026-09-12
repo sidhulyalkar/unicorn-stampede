@@ -1,3 +1,4 @@
+// v0.59 qualification sentinel
 import fs from'node:fs';
 let r=fs.readFileSync('src/render.js','utf8');
 for(let q of ["zone<2?'#d2bc92':'#74889a'",'shopHue','drawTownBuilding','drawTownAwning','drawShopProps','drawTownStreetDecor'])if(!r.includes(q))throw Error('missing v0.59 visual authority: '+q);
