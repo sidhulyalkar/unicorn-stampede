@@ -1,0 +1,21 @@
+name: profile-v061-cosmetic-byte-frontier
+on:
+  push:
+    branches: [agent/v0.61-visual-byte-frontier]
+permissions:
+  contents: read
+jobs:
+  profile:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Profile cosmetic byte donors
+        run: node scripts/v061-cosmetic-byte-profiler.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v061-cosmetic-byte-profile
+          path: dist/v061-cosmetic-byte-profile.json
