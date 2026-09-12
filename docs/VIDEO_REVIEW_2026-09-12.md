@@ -1,6 +1,6 @@
 # Gameplay video review — Washwater Bay — 2026-09-12
 
-Source: 43.6 s player capture, 1312×738, 30 fps.
+Source: ~43.7 s player capture at 30 fps.
 
 ## What is working
 
@@ -13,7 +13,7 @@ Source: 43.6 s player capture, 1312×738, 30 fps.
 
 ## Browser popup observed
 
-Around 4 s, a browser-native contextual AI/selection menu appears over gameplay with actions including Summarize, Explain this, Quiz me and Proofread. This is outside the canvas UI. The likely trigger is browser text/selection gesture handling while the player is clicking/dragging for the whip.
+Around 4 s, a browser-native contextual AI/selection menu appears over gameplay with actions including Summarize, Explain this, Quiz me and Proofread. This is outside the canvas UI and is consistent with a browser text-selection/AI shortcut being triggered while the player is clicking/dragging for the whip.
 
 The game now suppresses selection, context-menu and drag-start behavior on the canvas and disables CSS text selection. This is pinned by a browser-gesture regression contract.
 
@@ -44,7 +44,7 @@ The game now suppresses selection, context-menu and drag-start behavior on the c
 
 ## Submission target
 
-Current v0.61 browser-hardened fast packed reference: 14,855 bytes. Gap to 13,312: 1,543 bytes.
+Current v0.61 browser-hardened fast packed reference: **14,855 bytes**. Gap to 13,312: **1,543 bytes**.
 
 Current deflate-proxy measurements from the exact v0.61 source:
 - complete generic particle removal: ~293 B
