@@ -1,0 +1,23 @@
+name: profile-v062-fusion
+on:
+  push:
+    branches: [research/v0.62-representation-frontier]
+permissions:
+  contents: read
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/v0.62-representation-frontier
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/v062-fusion-profiler.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v062-fusion-profile
+          path: dist/v062-fusion-profile.json
+          retention-days: 30
