@@ -1,0 +1,24 @@
+name: profile-v068-pedestrian
+on:
+  push:
+    branches: [research/v0.68-pedestrian-frontier]
+permissions:
+  contents: read
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/v0.68-pedestrian-frontier
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/v068-pedestrian-profiler.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v068-pedestrian-profile
+          path: dist/v068-pedestrian-profile.json
+          retention-days: 30
