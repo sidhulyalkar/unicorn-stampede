@@ -1,0 +1,24 @@
+name: profile-v066-control-flow
+on:
+  push:
+    branches: [research/v0.66-data-frontier]
+permissions:
+  contents: read
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/v0.66-data-frontier
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/v066-control-flow-profiler.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v066-control-flow-profile
+          path: dist/v066-control-flow-profile.json
+          retention-days: 30
