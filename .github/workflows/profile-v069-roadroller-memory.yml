@@ -1,0 +1,24 @@
+name: profile-v069-roadroller-memory
+on:
+  push:
+    branches: [research/v0.69-roadroller-memory]
+permissions:
+  contents: read
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/v0.69-roadroller-memory
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/v069-roadroller-memory-profiler.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v069-roadroller-memory
+          path: dist/v069-roadroller-memory.json
+          retention-days: 30
