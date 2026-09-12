@@ -1,0 +1,1 @@
+Post-competition implementation should begin from the v0.61 gameplay-quality authority after the js13k release is frozen. The first implementation milestone is Expanded Washwater, followed by Cloudtop and Prismborough world-specific systems.
