@@ -1,0 +1,1 @@
+This note marks the transition from the v0.61 quality authority into the dedicated quality-first submission frontier. Product changes on the submission frontier must be independently qualified before promotion.
