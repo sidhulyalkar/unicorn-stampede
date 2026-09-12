@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/apply-v061-gameplay-polish.mjs'
       - 'scripts/v061-gameplay-polish-smoke.mjs'
+      - 'scripts/v060-tutorial-mastery-smoke.mjs'
+      - 'scripts/v053-conquest-menu-smoke.mjs'
       - '.github/workflows/promote-v061-gameplay-polish.yml'
 permissions:
   contents: write
