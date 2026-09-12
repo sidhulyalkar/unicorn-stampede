@@ -1,0 +1,44 @@
+name: qualify-v063b-quality-first-v059
+on:
+  push:
+    branches: [agent/v0.63b-quality-first-v059]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wire wrapper staticizer
+        run: node scripts/apply-v063b-staticizer.mjs
+      - run: node --check scripts/release-staticize.mjs && node --check scripts/build.mjs
+      - run: npm install --no-audit --no-fund
+      - name: Full historical gameplay + visual qualification (defer only final size gate)
+        run: |
+          cp scripts/size.mjs /tmp/v063b-size.mjs
+          printf "%s\n" "console.log('v0.63b exploratory size gate deferred; measured in next step')" > scripts/size.mjs
+          npm test
+          mv /tmp/v063b-size.mjs scripts/size.mjs
+      - name: Measure quality-first cartridge
+        run: |
+          stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
+          node -e "let f=require('fs'),n=f.statSync('dist/unicorn-stampede.zip').size;console.log('delta vs 13312:',n-13312,'bytes')"
+          head -120 dist/compression.json
+      - name: Verify archive root
+        run: unzip -t dist/unicorn-stampede.zip && test "$(unzip -Z1 dist/unicorn-stampede.zip)" = "index.html"
+      - name: Verify browser-safe local build
+        run: test -s dist/local.html && ! grep -q "document.write" dist/local.html && cmp dist/local.html dist/preview.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v063b-quality-first-v059
+          path: |
+            dist/local.html
+            dist/preview.html
+            dist/index.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
+          retention-days: 30
