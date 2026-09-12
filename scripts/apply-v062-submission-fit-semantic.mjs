@@ -13,6 +13,6 @@ edit('src/render.js',s=>{
 });
 edit('src/herd.js',s=>rep(s,'updateCars(dt);updatePeople(dt);updateParts(dt);updateIntro(dt);','updateCars(dt);updateParts(dt);updateIntro(dt);'));
 edit('src/top10.js',s=>rep(s,"if(stamp>2&&n%2)tone(220+55*(n%4),.04,'triangle',.007)",''));
-edit('src/core.js',s=>rep(s,"globalThis.onbeforeunload=e=>state==='play'&&(e.preventDefault(),e.returnValue='');",''));
+edit('src/polish.js',s=>rep(s,"if(!done){X.strokeStyle='#fff';X.lineWidth=2;X.beginPath();X.arc(sx,sy,r+6+Math.sin(clock*7)*2,0,T);X.stroke()}",''));
 let p=JSON.parse(fs.readFileSync('package.json','utf8'));p.version='0.62.0';fs.writeFileSync('package.json',JSON.stringify(p));
-console.log('v0.62 semantic-fit source applied: labels/colors/roofs/semantic accents retained; low-information decoration and pedestrian simulation trimmed');
+console.log('v0.62 semantic-fit source applied: labels/colors/roofs/semantic accents retained; low-information decoration, marker pulse, pedestrian simulation trimmed');
