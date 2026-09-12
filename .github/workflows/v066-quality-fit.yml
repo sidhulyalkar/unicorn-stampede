@@ -1,0 +1,47 @@
+name: v066-quality-fit
+on:
+  push:
+    branches: [agent/v0.66-quality-fit]
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.66-quality-fit
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Packed quality-fit contracts
+        run: |
+          node --check scripts/release-quality-fit.mjs
+          node --check scripts/release-symbols.mjs
+          node --check scripts/release-submit.mjs
+          node scripts/v065-safe-symbol-smoke.mjs
+          node scripts/v066-quality-fit-smoke.mjs
+      - name: Full historical gameplay and liveness suite
+        run: |
+          cp package.json /tmp/v066-package.json
+          node -e "let f=require('fs'),p=JSON.parse(f.readFileSync('package.json'));p.scripts.test=p.scripts.test.replace(' && node scripts/prune-audit.mjs && node scripts/build.mjs && node scripts/packed-smoke.mjs && node scripts/size.mjs',' && node scripts/prune-audit.mjs');f.writeFileSync('package.json',JSON.stringify(p))"
+          npm test
+          mv /tmp/v066-package.json package.json
+      - name: Exact compressor search
+        run: |
+          node scripts/build.mjs
+          node scripts/packed-smoke.mjs
+          stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
+          sha256sum dist/unicorn-stampede.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v066-quality-fit
+          path: |
+            dist/index.html
+            dist/local.html
+            dist/preview.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
+          retention-days: 30
