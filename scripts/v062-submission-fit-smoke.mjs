@@ -1,0 +1,13 @@
+import fs from'node:fs';
+let r=fs.readFileSync('src/render.js','utf8'),h=fs.readFileSync('src/herd.js','utf8'),t=fs.readFileSync('src/top10.js','utf8'),c=fs.readFileSync('src/core.js','utf8'),p=JSON.parse(fs.readFileSync('package.json','utf8'));
+if(p.version!=='0.62.0')throw Error('v0.62 version not applied');
+for(let q of ["shopHue=[0,215,78,150,318,265,245,3]",'drawTownRoof','drawTownAwning','townWindow','drawShopProps',"let L=o.ln||N[shopName[k]]||'SHOP'","X.fillRect(x+10,Y,w-20,24)","k==1||k==5","k==2||k==4","k==6"])if(!r.includes(q))throw Error('semantic storefront cue missing: '+q);
+if((r.match(/drawTownStreetDecor\(\)/g)||[]).length!==1)throw Error('street decor should remain reusable but not run in cartridge');
+for(let q of ["X.fillStyle='#9fe8ef';X.fillRect(x,y,w,h);","X.fillRect(x+w/2-4,y,8,16)","X.fillRect(x+w/2-18,y+h-52,36,52)"])if(!r.includes(q))throw Error('compact facade grammar missing: '+q);
+if(h.includes('updateCars(dt);updatePeople(dt);'))throw Error('pedestrian simulation still active');
+if(!r.includes('drawPeople();')||!c.includes('people.push(makePerson'))throw Error('visible town population was accidentally removed');
+if(!t.includes('music(dt);')||!t.includes("tone(55,.07,'sine',.018,38)"))throw Error('core soundtrack beat removed');
+if(t.includes('tone(220+55*(n%4)'))throw Error('secondary stamp melody was not trimmed');
+if(c.includes('onbeforeunload'))throw Error('nonessential unload hook remains');
+for(let q of ['stageGoal','paintPct','districtsOK','waveUp','hitObj','updateWorld'])if(!c.includes(q)&&!h.includes(q))throw Error('gameplay authority missing: '+q);
+console.log('v0.62: PASS semantic colors + labels + roofs + compact shop cues + visible static population; gameplay authority preserved');
