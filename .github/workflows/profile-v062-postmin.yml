@@ -19,5 +19,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: v062-postmin-profile
-          path: dist/v062-postmin-profile.json
+          path: |
+            dist/v062-postmin-profile.json
+            dist/v062-minified-base.js
           retention-days: 30
