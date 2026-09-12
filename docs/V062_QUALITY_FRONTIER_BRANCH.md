@@ -1,0 +1,1 @@
+This file marks the quality-first submission branch. The v0.61 gameplay authority remains unchanged; competition experiments should preserve the perceptual spine documented in SUBMISSION_BYTE_STRATEGY.md.
