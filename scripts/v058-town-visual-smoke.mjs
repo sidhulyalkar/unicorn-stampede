@@ -1,6 +1,6 @@
 import fs from'node:fs';import vm from'node:vm';
 let r=fs.readFileSync('src/render.js','utf8'),w=fs.readFileSync('src/worlds.js','utf8');
-for(let q of ['townName','shopHue','drawTownRoof','drawTownAwning','drawHouseDetails','drawShopProps','drawTownStreetDecor','drawTownBuilding'])if(!r.includes(q))throw Error('missing mixed-use town primitive: '+q);
+for(let q of ['shopName','shopHue','drawTownRoof','drawTownAwning','drawHouseDetails','drawShopProps','drawTownStreetDecor','drawTownBuilding'])if(!r.includes(q))throw Error('missing mixed-use town primitive: '+q);
 for(let q of ["'O$#~*+%@'[k]","y+h/3,60,'center'",'drawTownIcon'])if(r.includes(q))throw Error('retired facade overhead returned: '+q);
 for(let q of ["townTutorial=[0,2,3,1,5,6,4,0]","townCommercial=[2,3,4,5,6,7]","bs=objs.filter(o=>o.t==='b')","j===bs.length-1","else if(o.lm==='bakery')o.k=1"])if(!w.includes(q))throw Error('missing adaptive mixed-use town authority: '+q);
 const H={},on=(n,f,c)=>(H[n]??=[]).push({f,c:!!c}),ctx=new Proxy({createLinearGradient:()=>({addColorStop(){}}),measureText:()=>({width:10})},{get:(o,k)=>k in o?o[k]:(()=>{})}),C={getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1280,height:720}),addEventListener:(n,f,c)=>on('c:'+n,f,c)},node=()=>({gain:{value:0,setValueAtTime(){},exponentialRampToValueAtTime(){}},frequency:{setValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){},start(){},stop(){}});class AudioContext{constructor(){this.currentTime=0;this.destination={}}createGain(){return node()}createOscillator(){return node()}}
