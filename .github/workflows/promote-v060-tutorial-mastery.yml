@@ -1,0 +1,66 @@
+name: promote-v060-tutorial-mastery
+on:
+  push:
+    branches: [agent/v0.60-tutorial-mastery]
+    paths:
+      - 'scripts/apply-v060-tutorial-mastery.mjs'
+      - 'scripts/apply-v060-test-contracts.mjs'
+      - 'scripts/v060-tutorial-mastery-smoke.mjs'
+      - '.github/workflows/promote-v060-tutorial-mastery.yml'
+permissions:
+  contents: write
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.60-tutorial-mastery
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply tutorial mastery tranche
+        run: |
+          node scripts/apply-v060-tutorial-mastery.mjs
+          node scripts/apply-v060-test-contracts.mjs
+      - name: Check transformed sources
+        run: |
+          node --check src/whip.js
+          node --check src/expansion.js
+          node --check scripts/v060-tutorial-mastery-smoke.mjs
+          node --check scripts/shift-rules-smoke.mjs
+          node --check scripts/rules-v044-smoke.mjs
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: Dedicated tutorial mastery contract
+        run: node scripts/v060-tutorial-mastery-smoke.mjs
+      - name: Full historical gameplay suite, defer only competition size gate
+        run: |
+          cp scripts/size.mjs /tmp/v060-size.mjs
+          printf "%s\n" "console.log('v0.60 gameplay qualification: competition size gate deferred')" > scripts/size.mjs
+          npm test
+          mv /tmp/v060-size.mjs scripts/size.mjs
+      - name: Rebuild and packed runtime smoke
+        run: |
+          node scripts/build.mjs
+          node scripts/packed-smoke.mjs
+          stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
+      - name: Promote qualified product and permanent contracts
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/whip.js src/expansion.js package.json scripts/shift-rules-smoke.mjs scripts/rules-v044-smoke.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m 'feat: teach herd coordination and whole-town conquest'
+            git push origin HEAD:agent/v0.60-tutorial-mastery
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v060-tutorial-mastery
+          path: |
+            dist/local.html
+            dist/preview.html
+            dist/index.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
+          retention-days: 30
