@@ -18,6 +18,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Prepare validated compressor search
+        run: |
+          if grep -q '"ect-bin":"1.4.1"' package.json && grep -q 'no packed compressor candidate passed smoke qualification' scripts/build.mjs; then
+            echo 'validated compressor search already promoted'
+          else
+            node scripts/apply-v059-validated-compressor-search.mjs
+          fi
       - run: npm install --no-audit --no-fund
       - name: Apply compact town grammar and sandy Washwater
         run: |
@@ -30,11 +37,6 @@ jobs:
             echo 'v0.59 kernel dedupe already promoted'
           else
             node scripts/apply-v059-kernel-dedupe.mjs
-          fi
-          if grep -q "allowFreeVars:true" scripts/build.mjs; then
-            echo 'Roadroller dirty candidate search already enabled'
-          else
-            node scripts/apply-v059-packer-search.mjs
           fi
       - name: Prove dedicated visual contract
         run: |
@@ -56,7 +58,7 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add src/core.js src/top10.js src/render.js package.json scripts/build.mjs scripts/v058-town-visual-smoke.mjs
           if ! git diff --cached --quiet; then
-            git commit -m "perf: widen safe packer search without visual cuts"
+            git commit -m "perf: select only smoke-qualified compressor candidates"
             git push origin HEAD:agent/v0.59-byte-recovery-washwater-sand
           fi
       - uses: actions/upload-artifact@v4
