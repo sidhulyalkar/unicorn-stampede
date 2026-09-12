@@ -1,7 +1,7 @@
-name: qualify-v063a-lossless-build-search
+name: qualify-v063a2-lossless-canvas-setters
 on:
   push:
-    branches: [agent/v0.63a-lossless-build-search]
+    branches: [agent/v0.63a2-lossless-canvas-setters]
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,22 +20,22 @@ jobs:
       - run: npm install --no-audit --no-fund
       - name: Full historical gameplay + visual qualification (defer only final size gate)
         run: |
-          cp scripts/size.mjs /tmp/v063a-size.mjs
-          printf "%s\n" "console.log('v0.63a exploratory size gate deferred; measured in next step')" > scripts/size.mjs
+          cp scripts/size.mjs /tmp/v063a2-size.mjs
+          printf "%s\n" "console.log('v0.63a2 exploratory size gate deferred; measured in next step')" > scripts/size.mjs
           npm test
-          mv /tmp/v063a-size.mjs scripts/size.mjs
+          mv /tmp/v063a2-size.mjs scripts/size.mjs
       - name: Measure lossless rich-town cartridge
         run: |
           stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
           node -e "let f=require('fs'),n=f.statSync('dist/unicorn-stampede.zip').size;console.log('delta vs 13312:',n-13312,'bytes')"
-          head -140 dist/compression.json
+          head -180 dist/compression.json
       - name: Verify archive root
         run: unzip -t dist/unicorn-stampede.zip && test "$(unzip -Z1 dist/unicorn-stampede.zip)" = "index.html"
       - name: Verify browser-safe local build
         run: test -s dist/local.html && ! grep -q "document.write" dist/local.html && cmp dist/local.html dist/preview.html
       - uses: actions/upload-artifact@v4
         with:
-          name: unicorn-stampede-v063a-lossless-build-search
+          name: unicorn-stampede-v063a2-lossless-canvas-setters
           path: |
             dist/local.html
             dist/preview.html
