@@ -37,17 +37,18 @@ jobs:
           node --check scripts/v050-menu-smoke.mjs
           node --check scripts/v051-launch-config-smoke.mjs
           node --check scripts/v053-conquest-menu-smoke.mjs
+          node --check scripts/packed-smoke.mjs
       - name: Install
         run: npm install --no-audit --no-fund
       - name: Dedicated tutorial mastery contract
         run: node scripts/v060-tutorial-mastery-smoke.mjs
-      - name: Full historical gameplay suite, defer only competition size gate
+      - name: Full historical gameplay and liveness suite
         run: |
-          cp scripts/size.mjs /tmp/v060-size.mjs
-          printf "%s\n" "console.log('v0.60 gameplay qualification: competition size gate deferred')" > scripts/size.mjs
+          cp package.json /tmp/v060-package.json
+          node -e "let f=require('fs'),p=JSON.parse(f.readFileSync('package.json'));p.scripts.test=p.scripts.test.replace(' && node scripts/prune-audit.mjs && node scripts/build.mjs && node scripts/packed-smoke.mjs && node scripts/size.mjs',' && node scripts/prune-audit.mjs');f.writeFileSync('package.json',JSON.stringify(p))"
           npm test
-          mv /tmp/v060-size.mjs scripts/size.mjs
-      - name: Rebuild and packed runtime smoke
+          mv /tmp/v060-package.json package.json
+      - name: Build and packed runtime qualification
         run: |
           node scripts/build.mjs
           node scripts/packed-smoke.mjs
@@ -56,7 +57,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/whip.js src/expansion.js package.json scripts/smoke.mjs scripts/difficulty-smoke.mjs scripts/v050-menu-smoke.mjs scripts/v051-launch-config-smoke.mjs scripts/v053-conquest-menu-smoke.mjs scripts/shift-rules-smoke.mjs scripts/rules-v044-smoke.mjs
+          git add src/whip.js src/expansion.js package.json scripts/smoke.mjs scripts/difficulty-smoke.mjs scripts/v050-menu-smoke.mjs scripts/v051-launch-config-smoke.mjs scripts/v053-conquest-menu-smoke.mjs scripts/packed-smoke.mjs scripts/shift-rules-smoke.mjs scripts/rules-v044-smoke.mjs
           if ! git diff --cached --quiet; then
             git commit -m 'feat: teach herd coordination and whole-town conquest'
             git push origin HEAD:agent/v0.60-tutorial-mastery
