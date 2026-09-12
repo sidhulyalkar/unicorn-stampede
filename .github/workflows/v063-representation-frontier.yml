@@ -1,0 +1,47 @@
+name: v063-representation-frontier
+on:
+  push:
+    branches: [agent/v0.63-representation-frontier]
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.63-representation-frontier
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Release representation contract
+        run: |
+          node --check scripts/release-staticize.mjs
+          node --check scripts/release-represent.mjs
+          node --check scripts/release-submit.mjs
+          node --check scripts/v063-release-represent-smoke.mjs
+          node scripts/v063-release-represent-smoke.mjs
+      - name: Full historical gameplay and liveness suite
+        run: |
+          cp package.json /tmp/v063-package.json
+          node -e "let f=require('fs'),p=JSON.parse(f.readFileSync('package.json'));p.scripts.test=p.scripts.test.replace(' && node scripts/prune-audit.mjs && node scripts/build.mjs && node scripts/packed-smoke.mjs && node scripts/size.mjs',' && node scripts/prune-audit.mjs');f.writeFileSync('package.json',JSON.stringify(p))"
+          npm test
+          mv /tmp/v063-package.json package.json
+      - name: Exact compressor search
+        run: |
+          node scripts/build.mjs
+          node scripts/packed-smoke.mjs
+          stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
+          sha256sum dist/unicorn-stampede.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v063-representation-frontier
+          path: |
+            dist/index.html
+            dist/local.html
+            dist/preview.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
+          retention-days: 30
