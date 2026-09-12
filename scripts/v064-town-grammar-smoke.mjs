@@ -1,6 +1,8 @@
-import fs from'node:fs';import{submissionSource}from'./release-submit.mjs';
+import fs from'node:fs';import{submissionSource,particleCuts}from'./release-submit.mjs';
 const files=['core.js','herd.js','render.js','ui.js','top10.js','polish.js','whip.js','worlds.js','expansion.js'],s=submissionSource(files.map(f=>fs.readFileSync('src/'+f,'utf8')).join('\n'));
 new Function(s);
-for(let a of ['function drawTownBuilding','function drawTownStreetDecor','const shopName=[0,5,10,8,9,11,12,6]','k*53%360',"text(L,x+w/2",'#9fe8ef','#f8ead8','#8fd3e1','#f5e9a2','WASHWATER BAY','#d2bc92'])if(!s.includes(a))throw Error('compact grammar quality marker missing: '+a);
-for(let a of ['function townWindow','function drawTownRoof','function drawTownAwning','function drawHouseDetails','function drawShopProps','function townFence','function townBush','function townLamp','function townBench','shopHue='])if(s.includes(a))throw Error('old town helper leaked: '+a);
-console.log('v0.64 compact grammar: PASS houses+shops, roofs, labels, awnings, windows, doors, damage, street life, Washwater identity retained');
+for(let a of particleCuts)if(s.includes(a))throw Error('particle cut leaked: '+a);
+for(let a of ['function drawPeople','function updatePeople','trail(u)','function drawTownBuilding','function drawTownStreetDecor','const shopName=[0,5,10,8,9,11,12,6]','k*53%360',"text(L,x+w/2",'#9fe8ef','#f8ead8','#8fd3e1','#f5e9a2','WASHWATER BAY','#d2bc92','SHIFT ×3','TO SMASH HALL → TEAM UP'])if(!s.includes(a))throw Error('compact grammar quality marker missing: '+a);
+for(let a of ["document.getElementById('c')",'const MM=Math,C=',"X.textAlign=['left','center','right'][a]","o.type=['sine','square','sawtooth','triangle'][t]","C.addEventListener('mousemove',point);","e.code[0]=='K'?e.code[3]:e.code","e.code==='Space'"])if(!s.includes(a))throw Error('shared representation marker missing: '+a);
+for(let a of ['function townWindow','function drawTownRoof','function drawTownAwning','function drawHouseDetails','function drawShopProps','function townFence','function townBush','function townLamp','function townBench','shopHue=',"document.getElementById('game')||",'K.KeyD','K.KeyA','K.KeyS','K.KeyW','K[e.code]=','with(','_startLevel','_soloStart','_startW','_plusStart'])if(s.includes(a))throw Error('old/unsafe representation leaked: '+a);
+console.log('v0.64 compact grammar: PASS rich game spine + houses/shops/roofs/labels/awnings/windows/doors/damage/street life + safe representation');
