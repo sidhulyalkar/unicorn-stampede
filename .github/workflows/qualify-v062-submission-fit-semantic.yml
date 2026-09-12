@@ -38,7 +38,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/render.js src/herd.js src/top10.js src/core.js src/polish.js package.json
+          git add src/render.js src/herd.js src/top10.js src/core.js src/whip.js src/expansion.js src/polish.js package.json
           if ! git diff --cached --quiet; then
             git commit -m "perf: fit semantic town inside js13k budget"
             git push origin HEAD:agent/v0.62-submission-fit-semantic
