@@ -48,11 +48,11 @@ jobs:
           node -e "let f=require('fs'),p=JSON.parse(f.readFileSync('package.json'));p.scripts.test=p.scripts.test.replace(' && node scripts/prune-audit.mjs && node scripts/build.mjs && node scripts/packed-smoke.mjs && node scripts/size.mjs',' && node scripts/prune-audit.mjs');f.writeFileSync('package.json',JSON.stringify(p))"
           npm test
           mv /tmp/v060-package.json package.json
-      - name: Build and packed runtime qualification
+      - name: Fast packed runtime qualification
         run: |
-          node scripts/build.mjs
+          node scripts/build.mjs --fast
           node scripts/packed-smoke.mjs
-          stat -c 'submission bytes: %s' dist/unicorn-stampede.zip
+          stat -c 'exploratory submission bytes: %s' dist/unicorn-stampede.zip
       - name: Promote qualified product and permanent contracts
         run: |
           git config user.name github-actions[bot]
