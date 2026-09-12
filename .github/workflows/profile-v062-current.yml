@@ -1,0 +1,25 @@
+name: profile-v062-current
+on:
+  push:
+    branches: [agent/v0.61-gameplay-polish]
+    paths:
+      - 'scripts/v062-current-byte-profiler.mjs'
+      - '.github/workflows/profile-v062-current.yml'
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.61-gameplay-polish
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Measure current quality frontier
+        run: node scripts/v062-current-byte-profiler.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v062-current-byte-profile
+          path: dist/v062-current-byte-profile.json
+          retention-days: 30

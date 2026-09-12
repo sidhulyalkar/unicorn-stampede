@@ -1,0 +1,81 @@
+name: promote-v061-gameplay-polish
+on:
+  push:
+    branches: [agent/v0.61-gameplay-polish]
+    paths:
+      - 'scripts/apply-v061-gameplay-polish.mjs'
+      - 'scripts/v061-gameplay-polish-smoke.mjs'
+      - 'scripts/apply-v061-browser-gesture-hardening.mjs'
+      - 'scripts/v061-browser-gesture-smoke.mjs'
+      - 'scripts/v060-tutorial-mastery-smoke.mjs'
+      - 'scripts/v053-conquest-menu-smoke.mjs'
+      - '.github/workflows/promote-v061-gameplay-polish.yml'
+permissions:
+  contents: write
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v0.61-gameplay-polish
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply gameplay polish tranche
+        run: |
+          node --check scripts/apply-v061-gameplay-polish.mjs
+          node --check scripts/apply-v061-browser-gesture-hardening.mjs
+          node --check scripts/v061-gameplay-polish-smoke.mjs
+          node --check scripts/v061-browser-gesture-smoke.mjs
+          node scripts/apply-v061-gameplay-polish.mjs
+          node scripts/apply-v061-browser-gesture-hardening.mjs
+      - name: Check transformed sources
+        run: |
+          node --check src/core.js
+          node --check src/herd.js
+          node --check src/render.js
+          node --check src/worlds.js
+          node --check src/polish.js
+          node --check src/whip.js
+          node --check src/expansion.js
+          node --check scripts/v060-tutorial-mastery-smoke.mjs
+          node --check scripts/v061-gameplay-polish-smoke.mjs
+          node --check scripts/v061-browser-gesture-smoke.mjs
+          node --check scripts/v053-conquest-menu-smoke.mjs
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: Dedicated gameplay polish contracts
+        run: |
+          node scripts/v061-gameplay-polish-smoke.mjs
+          node scripts/v061-browser-gesture-smoke.mjs
+      - name: Full historical gameplay and liveness suite
+        run: |
+          cp package.json /tmp/v061-package.json
+          node -e "let f=require('fs'),p=JSON.parse(f.readFileSync('package.json'));p.scripts.test=p.scripts.test.replace(' && node scripts/prune-audit.mjs && node scripts/build.mjs && node scripts/packed-smoke.mjs && node scripts/size.mjs',' && node scripts/prune-audit.mjs');f.writeFileSync('package.json',JSON.stringify(p))"
+          npm test
+          mv /tmp/v061-package.json package.json
+      - name: Fast packed runtime qualification
+        run: |
+          node scripts/build.mjs --fast
+          node scripts/packed-smoke.mjs
+          stat -c 'exploratory submission bytes: %s' dist/unicorn-stampede.zip
+      - name: Promote qualified product and contracts
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/core.js src/style.css src/herd.js src/render.js src/worlds.js src/polish.js src/whip.js src/expansion.js package.json scripts/v060-tutorial-mastery-smoke.mjs scripts/v053-conquest-menu-smoke.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m 'feat: harden browser input and preserve gameplay clarity'
+            git push origin HEAD:agent/v0.61-gameplay-polish
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-v061-gameplay-polish
+          path: |
+            dist/local.html
+            dist/preview.html
+            dist/index.html
+            dist/unicorn-stampede.zip
+            dist/compression.json
+          retention-days: 30
