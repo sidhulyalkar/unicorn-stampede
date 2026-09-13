@@ -7,22 +7,22 @@ function showcaseEdgeSignal(u){
 }
 function showcasePowerupDistance(u){let best=1e9;for(const p of ups)if(p.on)best=Math.min(best,Math.hypot(p.x-u.x,p.y-u.y));return best}
 function showcaseSwitchSignal(q,active,rapid=false){
-  const speed=Math.hypot(q.vx,q.vy),edge=showcaseEdgeSignal(q),slip=q.frontierSlip||0,power=showcasePowerupDistance(q),neglect=Math.max(0,q.cool||0),offRoute=!roadAt(q),stalled=speed<55&&!q.order;
+  const speed=Math.hypot(q.vx,q.vy),edge=showcaseEdgeSignal(q),edgeRisk=edge.near*(edge.out?1:speed<70?.7:.15),slip=q.frontierSlip||0,power=showcasePowerupDistance(q),neglect=Math.max(0,q.cool||0),offRoute=!roadAt(q),stalled=speed<55&&!q.order;
   let priority=1,detail=Math.min(30,neglect/2.5),reason='neglect';
   if(power<300){priority=2;detail=(300-power)/10+Math.min(8,neglect/6);reason='powerup'}
   if(offRoute||stalled){priority=3;detail=(offRoute?18:0)+(stalled?(55-speed)*.55:0)+Math.min(10,neglect/5);reason=stalled?'stalled':'off-route'}
-  if(q.distract>.04||edge.near>.32){priority=4;detail=q.distract*65+edge.near*34+(edge.out?18:0)+Math.min(8,neglect/6);reason=q.distract>.04?'distracted':'edge-risk'}
+  if(q.distract>.005||edgeRisk>.32){priority=4;detail=q.distract*65+edgeRisk*42+(edge.out?18:0)+Math.min(8,neglect/6);reason=q.distract>.005?'distracted':'edge-risk'}
   if(slip>.03){priority=5;detail=slip*90+Math.min(10,neglect/5);reason='fault-slip'}
   const distance=active?Math.hypot(q.x-active.x,q.y-active.y):0;
   detail+=cl(distance/420,0,rapid?18:5);
   const recent=showcaseSwitchRecent.includes(q.id);
   if(recent&&priority<4)detail-=rapid?90:32;
   if((q.cool||0)<0&&priority<4)detail-=90;
-  return{priority,detail,reason,speed,edge,power,neglect,distance,recent,slip};
+  return{priority,detail,reason,speed,edge,edgeRisk,power,neglect,distance,recent,slip};
 }
-function showcaseChooseSwitchTarget(){
+function showcaseChooseSwitchTarget(rapid=clock-showcaseSwitchLast<.72){
   const current=caps[0],active=unis[current];if(!active)return current;
-  const rapid=clock-showcaseSwitchLast<.72;let best=current,bestSignal=null;
+  let best=current,bestSignal=null;
   for(let i=0;i<unis.length;i++){
     const q=unis[i];if(!q?.live||i===current)continue;const s=showcaseSwitchSignal(q,active,rapid);
     if(!bestSignal||s.priority>bestSignal.priority||s.priority===bestSignal.priority&&(s.detail>bestSignal.detail+.001||Math.abs(s.detail-bestSignal.detail)<=.001&&i<best)){best=i;bestSignal=s}
@@ -33,9 +33,9 @@ const showcaseSwitchCycleBase=cycle;
 cycle=function(){
   if(state!=='play'||!level)return showcaseSwitchCycleBase();
   const old=caps[0],from=unis[old];if(!from?.live)return showcaseSwitchCycleBase();
-  const rapid=clock-showcaseSwitchLast<.72;showcaseSwitchBurst=rapid?showcaseSwitchBurst+1:1;showcaseSwitchLast=clock;
+  const rapid=clock-showcaseSwitchLast<.72;showcaseSwitchBurst=rapid?showcaseSwitchBurst+1:1;
   if(Math.hypot(from.vx,from.vy)>35){from.order=roadAt(from)?5.2:4;from.ox=Math.cos(from.a);from.oy=Math.sin(from.a)}
-  from.cool=-1;const next=showcaseChooseSwitchTarget();
+  from.cool=-1;const next=showcaseChooseSwitchTarget(rapid);showcaseSwitchLast=clock;
   if(next!==old){caps[0]=next;const to=unis[next];to.order=to.cool=0;to.distract=Math.max(0,to.distract-.2);showcaseSwitchRecent.push(next);if(showcaseSwitchRecent.length>3)showcaseSwitchRecent.shift()}
 };
 const showcaseSwitchStartBase=startLevel;
