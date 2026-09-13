@@ -22,9 +22,9 @@ function showcaseSwitchSignal(q,active,rapid=false){
 }
 function showcaseChooseSwitchTarget(rapid=clock-showcaseSwitchLast<.72){
   const current=caps[0],active=unis[current];if(!active)return current;
-  let best=current,bestSignal=null;
+  const fresh=rapid&&unis.some((q,i)=>q?.live&&i!==current&&!showcaseSwitchRecent.includes(q.id));let best=current,bestSignal=null;
   for(let i=0;i<unis.length;i++){
-    const q=unis[i];if(!q?.live||i===current)continue;const s=showcaseSwitchSignal(q,active,rapid);
+    const q=unis[i];if(!q?.live||i===current||fresh&&showcaseSwitchRecent.includes(q.id))continue;const s=showcaseSwitchSignal(q,active,rapid);
     if(!bestSignal||s.priority>bestSignal.priority||s.priority===bestSignal.priority&&(s.detail>bestSignal.detail+.001||Math.abs(s.detail-bestSignal.detail)<=.001&&i<best)){best=i;bestSignal=s}
   }
   return best;
@@ -33,10 +33,10 @@ const showcaseSwitchCycleBase=cycle;
 cycle=function(){
   if(state!=='play'||!level)return showcaseSwitchCycleBase();
   const old=caps[0],from=unis[old];if(!from?.live)return showcaseSwitchCycleBase();
-  const rapid=clock-showcaseSwitchLast<.72;showcaseSwitchBurst=rapid?showcaseSwitchBurst+1:1;
+  const rapid=clock-showcaseSwitchLast<.72;showcaseSwitchBurst=rapid?showcaseSwitchBurst+1:1;if(!rapid)showcaseSwitchRecent=[old];
   if(Math.hypot(from.vx,from.vy)>35){from.order=roadAt(from)?5.2:4;from.ox=Math.cos(from.a);from.oy=Math.sin(from.a)}
   from.cool=-1;const next=showcaseChooseSwitchTarget(rapid);showcaseSwitchLast=clock;
-  if(next!==old){caps[0]=next;const to=unis[next];to.order=to.cool=0;to.distract=Math.max(0,to.distract-.2);showcaseSwitchRecent.push(next);if(showcaseSwitchRecent.length>3)showcaseSwitchRecent.shift()}
+  if(next!==old){caps[0]=next;const to=unis[next];to.order=to.cool=0;to.distract=Math.max(0,to.distract-.2);if(!showcaseSwitchRecent.includes(next))showcaseSwitchRecent.push(next);if(showcaseSwitchRecent.length>unis.filter(q=>q.live).length)showcaseSwitchRecent.shift()}
 };
 const showcaseSwitchStartBase=startLevel;
 startLevel=function(n){const r=showcaseSwitchStartBase(n);showcaseSwitchLast=-99;showcaseSwitchBurst=0;showcaseSwitchRecent=[];return r};
