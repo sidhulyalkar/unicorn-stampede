@@ -39,6 +39,7 @@ jobs:
           node --check src/showcase-performance.js
           node --check src/showcase-boundaries.js
           node --check src/showcase-switching.js
+          node --check src/showcase-transitions.js
           node --check src/showcase-feel.js
           node --check src/showcase-stats.js
           node --check src/showcase-shell.js
