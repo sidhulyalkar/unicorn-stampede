@@ -25,7 +25,7 @@ function showcaseEnsureMusic(){
 function showcaseApplyAudioSettings(){
   if(!showcaseMusicBus||!AC)return;
   const on=globalThis.showcaseSettings?.music!==false&&!muted;
-  showcaseMusicBus.gain.setTargetAtTime(on?.7:0,AC.currentTime,.12);
+  showcaseMusicBus.gain.setTargetAtTime(on ? .7 : 0,AC.currentTime,.12);
 }
 function showcasePluck(freq,volume=.012,duration=.16){
   if(!AC||!showcaseMusicBus||showcaseSettings?.music===false||muted)return;
@@ -51,7 +51,7 @@ function showcaseUpdateMusic(){
   if(beat===showcaseMusicPulse)return;showcaseMusicPulse=beat;
   const scales=[[1,1.25,1.5,2],[1,1.2,1.5,1.8],[1,1.125,1.5,1.6875]],scale=scales[zone]||scales[0];
   const note=scale[(beat+zone*2)%scale.length];
-  showcasePluck(root*2*note,.009+chaosNow*.008,captures?.11:.17);
+  showcasePluck(root*2*note,.009+chaosNow*.008,captures ? .11 : .17);
   if(captures>1&&beat%2===0)showcasePluck(root*3,.009,.08);
 }
 const showcaseMusicUpdateBase=update;
