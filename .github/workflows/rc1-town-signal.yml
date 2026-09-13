@@ -11,8 +11,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
+      - run: npm install --no-audit --no-fund
       - run: node scripts/rc1-town-signal-smoke.mjs
       - run: npm run build
       - run: npm run size
