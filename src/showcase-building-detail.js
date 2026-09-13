@@ -1,5 +1,5 @@
 // World-specific facade language for the unconstrained showcase edition.
-const showcaseBuildingBase=drawTownBuilding;
+const showcaseWorldDetailBuildingBase=drawTownBuilding;
 function showcasePrismFacade(o,x,y,w,h){
   // Flower boxes and civic pennants make the baseline city warm and inhabited.
   if(o.k){
@@ -29,7 +29,7 @@ function showcaseCloudtopFacade(o,x,y,w,h){
   if(w>220){X.strokeStyle='#7d929e';X.lineWidth=3;X.beginPath();X.moveTo(x+20,y+30);X.lineTo(x+w-20,y+30);X.stroke()}
 }
 drawTownBuilding=function(o,tall,d){
-  showcaseBuildingBase(o,tall,d);
+  showcaseWorldDetailBuildingBase(o,tall,d);
   if(!level||!o||o.hp<=0)return;
   let x=o.x,y=o.y,w=o.w,h=o.h;if(tall){y-=45;h+=45}
   X.save();
