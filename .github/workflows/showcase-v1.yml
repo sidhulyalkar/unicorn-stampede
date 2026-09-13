@@ -31,6 +31,7 @@ jobs:
           node --check src/showcase-audio.js
           node --check src/showcase-input.js
           node --check src/showcase-stats.js
+          node --check src/showcase-shell.js
       - name: Showcase contracts
         run: |
           node scripts/showcase-smoke.mjs
