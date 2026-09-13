@@ -16,6 +16,12 @@ personBlocked=function(x,y){
   for(const o of a)if(o.hp>0&&x>o.x-16&&x<o.x+o.w+16&&y>o.y-16&&y<o.y+o.h+42)return true;
   return false;
 };
+// Cloudtop and Frontier custom facades are complete buildings, so do not render the generic facade underneath them.
+const showcaseDetailedBuilding=drawTownBuilding;
+drawTownBuilding=function(o,tall,d){
+  if(!level||!o||o.hp<=0||zone<2)return showcaseDetailedBuilding(o,tall,d);
+  let x=o.x,y=o.y,w=o.w,h=o.h;if(tall){y-=45;h+=45}X.save();if(zone===2)showcaseCloudtopFacade(o,x,y,w,h,d);else showcaseFrontierFacade(o,x,y,w,h,d);X.restore();
+};
 function showcaseMotionDensity(n){return Math.max(1,Math.round(n*showcaseQuality))}
 const showcasePerformanceStartBase=startLevel;
 startLevel=function(n){const r=showcasePerformanceStartBase(n);showcaseBuildObjectGrid();showcaseInvalidateSurface();return r};
@@ -27,4 +33,4 @@ update=function(dt){
   return showcasePerformanceUpdateBase(dt);
 };
 globalThis.showcaseMotionDensity=showcaseMotionDensity;
-globalThis.showcasePerformance=()=>({frameMs:+showcaseFrameMs.toFixed(2),quality:showcaseQuality,gridBuckets:showcaseObjectGrid.size,surface:showcaseSurfaceStats()});
+globalThis.showcasePerformance=()=>({frameMs:+showcaseFrameMs.toFixed(2),quality:showcaseQuality,gridBuckets:showcaseObjectGrid.size,surface:showcaseSurfaceStats(),facadeFastPath:level&&zone>=2});
