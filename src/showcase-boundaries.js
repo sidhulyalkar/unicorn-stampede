@@ -1,7 +1,7 @@
 // Showcase v1.5 geometry safety net. Runs after world hazards so no system may leave a live unicorn
 // embedded in a solid or continuously pushing outward against the map perimeter.
 const showcaseEdgeAge=new Map();
-let showcaseBoundaryCorrections=0,showcaseSolidCorrections=0,showcaseInvalidRecoveries=0,showcaseRoadEscapes=0;
+let showcaseBoundaryCorrections=0,showcaseSolidCorrections=0,showcaseInvalidRecoveries=0,showcaseRoadEscapes=0,showcaseOrderEscapes=0;
 function showcasePerimeterInfo(u){
   const left=u.x-20,right=WW-20-u.x,top=u.y-20,bottom=WH-20-u.y,min=Math.min(left,right,top,bottom);
   let nx=0,ny=0;if(left<58)nx+=1;if(right<58)nx-=1;if(top<58)ny+=1;if(bottom<58)ny-=1;const m=Math.hypot(nx,ny)||1;
@@ -44,11 +44,15 @@ function showcaseBoundaryStep(dt){
     showcaseProjectSolid(u);p=showcasePerimeterInfo(u);
     if(u===active){showcaseEdgeAge.set(u.id,0);continue}
     const speed=Math.hypot(u.vx,u.vy),risk=p.near&&(p.out||speed<52),age=risk?(showcaseEdgeAge.get(u.id)||0)+dt:Math.max(0,(showcaseEdgeAge.get(u.id)||0)-dt*2.5);showcaseEdgeAge.set(u.id,age);
-    if(age>.18){const kick=90+Math.min(120,age*110);u.vx+=p.nx*kick;u.vy+=p.ny*kick;if(!u.order){u.tx=cl(u.x+p.nx*260,42,WW-42);u.ty=cl(u.y+p.ny*260,42,WH-42);u.ai=.5}}
+    if(age>.18){
+      const kick=90+Math.min(120,age*110);u.vx+=p.nx*kick;u.vy+=p.ny*kick;
+      const orderOut=u.order&&(u.ox*p.nx+u.oy*p.ny)<-.12;if(orderOut){u.order=0;showcaseOrderEscapes++}
+      if(!u.order){u.tx=cl(u.x+p.nx*260,42,WW-42);u.ty=cl(u.y+p.ny*260,42,WH-42);u.ai=.5}
+    }
   }
 }
 const showcaseBoundaryUpdateBase=update;
 update=function(dt){const r=showcaseBoundaryUpdateBase(dt);showcaseBoundaryStep(dt);return r};
 const showcaseBoundaryStartBase=startLevel;
 startLevel=function(n){const r=showcaseBoundaryStartBase(n);showcaseEdgeAge.clear();return r};
-globalThis.showcaseBoundaries={step:showcaseBoundaryStep,perimeter:showcasePerimeterInfo,overlap:showcaseSolidCandidate,get stats(){return{boundaryCorrections:showcaseBoundaryCorrections,solidCorrections:showcaseSolidCorrections,invalidRecoveries:showcaseInvalidRecoveries,roadEscapes:showcaseRoadEscapes,edgeAges:Object.fromEntries(showcaseEdgeAge)}}};
+globalThis.showcaseBoundaries={step:showcaseBoundaryStep,perimeter:showcasePerimeterInfo,overlap:showcaseSolidCandidate,get stats(){return{boundaryCorrections:showcaseBoundaryCorrections,solidCorrections:showcaseSolidCorrections,invalidRecoveries:showcaseInvalidRecoveries,roadEscapes:showcaseRoadEscapes,orderEscapes:showcaseOrderEscapes,edgeAges:Object.fromEntries(showcaseEdgeAge)}}};
