@@ -8,7 +8,7 @@ showcaseFullscreen.addEventListener('click',async()=>{
 });
 document.addEventListener('fullscreenchange',()=>showcaseFullscreen.textContent=document.fullscreenElement?'× EXIT FULLSCREEN':'⛶ FULLSCREEN');
 document.body.append(showcaseStatus,showcaseFullscreen);
-const showcaseWorldNames=['PRISMBOROUGH','WASHWATER BAY','CLOUDTOP HEIGHTS'];
+const showcaseWorldNames=['PRISMBOROUGH','WASHWATER BAY','CLOUDTOP HEIGHTS','FAULTLINE FRONTIER'];
 function showcaseRefreshStatus(){
   const world=showcaseWorldNames[typeof zone==='number'?zone:0]||showcaseWorldNames[0];
   const phase=state==='play'?(paused?'PAUSED':'LIVE RUN'):state==='end'?'RUN COMPLETE':'READY';
