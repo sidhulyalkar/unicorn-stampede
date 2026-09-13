@@ -1,0 +1,22 @@
+name: RC1 town signal
+on:
+  push:
+    branches: [agent/rc1-town-signal-per-byte]
+  workflow_dispatch:
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/rc1-town-signal-smoke.mjs
+      - run: npm run build
+      - run: npm run size
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc1-town-signal-dist
+          path: dist/
