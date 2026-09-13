@@ -52,7 +52,10 @@ jobs:
           node scripts/showcase-v13-smoke.mjs
           node scripts/showcase-v14-smoke.mjs
           node scripts/showcase-v15-smoke.mjs
+          node scripts/shift-rules-smoke.mjs
+          node scripts/v046-antistuck-smoke.mjs
           node scripts/v049-world-identity-smoke.mjs
+          node scripts/v052-gameplay-liveness-smoke.mjs
           node scripts/v061-browser-gesture-smoke.mjs
       - run: npm install --no-save playwright@1.55.0
       - run: npx playwright install --with-deps chromium firefox
