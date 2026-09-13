@@ -39,6 +39,7 @@ jobs:
           node --check src/showcase-feel.js
           node --check src/showcase-stats.js
           node --check src/showcase-shell.js
+          node --check scripts/showcase-v14-browser-smoke.mjs
       - name: Showcase contracts
         run: |
           node scripts/showcase-smoke.mjs
@@ -51,4 +52,6 @@ jobs:
       - run: npm install --no-save playwright@1.55.0
       - run: npx playwright install --with-deps chromium firefox
       - name: Cross-browser gameplay
-        run: node scripts/showcase-browser-smoke.mjs
+        run: |
+          node scripts/showcase-browser-smoke.mjs
+          node scripts/showcase-v14-browser-smoke.mjs
