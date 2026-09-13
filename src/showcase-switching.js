@@ -1,6 +1,6 @@
-// Showcase v1.5: deterministic, explainable herd handoff policy.
+// Showcase v1.5+: deterministic, explainable herd handoff policy.
 // The compact JS13k selector stays frozen; this wrapper only changes full-town showcase runs.
-let showcaseSwitchLast=-99,showcaseSwitchBurst=0,showcaseSwitchRecent=[];
+let showcaseSwitchLast=-99,showcaseSwitchBurst=0,showcaseSwitchRecent=[],showcaseSwitchDecision=null;
 function showcaseEdgeSignal(u){
   const d=Math.min(u.x-20,WW-20-u.x,u.y-20,WH-20-u.y),near=cl(1-d/90,0,1),out=(u.x<72&&u.vx<0)||(u.x>WW-72&&u.vx>0)||(u.y<72&&u.vy<0)||(u.y>WH-72&&u.vy>0);
   return{distance:d,near,out};
@@ -35,9 +35,9 @@ cycle=function(){
   const old=caps[0],from=unis[old];if(!from?.live)return showcaseSwitchCycleBase();
   const rapid=clock-showcaseSwitchLast<.72;showcaseSwitchBurst=rapid?showcaseSwitchBurst+1:1;if(!rapid)showcaseSwitchRecent=[old];
   if(Math.hypot(from.vx,from.vy)>35){from.order=roadAt(from)?5.2:4;from.ox=Math.cos(from.a);from.oy=Math.sin(from.a)}
-  from.cool=-1;const next=showcaseChooseSwitchTarget(rapid);showcaseSwitchLast=clock;
-  if(next!==old){caps[0]=next;const to=unis[next];to.order=to.cool=0;to.distract=Math.max(0,to.distract-.2);if(!showcaseSwitchRecent.includes(next))showcaseSwitchRecent.push(next);if(showcaseSwitchRecent.length>unis.filter(q=>q.live).length)showcaseSwitchRecent.shift()}
+  from.cool=-1;const next=showcaseChooseSwitchTarget(rapid),signal=next!==old?showcaseSwitchSignal(unis[next],from,rapid):null;showcaseSwitchLast=clock;
+  if(next!==old){caps[0]=next;const to=unis[next];to.order=to.cool=0;to.distract=Math.max(0,to.distract-.2);showcaseSwitchDecision={from:old,to:next,reason:signal.reason,priority:signal.priority,detail:signal.detail,rapid,burst:showcaseSwitchBurst,time:clock,distance:signal.distance,power:signal.power,edgeRisk:signal.edgeRisk,slip:signal.slip};if(!showcaseSwitchRecent.includes(next))showcaseSwitchRecent.push(next);if(showcaseSwitchRecent.length>unis.filter(q=>q.live).length)showcaseSwitchRecent.shift()}
 };
 const showcaseSwitchStartBase=startLevel;
-startLevel=function(n){const r=showcaseSwitchStartBase(n);showcaseSwitchLast=-99;showcaseSwitchBurst=0;showcaseSwitchRecent=[];return r};
-globalThis.showcaseSwitching={choose:showcaseChooseSwitchTarget,signal:(i)=>showcaseSwitchSignal(unis[i],unis[caps[0]],clock-showcaseSwitchLast<.72),get recent(){return[...showcaseSwitchRecent]},get burst(){return showcaseSwitchBurst}};
+startLevel=function(n){const r=showcaseSwitchStartBase(n);showcaseSwitchLast=-99;showcaseSwitchBurst=0;showcaseSwitchRecent=[];showcaseSwitchDecision=null;return r};
+globalThis.showcaseSwitching={choose:showcaseChooseSwitchTarget,signal:(i)=>showcaseSwitchSignal(unis[i],unis[caps[0]],clock-showcaseSwitchLast<.72),get recent(){return[...showcaseSwitchRecent]},get burst(){return showcaseSwitchBurst},get lastDecision(){return showcaseSwitchDecision?{...showcaseSwitchDecision}:null}};
