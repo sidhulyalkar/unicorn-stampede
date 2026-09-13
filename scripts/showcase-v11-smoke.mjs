@@ -1,0 +1,11 @@
+import fs from'node:fs';
+const read=p=>fs.readFileSync(p,'utf8'),need=(s,x,m)=>{if(!s.includes(x))throw Error(m)};
+const index=read('index.html'),motion=read('src/showcase-world-motion.js'),settings=read('src/showcase-settings.js'),audio=read('src/showcase-audio.js'),input=read('src/showcase-input.js'),stats=read('src/showcase-stats.js');
+for(const f of['showcase-world-motion.js','showcase-settings.js','showcase-audio.js','showcase-input.js','showcase-stats.js'])need(index,`src/${f}`,`index missing ${f}`);
+need(index,'src/showcase.css','showcase stylesheet missing');
+need(motion,'showcasePrismMotion','Prismborough motion layer missing');need(motion,'showcaseWashwaterMotion','Washwater motion layer missing');need(motion,'showcaseCloudtopMotion','Cloudtop motion layer missing');need(motion,"typeof wind==='number'",'Cloudtop wind visualization no longer follows gameplay wind');
+need(settings,'reducedMotion','reduced motion setting missing');need(settings,'screenShake','screen shake setting missing');need(settings,'highContrast','high contrast setting missing');need(settings,'music:true','music setting missing');need(settings,'sfx:true','SFX setting missing');need(settings,'SHOWCASE_SETTINGS_KEY','persistent setting storage missing');
+need(audio,'showcaseMusicBus','separate music bus missing');need(audio,'showcaseToneBase','SFX wrapper missing');need(audio,'captures','adaptive danger audio missing');need(audio,'roots=[110,98,123]','world-specific music roots missing');
+need(input,'navigator.getGamepads','Gamepad API polling missing');need(input,"data-action=\"whip\"",'touch whip missing');need(input,"data-action=\"switch\"",'touch switch missing');need(input,"data-action=\"dash\"",'touch dash missing');need(input,'showcaseMergeMoveKeys','multi-source movement merge missing');
+need(stats,'RUN TELEMETRY','end-screen telemetry missing');need(stats,'switches','switch telemetry missing');need(stats,'powerups','power-up telemetry missing');need(stats,'buildings','structure telemetry missing');
+console.log('showcase v1.1 contracts: PASS worlds + accessibility + audio + controller/touch + telemetry');
