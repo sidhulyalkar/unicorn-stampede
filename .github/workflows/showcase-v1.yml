@@ -20,7 +20,7 @@ jobs:
           node --check src/render.js
           node --check src/showcase-world-render.js
           node --check src/ui.js
-          node --check src/showcase-boot-guard.js
+          node --check src/showcase-ui.js
           node --check src/top10.js
           node --check src/polish.js
           node --check src/input-guard.js
