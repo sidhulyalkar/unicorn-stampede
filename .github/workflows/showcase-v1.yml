@@ -1,7 +1,7 @@
 name: Post-js13k showcase
 on:
   push:
-    branches: [main, agent/post-js13k-showcase-v1, agent/showcase-v1-1, agent/showcase-v1-2-world-systems, agent/showcase-v1-3-faultline-frontier, agent/showcase-v1-4-feel-polish, agent/showcase-v1-5-switching-boundaries]
+    branches: [main, agent/post-js13k-showcase-v1, agent/showcase-v1-1, agent/showcase-v1-2-world-systems, agent/showcase-v1-3-faultline-frontier, agent/showcase-v1-4-feel-polish, agent/showcase-v1-5-switching-boundaries, agent/showcase-v1-6-stress-fuzz]
   pull_request:
     branches: [main]
 jobs:
@@ -44,6 +44,7 @@ jobs:
           node --check src/showcase-shell.js
           node --check scripts/showcase-v14-browser-smoke.mjs
           node --check scripts/showcase-v15-browser-smoke.mjs
+          node --check scripts/showcase-v16-stress-fuzz.mjs
       - name: Core gameplay regressions
         run: |
           node scripts/dash-contract-smoke.mjs
@@ -80,3 +81,5 @@ jobs:
           node scripts/showcase-browser-smoke.mjs
           node scripts/showcase-v14-browser-smoke.mjs
           node scripts/showcase-v15-browser-smoke.mjs
+      - name: Deterministic long-run stress
+        run: node scripts/showcase-v16-stress-fuzz.mjs
