@@ -1,5 +1,6 @@
 // Showcase surface renderer. Loaded immediately after render.js so later gameplay wrappers
 // keep their normal composition while each world receives an intentional material palette.
+globalThis.showcaseBootReady=0;
 const SHOWCASE_WORLD_PALETTES=[
   {name:'festival-garden',ground:'#738e6b',curb:'#aaa28a',road:'#394550',lane:'#e5c76d',accent:'#ee7898',accent2:'#63bfa8',glow:'#f7da82',shadow:'#26323a'},
   {name:'sea-glass-harbor',ground:'#c9b88c',curb:'#a99f86',road:'#3e5b61',lane:'#dfcd8b',accent:'#df7967',accent2:'#5eb3b5',glow:'#efd37d',shadow:'#293e42'},
