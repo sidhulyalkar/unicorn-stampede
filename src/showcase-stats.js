@@ -16,7 +16,7 @@ power=function(u,p){const was=p?.on;const r=showcaseStatsPowerBase(u,p);if(was&&
 const showcaseStatsHitBase=hitObj;
 hitObj=function(u,o,d){const before=o?.hp||0,r=showcaseStatsHitBase(u,o,d);if(o&&before>o.hp){showcaseRunStats.damage+=before-o.hp;if(before>0&&o.hp<=0)showcaseRunStats.buildings++}return r};
 function showcaseFormatTime(seconds){const s=Math.max(0,seconds|0);return`${s/60|0}:${String(s%60).padStart(2,'0')}`}
-function showcaseAttentionSummary(s){const a=Object.entries(s.switchReasons).filter(([r])=>r!=='unknown').sort((x,y)=>y[1]-x[1]||x[0].localeCompare(y[0])).slice(0,3);return a.length?a.map(([r,n])=>`${globalThis.showcaseReasonLabel?.(r)||r.toUpperCase()} ${n}`).join('  •  '):'NO SWITCHES'}
+function showcaseAttentionSummaryText(s){const a=Object.entries(s.switchReasons).filter(([r])=>r!=='unknown').sort((x,y)=>y[1]-x[1]||x[0].localeCompare(y[0])).slice(0,3);return a.length?a.map(([r,n])=>`${globalThis.showcaseReasonLabel?.(r)||r.toUpperCase()} ${n}`).join('  •  '):'NO SWITCHES'}
 const showcaseStatsEndBase=end;
 end=function(){
   showcaseStatsEndBase();
@@ -26,6 +26,6 @@ end=function(){
   X.fillStyle='#fff';
   const cells=[['TIME',showcaseFormatTime(s.time)],['SWITCHES',s.switches],['WHIPS',s.whips],['DASHES',s.dashes],['POWER-UPS',s.powerups],['STRUCTURES',s.buildings],['MAX CHARGE',s.maxCharge+'/5'],['DAMAGE',Math.round(s.damage)]];
   cells.forEach(([label,value],i)=>{const col=i%4,row=i/4|0,x=W/2-245+col*165,y=416+row*48;text(String(value),x,y,18,'center');X.fillStyle='#a9bdd2';text(label,x,y+18,9,'center');X.fillStyle='#fff'});
-  X.fillStyle='#a9bdd2';text('ATTENTION DIRECTOR',W/2,508,9,'center');X.fillStyle='#fff';text(showcaseAttentionSummary(s),W/2,526,11,'center');
+  X.fillStyle='#a9bdd2';text('ATTENTION DIRECTOR',W/2,508,9,'center');X.fillStyle='#fff';text(showcaseAttentionSummaryText(s),W/2,526,11,'center');
 };
-globalThis.showcaseAttentionSummary=()=>showcaseAttentionSummary(showcaseRunStats);
+globalThis.showcaseAttentionSummary=()=>showcaseAttentionSummaryText(showcaseRunStats);
