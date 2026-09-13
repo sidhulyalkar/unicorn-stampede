@@ -1,9 +1,13 @@
 // Faultline Frontier: a real fourth-world hazard layer built on the stable herd/capture systems.
+// The six fissures occupy the generator's old hedge/barrier reservations, so they fracture
+// deliberately empty geometry instead of slicing through storefronts.
 const frontierFaults=[
-  {name:'RATTLER RIFT',width:38,breakAt:14,points:[[500,80],[575,245],[530,430],[675,610],[620,815]]},
-  {name:'MESA SPLIT',width:44,breakAt:25,points:[[1390,420],[1530,585],[1460,785],[1635,955],[1570,1135]]},
-  {name:'COYOTE CRACK',width:41,breakAt:35,points:[[2390,930],[2525,1090],[2445,1280],[2590,1470],[2490,1730]]},
-  {name:'DRYBONE CUT',width:31,breakAt:43,points:[[760,1190],[900,1290],[1000,1450],[1160,1540]]},
+  {name:'RATTLER RIFT',width:25,breakAt:14,points:[[720,392],[790,382],[858,405],[930,386],[1050,399]]},
+  {name:'MESA SPLIT',width:27,breakAt:22,points:[[720,1392],[790,1381],[862,1410],[938,1387],[1050,1398]]},
+  {name:'COYOTE CRACK',width:28,breakAt:30,points:[[2260,394],[2332,379],[2410,407],[2482,384],[2590,398]]},
+  {name:'DRYBONE CUT',width:26,breakAt:38,points:[[2260,1395],[2334,1380],[2412,1408],[2490,1386],[2590,1399]]},
+  {name:"SHERIFF'S SCAR",width:24,breakAt:46,points:[[1287,520],[1272,585],[1304,652],[1278,720],[1288,810]]},
+  {name:"DEVIL'S LADDER",width:25,breakAt:54,points:[[1907,1100],[1889,1168],[1921,1240],[1895,1320],[1908,1400]]},
 ];
 let frontierClock=0,frontierLastTremor=-1;
 const frontierSlip=new Map();
