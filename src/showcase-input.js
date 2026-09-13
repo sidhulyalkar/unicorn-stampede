@@ -20,7 +20,7 @@ function showcaseEdge(buttons,index){
   const down=!!buttons[index]?.pressed,old=!!showcasePadButtons[index];showcasePadButtons[index]=down;return down&&!old;
 }
 function showcasePollGamepad(){
-  const pad=navigator.getGamepads?.()?.find(Boolean);
+  const pads=navigator.getGamepads?.()||[],pad=[...pads].find(Boolean);
   for(const k in showcasePadKeys)showcasePadKeys[k]=0;
   if(!pad){showcasePadButtons=[];showcaseMergeMoveKeys();return}
   const x=Math.abs(pad.axes?.[0]||0)>.18?pad.axes[0]:0,y=Math.abs(pad.axes?.[1]||0)>.18?pad.axes[1]:0,b=pad.buttons||[];
