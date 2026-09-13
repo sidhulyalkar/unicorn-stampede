@@ -1,7 +1,7 @@
 name: Post-js13k showcase
 on:
   push:
-    branches: [main, agent/post-js13k-showcase-v1, agent/showcase-v1-1, agent/showcase-v1-2-world-systems, agent/showcase-v1-3-faultline-frontier, agent/showcase-v1-4-feel-polish]
+    branches: [main, agent/post-js13k-showcase-v1, agent/showcase-v1-1, agent/showcase-v1-2-world-systems, agent/showcase-v1-3-faultline-frontier, agent/showcase-v1-4-feel-polish, agent/showcase-v1-5-switching-boundaries]
   pull_request:
     branches: [main]
 jobs:
@@ -37,10 +37,13 @@ jobs:
           node --check src/showcase-audio.js
           node --check src/showcase-input.js
           node --check src/showcase-performance.js
+          node --check src/showcase-boundaries.js
+          node --check src/showcase-switching.js
           node --check src/showcase-feel.js
           node --check src/showcase-stats.js
           node --check src/showcase-shell.js
           node --check scripts/showcase-v14-browser-smoke.mjs
+          node --check scripts/showcase-v15-browser-smoke.mjs
       - name: Showcase contracts
         run: |
           node scripts/showcase-smoke.mjs
@@ -48,6 +51,7 @@ jobs:
           node scripts/showcase-v12-smoke.mjs
           node scripts/showcase-v13-smoke.mjs
           node scripts/showcase-v14-smoke.mjs
+          node scripts/showcase-v15-smoke.mjs
           node scripts/v049-world-identity-smoke.mjs
           node scripts/v061-browser-gesture-smoke.mjs
       - run: npm install --no-save playwright@1.55.0
@@ -56,3 +60,4 @@ jobs:
         run: |
           node scripts/showcase-browser-smoke.mjs
           node scripts/showcase-v14-browser-smoke.mjs
+          node scripts/showcase-v15-browser-smoke.mjs
