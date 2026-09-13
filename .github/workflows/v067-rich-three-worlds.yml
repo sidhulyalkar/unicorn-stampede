@@ -1,0 +1,23 @@
+name: v0.67 rich three worlds
+on:
+  push:
+    branches: [agent/v0.67-rich-three-worlds]
+  workflow_dispatch:
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Rich visual contract
+        run: node scripts/v067-rich-three-worlds-smoke.mjs
+      - name: Safe symbol contract
+        run: node scripts/v065-safe-symbol-smoke.mjs
+      - name: Rich town grammar contract
+        run: node scripts/v064-town-grammar-smoke.mjs
+      - name: Historical gameplay/liveness contracts
+        run: npm test
