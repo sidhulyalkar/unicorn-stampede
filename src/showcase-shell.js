@@ -16,3 +16,5 @@ function showcaseRefreshStatus(){
 }
 showcaseRefreshStatus();setInterval(showcaseRefreshStatus,500);
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='play')paused=1});
+// Final script in the showcase stack: only now may the compact core enter its animation loop.
+globalThis.showcaseBootReady=1;
