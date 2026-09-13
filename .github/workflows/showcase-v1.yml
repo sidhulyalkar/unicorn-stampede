@@ -44,6 +44,27 @@ jobs:
           node --check src/showcase-shell.js
           node --check scripts/showcase-v14-browser-smoke.mjs
           node --check scripts/showcase-v15-browser-smoke.mjs
+      - name: Core gameplay regressions
+        run: |
+          node scripts/dash-contract-smoke.mjs
+          node scripts/competitive-smoke.mjs
+          node scripts/interference-smoke.mjs
+          node scripts/response-smoke.mjs
+          node scripts/difficulty-smoke.mjs
+          node scripts/shift-rules-smoke.mjs
+          node scripts/progression-smoke.mjs
+          node scripts/washwater-smoke.mjs
+          node scripts/whip-render-smoke.mjs
+          node scripts/whip-cadence-smoke.mjs
+          node scripts/rules-v044-smoke.mjs
+          node scripts/v046-antistuck-smoke.mjs
+          node scripts/v049-world-identity-smoke.mjs
+          node scripts/v052-gameplay-liveness-smoke.mjs
+          node scripts/v053-conquest-menu-smoke.mjs
+          node scripts/v056-town-difficulty-smoke.mjs
+          node scripts/v060-tutorial-mastery-smoke.mjs
+          node scripts/v061-gameplay-polish-smoke.mjs
+          node scripts/v061-browser-gesture-smoke.mjs
       - name: Showcase contracts
         run: |
           node scripts/showcase-smoke.mjs
@@ -52,11 +73,6 @@ jobs:
           node scripts/showcase-v13-smoke.mjs
           node scripts/showcase-v14-smoke.mjs
           node scripts/showcase-v15-smoke.mjs
-          node scripts/shift-rules-smoke.mjs
-          node scripts/v046-antistuck-smoke.mjs
-          node scripts/v049-world-identity-smoke.mjs
-          node scripts/v052-gameplay-liveness-smoke.mjs
-          node scripts/v061-browser-gesture-smoke.mjs
       - run: npm install --no-save playwright@1.55.0
       - run: npx playwright install --with-deps chromium firefox
       - name: Cross-browser gameplay
