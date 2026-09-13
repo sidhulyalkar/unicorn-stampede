@@ -11,7 +11,9 @@ try{for(const[n,b]of[['chromium',chromium],['firefox',firefox]]){
  // Traverse through Cloudtop into Faultline using the real keyboard selector. This also proves %4 navigation.
  await page.keyboard.press('d');await page.keyboard.press('d');if(await page.evaluate(()=>zone)!==3)throw Error(n+' could not select Faultline Frontier through title controls');
  await page.waitForFunction(()=>document.querySelector('#showcase-status')?.textContent.includes('FAULTLINE FRONTIER'));
- await page.keyboard.press('Enter');await page.waitForFunction(()=>state==='play');
+ // A fresh profile defaults to the onboarding tutorial. Toggle it off through the public T control so this probe enters the selected world rather than tutorial Prismborough.
+ await page.keyboard.press('t');if(await page.evaluate(()=>train)!==false)throw Error(n+' tutorial toggle did not expose main-town run');
+ await page.keyboard.press('Enter');await page.waitForFunction(()=>state==='play'&&level===1);
  const frontierIdentity=await page.evaluate(()=>({zone,name:N[21+zone],types:showcaseWorldSystems.actors.map(a=>a.type),landmarks:LM.map(l=>l.n),faults:showcaseFrontier.faults.length,fountains:objs.filter(o=>o.t==='fountain').length,hedges:objs.filter(o=>o.t==='hedge').length}));
  if(frontierIdentity.zone!==3||frontierIdentity.name!=='FAULTLINE FRONTIER'||frontierIdentity.faults<4||frontierIdentity.fountains||frontierIdentity.hedges||!frontierIdentity.types.every(t=>t==='stagecoach'))throw Error(n+' Frontier identity failed '+JSON.stringify(frontierIdentity));
  if(!frontierIdentity.landmarks.includes('SALOON')||!frontierIdentity.landmarks.includes('WATER TOWER')||!frontierIdentity.landmarks.some(x=>x.includes('SHERIFF')))throw Error(n+' Frontier landmarks failed '+JSON.stringify(frontierIdentity.landmarks));
