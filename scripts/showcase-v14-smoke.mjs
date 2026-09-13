@@ -1,0 +1,10 @@
+import fs from'node:fs';
+const read=p=>fs.readFileSync(p,'utf8'),need=(s,x,m)=>{if(!s.includes(x))throw Error(m)};
+const index=read('index.html'),surface=read('src/showcase-world-render.js'),motion=read('src/showcase-world-motion.js'),perf=read('src/showcase-performance.js'),feel=read('src/showcase-feel.js');
+for(const f of['src/showcase-performance.js','src/showcase-feel.js'])need(index,f,'v1.4 module not loaded: '+f);
+for(const n of['festival-garden','sea-glass-harbor','rain-city','sunbaked-frontier'])need(surface,n,'world palette identity missing: '+n);
+need(surface,'showcaseSurfaceCanvas','static surface cache missing');need(surface,'showcaseInvalidateSurface','surface invalidation hook missing');need(surface,'showcaseSurfaceBuilds++','surface cache build accounting missing');need(surface,'showcaseWorldPalette()','central palette lookup missing');
+need(motion,'showcaseDensity(52)','Cloudtop rain is not adaptive');need(motion,'Rain is one path/stroke','rain batching contract missing');need(motion,'Crosswind streaks share a single path','wind batching contract missing');need(motion,'SHOWCASE_PRISM_GARDENS','static motion coordinates are still allocated per frame');
+need(perf,'SHOWCASE_GRID=320','spatial blocking grid missing');need(perf,'showcaseBuildObjectGrid','object grid build missing');need(perf,'personBlocked=function','person blocking hot path not replaced');need(perf,'showcaseQuality=.72','adaptive decorative quality floor missing');need(perf,'showcaseInvalidateSurface()','level changes do not invalidate cached surface');
+need(feel,'showcaseSwitchPulse','switch response cue missing');need(feel,'showcaseDashPulse','dash response cue missing');need(feel,'v>130','velocity feedback threshold missing');need(feel,'These cues do not alter herd physics','feel layer must remain perceptual-only');
+console.log('showcase v1.4 contracts: PASS palette grammar + cached surfaces + adaptive motion + spatial blocking + perceptual control feel');
