@@ -53,6 +53,7 @@ jobs:
           node --check scripts/showcase-v17-frontier-lifecycle.mjs
           node --check scripts/showcase-v18-attention-smoke.mjs
           node --check scripts/showcase-v19-menu-smoke.mjs
+          node --check scripts/showcase-v19-legacy-browser-compat.mjs
       - name: Core gameplay regressions
         run: |
           node scripts/dash-contract-smoke.mjs
@@ -88,7 +89,7 @@ jobs:
       - run: npx playwright install --with-deps chromium firefox
       - name: Cross-browser gameplay
         run: |
-          node scripts/showcase-browser-smoke.mjs
+          node scripts/showcase-v19-legacy-browser-compat.mjs
           node scripts/showcase-v14-browser-smoke.mjs
           node scripts/showcase-v15-browser-smoke.mjs
       - name: Deterministic long-run stress
