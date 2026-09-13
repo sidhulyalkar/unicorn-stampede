@@ -1,7 +1,7 @@
 name: RC1 town signal
 on:
   push:
-    branches: [agent/rc1-town-signal-per-byte]
+    branches: [agent/rc1-town-signal-per-byte,agent/rc1-cloudtop-unstick-town-detail]
   workflow_dispatch:
 jobs:
   qualify:
@@ -13,9 +13,13 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund
       - run: node scripts/rc1-town-signal-smoke.mjs
+      - run: node scripts/rc1-cloudtop-unstick-smoke.mjs
       - run: npm run build
       - run: node scripts/release-preview.mjs
       - run: npm run size
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium firefox
+      - run: node scripts/browser-cross-engine-smoke.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: rc1-town-signal-dist
