@@ -1,0 +1,32 @@
+name: Showcase v1.10 satisfaction
+on:
+  push:
+    branches: [agent/showcase-v1-10-authored-satisfaction]
+  pull_request:
+    branches: [main]
+jobs:
+  authored-satisfaction:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: New source syntax
+        run: |
+          node --check src/showcase-satisfaction.js
+          node --check src/showcase-mastery.js
+          node --check scripts/showcase-v110-satisfaction-smoke.mjs
+      - name: Build standalone showcase
+        run: node scripts/build-showcase-html.mjs
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium firefox
+      - name: Authored satisfaction and mastery
+        run: node scripts/showcase-v110-satisfaction-smoke.mjs
+      - name: Upload playable v1.10
+        uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-showcase-v110
+          path: dist/unicorn-stampede-showcase.html
+          if-no-files-found: error
