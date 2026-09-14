@@ -1,7 +1,7 @@
 name: Showcase v1.10 satisfaction
 on:
   push:
-    branches: [agent/showcase-v1-10-authored-satisfaction]
+    branches: [main, agent/showcase-v1-10-authored-satisfaction, agent/showcase-v1-10-main-gate]
   pull_request:
     branches: [main]
 jobs:
