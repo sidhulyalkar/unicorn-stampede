@@ -1,4 +1,4 @@
-// Post-js13k showcase layer. This file intentionally favors clarity and visual identity over byte golf.
+// Expanded game layer. This file intentionally favors clarity and visual identity over byte golf.
 const showcaseBaseCollide=collide;
 collide=function(u,o,dt){
   const bx=u.x,by=u.y;
@@ -36,7 +36,6 @@ drawTownStreetDecor=function(){
     X.globalAlpha=.45;X.strokeStyle='#d9f7ff';X.lineWidth=4;
     for(let y=55;y<WH;y+=120){X.beginPath();X.moveTo(1330,y);X.quadraticCurveTo(1520,y+22,1725,y);X.stroke()}
   }else if(zone===2){
-    // Cloudtop's static infrastructure stays cool and restrained; motion/color accents layer later.
     X.globalAlpha=.12;X.fillStyle='#eef2f4';
     for(let i=0;i<9;i++){let x=120+i*370,y=110+(i&1)*1320;X.beginPath();X.ellipse(x,y,190,75,0,0,T);X.fill()}
     X.globalAlpha=.56;X.strokeStyle='#c4cacf';X.lineWidth=6;X.beginPath();X.moveTo(430,260);X.lineTo(2740,1370);X.stroke();
@@ -73,10 +72,4 @@ drawPeople=function(){
     if(zone===1){X.fillStyle='#f0c35b';X.fillRect(p.x-11,p.y-12,22,4)}
     if(zone===2){X.fillStyle='#cfd5d8';X.fillRect(p.x-8,p.y+11,16,4)}
   }
-};
-
-const showcaseTitleBase=title;
-title=function(){
-  showcaseTitleBase();if(state!=='title'||guide)return;
-  X.fillStyle='#ffffffb8';text('POST-JS13K SHOWCASE EDITION',W-24,26,11,'right');
 };
