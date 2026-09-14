@@ -1,7 +1,7 @@
 name: Post-js13k showcase
 on:
   push:
-    branches: [main, agent/post-js13k-showcase-v1, agent/showcase-v1-1, agent/showcase-v1-2-world-systems, agent/showcase-v1-3-faultline-frontier, agent/showcase-v1-4-feel-polish, agent/showcase-v1-5-switching-boundaries, agent/showcase-v1-6-stress-fuzz, agent/showcase-v1-7-transition-fuzz, agent/showcase-v1-8-attention-telemetry]
+    branches: [main, agent/post-js13k-showcase-v1, agent/showcase-v1-1, agent/showcase-v1-2-world-systems, agent/showcase-v1-3-faultline-frontier, agent/showcase-v1-4-feel-polish, agent/showcase-v1-5-switching-boundaries, agent/showcase-v1-6-stress-fuzz, agent/showcase-v1-7-transition-fuzz, agent/showcase-v1-8-attention-telemetry, agent/showcase-v1-9-menu-polish]
   pull_request:
     branches: [main]
 jobs:
@@ -42,13 +42,18 @@ jobs:
           node --check src/showcase-transitions.js
           node --check src/showcase-feel.js
           node --check src/showcase-stats.js
+          node --check src/showcase-menu.js
+          node --check src/showcase-session-menu.js
           node --check src/showcase-shell.js
+          node --check scripts/build-showcase-html.mjs
           node --check scripts/showcase-v14-browser-smoke.mjs
           node --check scripts/showcase-v15-browser-smoke.mjs
           node --check scripts/showcase-v16-stress-fuzz.mjs
           node --check scripts/showcase-v17-transition-smoke.mjs
           node --check scripts/showcase-v17-frontier-lifecycle.mjs
           node --check scripts/showcase-v18-attention-smoke.mjs
+          node --check scripts/showcase-v19-menu-smoke.mjs
+          node --check scripts/showcase-v19-legacy-browser-compat.mjs
       - name: Core gameplay regressions
         run: |
           node scripts/dash-contract-smoke.mjs
@@ -78,11 +83,13 @@ jobs:
           node scripts/showcase-v13-smoke.mjs
           node scripts/showcase-v14-smoke.mjs
           node scripts/showcase-v15-smoke.mjs
+      - name: Build standalone playable HTML
+        run: node scripts/build-showcase-html.mjs
       - run: npm install --no-save playwright@1.55.0
       - run: npx playwright install --with-deps chromium firefox
       - name: Cross-browser gameplay
         run: |
-          node scripts/showcase-browser-smoke.mjs
+          node scripts/showcase-v19-legacy-browser-compat.mjs
           node scripts/showcase-v14-browser-smoke.mjs
           node scripts/showcase-v15-browser-smoke.mjs
       - name: Deterministic long-run stress
@@ -93,3 +100,11 @@ jobs:
         run: node scripts/showcase-v17-frontier-lifecycle.mjs
       - name: Attention readability telemetry
         run: node scripts/showcase-v18-attention-smoke.mjs
+      - name: Menu and standalone UX
+        run: node scripts/showcase-v19-menu-smoke.mjs
+      - name: Upload playable showcase HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-showcase-v19
+          path: dist/unicorn-stampede-showcase.html
+          if-no-files-found: error
