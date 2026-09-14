@@ -1,0 +1,14 @@
+import fs from'node:fs';
+const read=p=>fs.readFileSync(p,'utf8'),index=read('index.html'),menu=read('src/showcase-menu.js'),art=read('src/showcase-art-menu.css'),chrome=read('src/showcase-art-chrome.css'),buildings=read('src/showcase-building-detail.js'),civic=read('src/showcase-civic-detail.js'),town=read('src/showcase-town-detail.js'),shell=read('src/showcase-shell.js'),settings=read('src/showcase-settings.js');
+const need=(ok,msg)=>{if(!ok)throw Error(msg)};
+need(index.includes('showcase-art-menu.css')&&index.includes('showcase-art-chrome.css')&&index.includes('showcase-town-detail.js'),'v1.11 layers not loaded');
+need(!/SHOWCASE EDITION|POST-JS13K SHOWCASE EDITION/.test(index+menu+shell+settings),'edition branding leaked into player-facing shell');
+need(!menu.includes('BUILD YOUR STAMPEDE')&&!menu.includes('Choose a town, set the pressure'),'dashboard copy still present');
+need(menu.includes('showcase-menu-strip')&&menu.includes('showcase-menu-meta')&&menu.includes('data-action="start"'),'compact menu structure missing');
+need(art.includes('background:transparent!important')&&art.includes('grid-template-areas:"world actions mode"'),'art-first menu does not preserve canvas');
+need(chrome.includes('#showcase-settings-button,#showcase-fullscreen')&&chrome.includes('width:34px'),'utility controls are not minimal');
+need(buildings.includes('showcaseRingWindow')&&buildings.includes('showcaseWashwaterFacade')&&buildings.includes('showcaseCloudtopFacade')&&buildings.includes('showcaseFrontierFacade'),'round-window facade grammar missing');
+need(civic.includes('for(let i=0;i<12;i++)')&&civic.includes('for(let i=0;i<18;i++)'),'fountain basin/flower detail missing');
+for(const marker of['showcaseBench','showcaseLamp','showcasePlanter','showcaseBollard','showcaseBarrel','showcaseHitch'])need(town.includes(marker),'street furniture missing '+marker);
+need(!/\b(unis|caps|collide|update|hitObj|dashSolo)\b/.test(town),'decorative town detail gained gameplay authority');
+console.log('showcase v1.11 art contracts: PASS art-first controls + minimal chrome + ring windows + fountains + gardens + public furniture');
