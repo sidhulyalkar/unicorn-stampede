@@ -9,6 +9,10 @@ const showcaseDifficultyMeta=[['EASY','Relaxed'],['MEDIUM','Recommended'],['HARD
 title=function(){
   if(guide)return _titleW();
   if(!objs.length){startLevel(0);state='title';unis=[];caps=[-1,-1];for(let i=5;i--;)objs[i].hue=i*72;for(let i=6;i--;){let x=330+i*108,u=makeUni(i,x,450);u.a=Math.atan2(-147,600-x);unis.push(u)}}
+  // The title is a static town scene, so it does not receive gameplay's updatePeople pass.
+  // Enforce the same full-body building clearance before the first visible frame and after
+  // any title-world rebuild.
+  globalThis.showcaseEnsurePeopleClear?.();
   world();
   X.save();X.textAlign='center';X.shadowColor='#000b';X.shadowBlur=10;
   X.fillStyle='#fff';text('UNICORN STAMPEDE',W/2,72,52,'center');
