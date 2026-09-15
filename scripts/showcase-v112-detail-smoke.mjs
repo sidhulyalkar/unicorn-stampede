@@ -1,0 +1,11 @@
+import fs from'node:fs';
+const read=p=>fs.readFileSync(p,'utf8'),index=read('index.html'),menu=read('src/showcase-menu.js'),settings=read('src/showcase-settings.js'),people=read('src/showcase.js'),gardens=read('src/showcase-gardens.js'),town=read('src/showcase-town-detail.js'),civic=read('src/showcase-civic-detail.js');
+const need=(ok,msg)=>{if(!ok)throw Error(msg)};
+need(index.indexOf('showcase-gardens.js')<index.indexOf('showcase-civic-detail.js')&&index.indexOf('showcase-gardens.js')<index.indexOf('showcase-town-detail.js'),'garden engine must load before garden consumers');
+need(!menu.includes('showcase-menu-card')&&!menu.includes('showcase-world-grid')&&!menu.includes('showcase-difficulty-grid'),'visible title overlay structure returned');
+for(const marker of["text('< '+showcaseWorldMeta[zone][0]+' >'","text('< '+showcaseDifficultyMeta[mode][0]+' >'","text('START'","text('TUTORIAL "])need(menu.includes(marker),'native title control missing '+marker);
+need(settings.includes("settingsBar.id='showcase-settings-bar'")&&!settings.includes('settingsPanel'),'settings popover returned');for(const key of['music','sfx','screenShake','reducedMotion','highContrast','touchControls'])need(settings.includes(key),`direct setting missing ${key}`);
+for(const part of['head','torso','leftArm','rightArm','leftLeg','rightLeg'])need(people.includes(part),`civilian anatomy part missing ${part}`);need(people.includes('showcasePersonPose')&&people.includes('showcaseDrawPersonSkeleton'),'civilian skeleton engine missing');
+for(const marker of['showcaseGardenHash','showcaseFlower','showcaseGardenBed','showcaseGardenRing','showcaseGardenPalettes'])need(gardens.includes(marker),'garden grammar missing '+marker);need(!/\b(unis|caps|collide|hitObj|moveAI|dashSolo|cleaners)\b/.test(gardens),'garden engine gained gameplay authority');
+for(const zoneMarker of['showcaseGardenPalettes.prism','showcaseGardenPalettes.wash','showcaseGardenPalettes.cloud','showcaseGardenPalettes.frontier'])need(town.includes(zoneMarker),`world garden palette missing ${zoneMarker}`);need(civic.includes('showcaseGardenRing')&&civic.includes('28'),'fountain planting is not using dense garden ring');
+console.log('showcase v1.12 detail contracts: PASS native toggles + direct settings + six-part civilians + procedural gardens');
