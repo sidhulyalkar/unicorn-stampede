@@ -13,9 +13,9 @@ The challenge is not only steering quickly. It is keeping several chaotic plans 
 The repository deliberately has two product targets.
 
 - **Competition artifact:** `release/js13k-2026-submitted` is the frozen, byte-qualified js13k lineage. The submitted package was qualified at **13,307 / 13,312 bytes**.
-- **Showcase edition:** `main` is the post-js13k version intended for continued development and sidhulyalkar.com. It keeps the competition rules at its core, but uses normal web-game headroom for richer towns, four regional worlds, accessibility/settings, cross-browser hardening, Smart Attention feedback, persistent mastery, Herd Flow, and Living Conquest visual consequence.
+- **Showcase edition:** `main` is the post-js13k version intended for continued development and sidhulyalkar.com. It keeps the competition rules at its core, but uses normal web-game headroom for richer towns, four regional worlds, accessibility/settings, cross-browser hardening, Smart Attention feedback, persistent mastery, Herd Flow, Living Conquest, lifecycle hooks, and run intelligence.
 
-The showcase is not trying to spend every recovered byte on decoration. New systems should make decisions clearer, make expertise easier to see, or make the town react more convincingly to what the player actually did.
+The showcase is not trying to spend every recovered byte on decoration. New systems should make decisions clearer, make expertise easier to see, make the town react more convincingly, or help us measure whether the intended mastery signals actually correspond to better distributed play.
 
 ## The game in 20 seconds
 
@@ -171,6 +171,14 @@ The post-js13k town is not only a backdrop. It increasingly acts as a record of 
 
 These systems are intentionally presentation-only. They read authoritative game state; they do not create a second set of conquest, collision, scoring, or AI rules.
 
+## Run Intelligence
+
+The result screen now goes beyond dumping counters. It turns existing telemetry into a short, deterministic **RUN READ** plus a **NEXT EXPERIMENT**.
+
+The interpreter can describe patterns such as distributed coordination, route-heavy play, crisis-driven attention, or recovery under capture pressure. It uses peak Flow, route orders, Flow actions, explained Smart Attention reasons, capture burden, destruction, and elapsed time. It does not change score, grant rewards, or claim that one strategy is optimal.
+
+The goal is to make each run useful evidence. Before Flow or any mastery signal receives more mechanical weight, we want to know whether it actually tracks cleaner or more effective play.
+
 ## Difficulty
 
 Difficulty is systemic rather than a shrinking death clock. Higher settings combine higher coverage requirements, tougher structures, larger Team requirements, fewer power-ups, faster traffic, stronger cleanup pressure, tighter rescue geometry, and stronger environmental interference.
@@ -189,7 +197,7 @@ The explosion is anchored to the actual Town Hall geometry, the town receives a 
 
 Defeat is similarly staged: **3 CAPTURED! → HERD COLLAPSE! → HERD COLLAPSED**.
 
-Result screens remain latched until a fresh Enter press. Space, clicks, held/repeated Enter, and residual gameplay input cannot accidentally restart the run. The showcase debrief also surfaces mastery, Smart Play moments, attention reasons, peak Herd Flow, route orders, and Flow actions.
+Result screens remain latched until a fresh Enter press. Space, clicks, held/repeated Enter, and residual gameplay input cannot accidentally restart the run. The showcase debrief surfaces mastery, Smart Play moments, attention reasons, peak Herd Flow, route orders, Flow actions, the run read, and a measurable next experiment.
 
 ## Training
 
@@ -240,9 +248,11 @@ expansion.js
 
 There is no hidden semantic rewrite pass before packing. `release-prune.mjs` acts as a contract/auditor for that release lineage.
 
-The **showcase edition** deliberately layers additional readable modules over that stable core: regional surface/art systems, world actors, Faultline simulation, settings/audio/input, performance and boundary guards, Smart Attention, transition safety, feel/telemetry, authored satisfaction, Herd Flow, Living Conquest, mastery, and native menu/session UI.
+The **showcase edition** deliberately layers additional readable modules over that stable core: regional surface/art systems, world actors, Faultline simulation, settings/audio/input, performance and boundary guards, Smart Attention, transition safety, feel/telemetry, authored satisfaction, Herd Flow, Living Conquest, Run Intelligence, mastery, and native menu/session UI.
 
-That layering has been productive, but it also creates a growing chain of wrappers around global lifecycle functions such as `startLevel`, `update`, `world`, and `cycle`. A future architectural pass should replace that order-sensitive wrapper stack with a small explicit lifecycle/hook bus before many more showcase systems are added.
+v1.16 establishes `showcase-hooks.js` as the ordered extension seam for newer cross-cutting systems. The mature legacy stack is wrapped once after the v1.10 satisfaction layer; Herd Flow and Living Conquest now register named listeners instead of adding their own `startLevel` / `update` / `world` / render wrappers. Listener priorities are explicit, duplicate IDs are rejected, and qualification can inspect the registration/dispatch graph.
+
+This is intentionally an incremental migration, not a rewrite. New cross-cutting systems should use the hook bridge. Older wrappers should migrate only when that lifecycle surface is actively being changed and the old behavior can be kept under the same browser contract.
 
 ## Qualification
 
@@ -254,6 +264,6 @@ npm run build
 
 The competition suite protects the 13,312-byte ceiling, canonical release-source parity, staged 4 → 5 → 6 progression, no timer state, Shift-only handoff, Smart Shift urgency/rapid scan, Whip/Dash behavior, procedural facades, Team gates, coaching, defensive doctrines, rescue/collapse, difficulty separation, Takeover objectives, conquest latching, packed pointer interactions, latched results, browser-safe preview parity, and one-root-file submission ZIP integrity.
 
-The post-js13k showcase adds Chromium and Firefox qualification for visual/system composition, pedestrian/building solidity, deterministic long-run stress, capture/rescue transitions, Faultline lifecycle seams, Smart Attention readability, authored satisfaction/mastery, Herd Flow semantics, Living Conquest state authority, menu UX, and standalone HTML packaging.
+The post-js13k showcase adds Chromium and Firefox qualification for visual/system composition, pedestrian/building solidity, deterministic long-run stress, capture/rescue transitions, Faultline lifecycle seams, Smart Attention readability, authored satisfaction/mastery, Herd Flow semantics, Living Conquest state authority, lifecycle-hook ordering/removal, deterministic run interpretation, menu UX, and standalone HTML packaging.
 
 The original byte philosophy still applies even without the hard 13 KB ceiling: a new system should buy clearer decisions, stronger game feel, measurable mastery, or a more reactive world. Decorative complexity that does none of those things still has to earn its seat on the unicorn bus.
