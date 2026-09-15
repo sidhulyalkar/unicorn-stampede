@@ -31,6 +31,21 @@ personBlocked=function(x,y){
   for(const o of a)if(o.hp>0&&showcasePersonHitsObject(x,y,o))return true;
   return false;
 };
+function showcaseRecoverPerson(p,index){
+  if(!personBlocked(p.x,p.y))return true;
+  const ox=p.x,oy=p.y;
+  // Preserve the intended neighborhood first: expand in deterministic rings around the spawn.
+  for(let ring=1;ring<=18;ring++)for(let step=0;step<12;step++){
+    const a=(step+(index%12))*T/12,r=ring*28,x=cl(ox+Math.cos(a)*r,24,WW-24),y=cl(oy+Math.sin(a)*r,18,WH-52);
+    if(!personBlocked(x,y)){p.x=x;p.y=y;p.vx=p.vy=0;return true}
+  }
+  // Pathological fallback: scan a hashed world lattice so different civilians do not pile up.
+  const dx=52,dy=58,cols=Math.max(1,Math.floor((WW-48)/dx)),rows=Math.max(1,Math.floor((WH-70)/dy)),count=cols*rows,start=(index*97+(p.h|0)*13)%count;
+  for(let i=0;i<count;i++){const q=(start+i)%count,x=24+(q%cols)*dx,y=18+Math.floor(q/cols)*dy;if(!personBlocked(x,y)){p.x=x;p.y=y;p.vx=p.vy=0;return true}}
+  return false;
+}
+const showcaseSettlePeopleBase=settlePeople;
+settlePeople=function(){showcaseSettlePeopleBase();for(let i=0;i<people.length;i++)showcaseRecoverPerson(people[i],i)};
 // Cloudtop and Frontier custom facades are complete buildings, so do not render the generic facade underneath them.
 const showcaseDetailedBuilding=drawTownBuilding;
 function showcaseDrawDetailedBuildingClean(o,tall,d){
@@ -48,7 +63,7 @@ drawTownBuilding=function(o,tall,d){
 };
 function showcaseMotionDensity(n){return Math.max(1,Math.round(n*showcaseQuality))}
 const showcasePerformanceStartBase=startLevel;
-startLevel=function(n){const r=showcasePerformanceStartBase(n);showcaseBuildObjectGrid();showcaseInvalidateSurface();return r};
+startLevel=function(n){const r=showcasePerformanceStartBase(n);showcaseBuildObjectGrid();for(let i=0;i<people.length;i++)showcaseRecoverPerson(people[i],i);showcaseInvalidateSurface();return r};
 const showcasePerformanceUpdateBase=update;
 update=function(dt){
   const ms=Math.max(1,dt*1000);showcaseFrameMs=showcaseFrameMs*.94+ms*.06;
@@ -57,5 +72,5 @@ update=function(dt){
   return showcasePerformanceUpdateBase(dt);
 };
 globalThis.showcaseMotionDensity=showcaseMotionDensity;
-globalThis.showcasePersonCollision={bounds:showcasePersonBounds,obstacle:showcasePersonObstacleBounds,intersects:showcasePersonHitsObject};
+globalThis.showcasePersonCollision={bounds:showcasePersonBounds,obstacle:showcasePersonObstacleBounds,intersects:showcasePersonHitsObject,recover:showcaseRecoverPerson};
 globalThis.showcasePerformance=()=>({frameMs:+showcaseFrameMs.toFixed(2),quality:showcaseQuality,gridBuckets:showcaseObjectGrid.size,surface:showcaseSurfaceStats(),facadeFastPath:level&&zone>=2});
