@@ -1,40 +1,43 @@
-// v1.11 art-first title controls. The animated town remains the hero; UI only marks what is clickable.
+// v1.12 native title controls. The town is the menu; visible controls live on the canvas.
 const showcaseWorldMeta=[
-  ['PRISMBOROUGH','Open civic grid','Classic streets, gardens, fountains, and room to orchestrate the herd.'],
-  ['WASHWATER BAY','Waterfront pressure','Harbor routes, cleanup pressure, and rotating territory defense.'],
-  ['CLOUDTOP HEIGHTS','Cliff pass + crosswind','Rain-gray streets, tight routes, and crosswind timing.'],
-  ['FAULTLINE FRONTIER','Faults + wranglers','Fractured western streets, slip danger, captures, and rescues.']
+  ['PRISMBOROUGH','Open civic grid'],['WASHWATER BAY','Waterfront pressure'],['CLOUDTOP HEIGHTS','Cliff pass + crosswind'],['FAULTLINE FRONTIER','Faults + wranglers']
 ];
 const showcaseDifficultyMeta=[['EASY','Relaxed'],['MEDIUM','Recommended'],['HARD','Tactical'],['IMPOSSIBLE','Expert']];
-// Replace only the title-screen text layer. World preview generation and rendering stay unchanged.
+
+// Keep title rendering inside the game itself. These coordinates intentionally match the
+// long-standing guarded canvas click regions in whip.js/input-guard.js.
 title=function(){
   if(guide)return _titleW();
   if(!objs.length){startLevel(0);state='title';unis=[];caps=[-1,-1];for(let i=5;i--;)objs[i].hue=i*72;for(let i=6;i--;){let x=330+i*108,u=makeUni(i,x,450);u.a=Math.atan2(-147,600-x);unis.push(u)}}
-  world();X.fillStyle='rgba(5,8,15,.62)';X.fillRect(0,0,W,138);X.fillStyle='#fff';text('UNICORN STAMPEDE',W/2,72,52,'center');X.fillStyle='#ffe77d';text('MANAGE 6 • DESTROY THE TOWN',W/2,116,18,'center');
+  world();
+  X.save();X.textAlign='center';X.shadowColor='#000b';X.shadowBlur=10;
+  X.fillStyle='#fff';text('UNICORN STAMPEDE',W/2,72,52,'center');
+  X.shadowBlur=5;X.fillStyle='#fff';text('< '+showcaseWorldMeta[zone][0]+' >',W/2,585,13,'center');
+  X.fillStyle='#ffe56d';text('< '+showcaseDifficultyMeta[mode][0]+' >',W/2,610,14,'center');
+  X.fillStyle='#fff';text('START',W/2,650,20,'center');
+  X.fillStyle='#f5f7fb';text('TUTORIAL '+(train?'ON':'OFF')+'   ·   ? RULES',W/2,680,12,'center');
+  const mastery=globalThis.showcaseMastery;if(mastery){X.fillStyle='#ffe56d';text(mastery.total+'/12 ★  ·  '+mastery.rank,W/2,706,9,'center')}
+  X.restore();
 };
-const showcaseMenu=document.createElement('section');showcaseMenu.id='showcase-menu';showcaseMenu.setAttribute('aria-label','Unicorn Stampede main menu');
-showcaseMenu.innerHTML=`<div class="showcase-menu-card">
-  <div class="showcase-menu-strip showcase-world-strip"><span class="showcase-menu-label">WORLD</span><div class="showcase-world-grid"></div></div>
-  <div class="showcase-menu-actions"><button class="showcase-primary-action" type="button" data-action="start"><span>START</span><small>ENTER</small></button><button type="button" data-action="tutorial">TUTORIAL <span>ON</span></button><button type="button" data-action="rules" aria-label="How to play">?</button><button type="button" data-action="settings" aria-label="Options">⚙</button></div>
-  <div class="showcase-menu-strip showcase-mode-strip"><span class="showcase-menu-label">MODE</span><div class="showcase-difficulty-grid"></div></div>
-  <div class="showcase-menu-meta"><span class="showcase-menu-badge">0 / 12 STARS</span><span class="showcase-menu-foot">WASD MOVE · SHIFT SWITCH · CLICK WHIP · SPACE DASH</span></div>
-</div>`;
-const worldGrid=showcaseMenu.querySelector('.showcase-world-grid'),difficultyGrid=showcaseMenu.querySelector('.showcase-difficulty-grid'),startButton=showcaseMenu.querySelector('[data-action="start"]'),tutorialButton=showcaseMenu.querySelector('[data-action="tutorial"]'),masteryBadge=showcaseMenu.querySelector('.showcase-menu-badge');
-const showcaseGuideBack=document.createElement('button');showcaseGuideBack.id='showcase-guide-back';showcaseGuideBack.type='button';showcaseGuideBack.innerHTML='<strong>← BACK</strong><small>ESC</small>';showcaseGuideBack.setAttribute('aria-label','Close How to Play and return to the main menu');
-showcaseWorldMeta.forEach(([name,tag,description],i)=>{const b=document.createElement('button');b.type='button';b.className='showcase-world-card';b.dataset.world=i;b.title=`${name} — ${tag}. ${description}`;b.setAttribute('aria-label',`${name}. ${tag}. ${description}`);b.innerHTML=`<strong>${name}</strong><span class="showcase-world-mastery" aria-label="Mastery"></span><span class="showcase-world-goal"></span>`;worldGrid.append(b)});
-showcaseDifficultyMeta.forEach(([name,tag],i)=>{const b=document.createElement('button');b.type='button';b.className='showcase-difficulty-button';b.dataset.mode=i;b.title=tag;b.setAttribute('aria-label',`${name}. ${tag}`);b.innerHTML=`<strong>${name}</strong>`;difficultyGrid.append(b)});
+
 function showcaseMenuTone(f=310){try{tone(f,.045,'triangle',.011,f+120)}catch{}}globalThis.showcaseMenuTone=showcaseMenuTone;
-function showcaseSetWorld(i){zone=i;S.s('ccZone',zone);showcaseMenuTone(300+i*35);objs=[];showcaseRefreshMenu()}
-function showcaseSetMode(i){mode=i;S.s('ccMode',mode);showcaseMenuTone(330+i*28);showcaseRefreshMenu()}
+function showcaseSetWorld(i){zone=(i+4)%4;S.s('ccZone',zone);showcaseMenuTone(300+zone*35);objs=[];showcaseRefreshMenu()}
+function showcaseSetMode(i){mode=(i+4)%4;S.s('ccMode',mode);showcaseMenuTone(330+mode*28);showcaseRefreshMenu()}
 function showcaseStart(){audio();showcaseMenuTone(520);startLevel(train?0:1)}
+
+// Semantic controls remain available to keyboard/screen-reader users, but are intentionally
+// visually clipped. They never cover the artwork and mirror the native canvas controls.
+const showcaseMenu=document.createElement('nav');showcaseMenu.id='showcase-menu';showcaseMenu.className='showcase-native-a11y';showcaseMenu.setAttribute('aria-label','Unicorn Stampede title controls');
+showcaseMenu.innerHTML=`<button type="button" data-world-step="-1">Previous world</button><button type="button" data-world-current>World</button><button type="button" data-world-step="1">Next world</button><button type="button" data-mode-step="-1">Previous mode</button><button type="button" data-mode-current>Mode</button><button type="button" data-mode-step="1">Next mode</button><button type="button" data-action="start">Start</button><button type="button" data-action="tutorial">Tutorial</button><button type="button" data-action="rules">How to play</button>`;
+const worldCurrent=showcaseMenu.querySelector('[data-world-current]'),modeCurrent=showcaseMenu.querySelector('[data-mode-current]'),startButton=showcaseMenu.querySelector('[data-action="start"]'),tutorialButton=showcaseMenu.querySelector('[data-action="tutorial"]');
 function showcaseRefreshMenu(){
-  const visible=state==='title'&&!guide,showGuideBack=state==='title'&&!!guide;showcaseMenu.classList.toggle('showcase-menu-hidden',!visible);showcaseMenu.setAttribute('aria-hidden',String(!visible));showcaseGuideBack.classList.toggle('showcase-guide-back-visible',showGuideBack);showcaseGuideBack.setAttribute('aria-hidden',String(!showGuideBack));
-  const mastery=globalThis.showcaseMastery;if(mastery)masteryBadge.textContent=`${mastery.total} / 12 STARS · ${mastery.rank}`;
-  worldGrid.querySelectorAll('[data-world]').forEach((b,i)=>{const on=i===zone;b.classList.toggle('is-selected',on);b.setAttribute('aria-pressed',String(on));const m=b.querySelector('.showcase-world-mastery'),g=b.querySelector('.showcase-world-goal'),q=mastery?.get(i),stars=q?.stars??Math.max(0,Math.min(3,S.g('ccC'+i)|0));m.textContent='★'.repeat(stars)+'☆'.repeat(3-stars);m.setAttribute('aria-label',stars+' of 3 mastery stars');g.textContent=q?.next==='MASTERED'?'MASTERED':q?.next||'CONQUER'});
-  difficultyGrid.querySelectorAll('[data-mode]').forEach((b,i)=>{const on=i===mode;b.classList.toggle('is-selected',on);b.setAttribute('aria-pressed',String(on))});tutorialButton.querySelector('span').textContent=train?'ON':'OFF';tutorialButton.classList.toggle('is-active',!!train);startButton.querySelector('span').textContent=train?'TUTORIAL':'START';
+  const visible=state==='title'&&!guide;showcaseMenu.dataset.visible=visible?'1':'0';showcaseMenu.setAttribute('aria-hidden',String(!visible));
+  const mastery=globalThis.showcaseMastery?.get?.(zone),stars=mastery?'★'.repeat(mastery.stars)+'☆'.repeat(3-mastery.stars):'';
+  worldCurrent.textContent=mastery?`${showcaseWorldMeta[zone][0]} ${stars} ${mastery.next}`:showcaseWorldMeta[zone][0];
+  worldCurrent.setAttribute('aria-label',mastery?`${showcaseWorldMeta[zone][0]}, ${mastery.stars} of 3 mastery stars, ${mastery.next}`:showcaseWorldMeta[zone][0]);
+  modeCurrent.textContent=showcaseDifficultyMeta[mode][0];startButton.textContent=train?'Start tutorial':'Start';tutorialButton.textContent='Tutorial '+(train?'on':'off');tutorialButton.setAttribute('aria-pressed',String(!!train));
 }
-worldGrid.addEventListener('click',e=>{const b=e.target.closest('[data-world]');if(b)showcaseSetWorld(+b.dataset.world)});difficultyGrid.addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)showcaseSetMode(+b.dataset.mode)});
-showcaseMenu.addEventListener('click',e=>{const a=e.target.closest('[data-action]');if(!a)return;if(a.dataset.action==='start')showcaseStart();else if(a.dataset.action==='tutorial'){train=!train;showcaseMenuTone(360);showcaseRefreshMenu()}else if(a.dataset.action==='rules'){guide=1;showcaseMenuTone(400);showcaseRefreshMenu()}else if(a.dataset.action==='settings'){document.getElementById('showcase-settings-button')?.click()}});
-showcaseGuideBack.addEventListener('click',()=>{guide=0;showcaseMenuTone(300);showcaseRefreshMenu();startButton.focus()});document.body.append(showcaseMenu,showcaseGuideBack);
+showcaseMenu.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.worldStep)showcaseSetWorld(zone+(+b.dataset.worldStep));else if(b.hasAttribute('data-world-current'))showcaseSetWorld(zone+1);else if(b.dataset.modeStep)showcaseSetMode(mode+(+b.dataset.modeStep));else if(b.hasAttribute('data-mode-current'))showcaseSetMode(mode+1);else if(b.dataset.action==='start')showcaseStart();else if(b.dataset.action==='tutorial'){train=!train;showcaseMenuTone(360);showcaseRefreshMenu()}else if(b.dataset.action==='rules'){guide=1;showcaseMenuTone(400);showcaseRefreshMenu()}});
+document.body.append(showcaseMenu);
 function showcaseMenuLoop(){showcaseRefreshMenu();requestAnimationFrame(showcaseMenuLoop)}showcaseMenuLoop();
-globalThis.showcaseMenuAPI={refresh:showcaseRefreshMenu,setWorld:showcaseSetWorld,setMode:showcaseSetMode,start:showcaseStart,get visible(){return !showcaseMenu.classList.contains('showcase-menu-hidden')},get guideBackVisible(){return showcaseGuideBack.classList.contains('showcase-guide-back-visible')}};
+globalThis.showcaseMenuAPI={refresh:showcaseRefreshMenu,setWorld:showcaseSetWorld,setMode:showcaseSetMode,start:showcaseStart,get visible(){return state==='title'&&!guide},get guideBackVisible(){return state==='title'&&!!guide}};

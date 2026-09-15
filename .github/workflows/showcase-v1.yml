@@ -1,7 +1,7 @@
 name: Post-js13k showcase
 on:
   push:
-    branches: [main, agent/post-js13k-showcase-v1, agent/showcase-v1-1, agent/showcase-v1-2-world-systems, agent/showcase-v1-3-faultline-frontier, agent/showcase-v1-4-feel-polish, agent/showcase-v1-5-switching-boundaries, agent/showcase-v1-6-stress-fuzz, agent/showcase-v1-7-transition-fuzz, agent/showcase-v1-8-attention-telemetry, agent/showcase-v1-9-menu-polish, agent/showcase-v1-11-art-first-town-detail]
+    branches: [main, agent/post-js13k-showcase-v1, agent/showcase-v1-1, agent/showcase-v1-2-world-systems, agent/showcase-v1-3-faultline-frontier, agent/showcase-v1-4-feel-polish, agent/showcase-v1-5-switching-boundaries, agent/showcase-v1-6-stress-fuzz, agent/showcase-v1-7-transition-fuzz, agent/showcase-v1-8-attention-telemetry, agent/showcase-v1-9-menu-polish, agent/showcase-v1-11-art-first-town-detail, agent/showcase-v1-12-native-menu-anatomy-gardens]
   pull_request:
     branches: [main]
 jobs:
@@ -31,6 +31,7 @@ jobs:
           node --check src/showcase-world-motion.js
           node --check src/showcase-world-systems.js
           node --check src/showcase-building-detail.js
+          node --check src/showcase-gardens.js
           node --check src/showcase-civic-detail.js
           node --check src/showcase-town-detail.js
           node --check src/showcase-frontier.js
@@ -56,6 +57,8 @@ jobs:
           node --check scripts/showcase-v19-menu-smoke.mjs
           node --check scripts/showcase-v19-legacy-browser-compat.mjs
           node --check scripts/showcase-v111-art-smoke.mjs
+          node --check scripts/showcase-v112-detail-smoke.mjs
+          node --check scripts/showcase-v112-anatomy-browser.mjs
       - name: Core gameplay regressions
         run: |
           node scripts/dash-contract-smoke.mjs
@@ -86,6 +89,7 @@ jobs:
           node scripts/showcase-v14-smoke.mjs
           node scripts/showcase-v15-smoke.mjs
           node scripts/showcase-v111-art-smoke.mjs
+          node scripts/showcase-v112-detail-smoke.mjs
       - name: Build standalone playable HTML
         run: node scripts/build-showcase-html.mjs
       - run: npm install --no-save playwright@1.55.0
@@ -95,6 +99,7 @@ jobs:
           node scripts/showcase-v19-legacy-browser-compat.mjs
           node scripts/showcase-v14-browser-smoke.mjs
           node scripts/showcase-v15-browser-smoke.mjs
+          node scripts/showcase-v112-anatomy-browser.mjs
       - name: Deterministic long-run stress
         run: node scripts/showcase-v16-stress-fuzz.mjs
       - name: Capture rescue transition matrix
@@ -108,6 +113,6 @@ jobs:
       - name: Upload playable showcase HTML
         uses: actions/upload-artifact@v4
         with:
-          name: unicorn-stampede-showcase-v111
+          name: unicorn-stampede-showcase-v112
           path: dist/unicorn-stampede-showcase.html
           if-no-files-found: error

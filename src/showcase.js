@@ -62,14 +62,24 @@ drawTownBuilding=function(o,tall,d){
   X.restore();
 };
 
-drawPeople=function(){
-  for(const p of people){
-    const walk=Math.sin(clock*5+p.h)*4;townCircle(p.x,p.y,10,`hsl(${p.h} 42% 72%)`);
-    X.fillStyle=zone===1?'#2f6f7d':zone===2?'#596269':zone===3?'#79543b':`hsl(${(p.h+140)%360} 45% 42%)`;rr(p.x-7,p.y+10,14,20,4);
-    X.strokeStyle='#263242';X.lineWidth=4;X.lineCap='round';X.beginPath();
-    X.moveTo(p.x-4,p.y+17);X.lineTo(p.x-12,p.y+25+walk*.2);X.moveTo(p.x+4,p.y+17);X.lineTo(p.x+12,p.y+25-walk*.2);
-    X.moveTo(p.x-3,p.y+29);X.lineTo(p.x-8-walk,p.y+43);X.moveTo(p.x+3,p.y+29);X.lineTo(p.x+8+walk,p.y+43);X.stroke();
-    if(zone===1){X.fillStyle='#f0c35b';X.fillRect(p.x-11,p.y-12,22,4)}
-    if(zone===2){X.fillStyle='#cfd5d8';X.fillRect(p.x-8,p.y+11,16,4)}
-  }
-};
+function showcasePersonPose(p){
+  const phase=clock*5+p.h,stride=Math.sin(phase)*4,swing=Math.cos(phase)*3,x=p.x,y=p.y;
+  return{head:[x,y,10],torso:[x-7,y+10,14,20],leftArm:[[x-5,y+16],[x-14-swing*.28,y+26+stride*.18]],rightArm:[[x+5,y+16],[x+14+swing*.28,y+26-stride*.18]],leftLeg:[[x-3,y+29],[x-8-stride,y+43]],rightLeg:[[x+3,y+29],[x+8+stride,y+43]]};
+}
+function showcaseDrawPersonSkeleton(p){
+  const q=showcasePersonPose(p),skin=`hsl(${p.h} 42% 72%)`,cloth=zone===1?'#2f6f7d':zone===2?'#596269':zone===3?'#79543b':`hsl(${(p.h+140)%360} 45% 42%)`;
+  X.save();X.lineCap='round';X.strokeStyle='#263242';X.lineWidth=4.4;
+  // Legs first, then torso, then arms so neither arm can disappear behind the body fill.
+  X.beginPath();for(const limb of[q.leftLeg,q.rightLeg]){X.moveTo(limb[0][0],limb[0][1]);X.lineTo(limb[1][0],limb[1][1])}X.stroke();
+  X.fillStyle=cloth;rr(...q.torso,4);
+  X.strokeStyle='#263242';X.lineWidth=4.4;X.beginPath();for(const limb of[q.leftArm,q.rightArm]){X.moveTo(limb[0][0],limb[0][1]);X.lineTo(limb[1][0],limb[1][1])}X.stroke();
+  for(const limb of[q.leftArm,q.rightArm])townCircle(limb[1][0],limb[1][1],2.7,skin);
+  townCircle(q.head[0],q.head[1],q.head[2],skin);
+  // Shoes anchor both legs visually even when their stride overlaps at the center line.
+  X.strokeStyle='#202832';X.lineWidth=3;for(const limb of[q.leftLeg,q.rightLeg]){const [fx,fy]=limb[1];X.beginPath();X.moveTo(fx-2,fy);X.lineTo(fx+4,fy);X.stroke()}
+  if(zone===1){X.fillStyle='#f0c35b';X.fillRect(p.x-11,p.y-12,22,4)}
+  if(zone===2){X.fillStyle='#cfd5d8';X.fillRect(p.x-8,p.y+11,16,4)}
+  X.restore();
+}
+drawPeople=function(){for(const p of people)showcaseDrawPersonSkeleton(p)};
+globalThis.showcasePersonRenderer={requiredParts:['head','torso','leftArm','rightArm','leftLeg','rightLeg'],pose:showcasePersonPose,draw:showcaseDrawPersonSkeleton};
