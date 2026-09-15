@@ -25,6 +25,8 @@ function showcaseV114CrowdShock(x,y,strength=1){
 }
 const showcaseV114StartBase=startLevel;
 startLevel=function(n){const r=showcaseV114StartBase(n);showcaseV114Reset();if(globalThis.showcaseRunStats){showcaseRunStats.peakFlow=0;showcaseRunStats.flowActions=0}return r};
+const showcaseV114CycleBase=cycle;
+cycle=function(){const u=unis[caps[0]],before=u?.order||0,speed=u?Math.hypot(u.vx,u.vy):0,r=showcaseV114CycleBase();if(state==='play'&&level&&u?.live&&speed>35&&u.order>before)showcaseV114Note(u,'route');return r};
 const showcaseV114PowerBase=power;
 power=function(u,p){const on=p?.on,r=showcaseV114PowerBase(u,p);if(on&&!p.on)showcaseV114Note(u,'power');return r};
 const showcaseV114HitBase=hitObj;
