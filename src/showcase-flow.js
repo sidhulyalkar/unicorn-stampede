@@ -1,9 +1,9 @@
-// Showcase v1.14: reward deliberate multi-unicorn momentum without adding another control.
+// Showcase v1.14+: reward deliberate multi-unicorn momentum without adding another control.
 // Productive actions by different herd members build a short Herd Flow chain; destruction also
 // ripples through nearby civilians using the existing collision-safe pedestrian motion.
 const SHOWCASE_FLOW_WINDOW=6,SHOWCASE_FLOW_MAX=5;
 let showcaseV114Flow,showcaseV114Captured=new Set(),showcaseV114Pulse=0;
-function showcaseV114Fresh(){return{chain:0,peak:0,until:0,ids:[],actions:0,lastKind:'',lastId:-1,stamp:0}}
+function showcaseV114Fresh(){return{chain:0,peak:0,until:0,ids:[],actions:0,kinds:{},lastKind:'',lastId:-1,stamp:0}}
 function showcaseV114Reset(){showcaseV114Flow=showcaseV114Fresh();showcaseV114Captured=new Set();showcaseV114Pulse=0;globalThis.showcaseFlowRun=showcaseV114Flow}
 showcaseV114Reset();
 function showcaseV114Note(u,kind='play'){
@@ -12,8 +12,8 @@ function showcaseV114Note(u,kind='play'){
   const fresh=!showcaseV114Flow.ids.includes(u.id);
   if(fresh){showcaseV114Flow.ids.push(u.id);showcaseV114Flow.chain=Math.min(SHOWCASE_FLOW_MAX,showcaseV114Flow.chain+1)}
   else if(!showcaseV114Flow.chain)showcaseV114Flow.chain=1;
-  showcaseV114Flow.until=clock+SHOWCASE_FLOW_WINDOW;showcaseV114Flow.actions++;showcaseV114Flow.lastKind=kind;showcaseV114Flow.lastId=u.id;showcaseV114Flow.peak=Math.max(showcaseV114Flow.peak,showcaseV114Flow.chain);showcaseV114Pulse=1;
-  if(globalThis.showcaseRunStats){showcaseRunStats.flowActions=(showcaseRunStats.flowActions||0)+1;showcaseRunStats.peakFlow=Math.max(showcaseRunStats.peakFlow||0,showcaseV114Flow.chain)}
+  showcaseV114Flow.until=clock+SHOWCASE_FLOW_WINDOW;showcaseV114Flow.actions++;showcaseV114Flow.kinds[kind]=(showcaseV114Flow.kinds[kind]||0)+1;showcaseV114Flow.lastKind=kind;showcaseV114Flow.lastId=u.id;showcaseV114Flow.peak=Math.max(showcaseV114Flow.peak,showcaseV114Flow.chain);showcaseV114Pulse=1;
+  if(globalThis.showcaseRunStats){showcaseRunStats.flowActions=(showcaseRunStats.flowActions||0)+1;showcaseRunStats.peakFlow=Math.max(showcaseRunStats.peakFlow||0,showcaseV114Flow.chain);if(kind==='route')showcaseRunStats.routeOrders=(showcaseRunStats.routeOrders||0)+1}
   if(showcaseV114Flow.chain>=3&&!(showcaseV114Flow.stamp&1)){showcaseV114Flow.stamp|=1;globalThis.showcaseSatisfaction?.skill('herd-flow','HERD FLOW','Three unicorns productive in one sequence')}
   if(showcaseV114Flow.chain>=SHOWCASE_FLOW_MAX&&!(showcaseV114Flow.stamp&2)){showcaseV114Flow.stamp|=2;globalThis.showcaseSatisfaction?.skill('full-stampede','FULL STAMPEDE','Five herd members working in one flow')}
   return showcaseV114Flow.chain;
@@ -24,7 +24,7 @@ function showcaseV114CrowdShock(x,y,strength=1){
   return moved;
 }
 const showcaseV114StartBase=startLevel;
-startLevel=function(n){const r=showcaseV114StartBase(n);showcaseV114Reset();if(globalThis.showcaseRunStats){showcaseRunStats.peakFlow=0;showcaseRunStats.flowActions=0}return r};
+startLevel=function(n){const r=showcaseV114StartBase(n);showcaseV114Reset();if(globalThis.showcaseRunStats){showcaseRunStats.peakFlow=0;showcaseRunStats.flowActions=0;showcaseRunStats.routeOrders=0}return r};
 const showcaseV114CycleBase=cycle;
 cycle=function(){const u=unis[caps[0]],before=u?.order||0,speed=u?Math.hypot(u.vx,u.vy):0,r=showcaseV114CycleBase();if(state==='play'&&level&&u?.live&&speed>35&&u.order>before)showcaseV114Note(u,'route');return r};
 const showcaseV114PowerBase=power;
@@ -46,6 +46,6 @@ function showcaseV114DrawWorld(){
   X.restore();
 }
 const showcaseV114WorldBase=world;world=function(){showcaseV114WorldBase();showcaseV114DrawWorld()};
-function showcaseV114State(){return{chain:showcaseV114Flow.chain,peak:showcaseV114Flow.peak,until:showcaseV114Flow.until,ids:[...showcaseV114Flow.ids],actions:showcaseV114Flow.actions,lastKind:showcaseV114Flow.lastKind,lastId:showcaseV114Flow.lastId,pulse:showcaseV114Pulse}}
+function showcaseV114State(){return{chain:showcaseV114Flow.chain,peak:showcaseV114Flow.peak,until:showcaseV114Flow.until,ids:[...showcaseV114Flow.ids],actions:showcaseV114Flow.actions,kinds:{...showcaseV114Flow.kinds},lastKind:showcaseV114Flow.lastKind,lastId:showcaseV114Flow.lastId,pulse:showcaseV114Pulse}}
 globalThis.showcaseFlowState=showcaseV114State;
 globalThis.showcaseFlow={note:showcaseV114Note,shock:showcaseV114CrowdShock,reset:showcaseV114Reset,state:showcaseV114State};
