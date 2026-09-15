@@ -1,4 +1,4 @@
-// Showcase v1.15: make player intent and town consequence persist visibly in the world.
+// Showcase v1.15+: make player intent and town consequence persist visibly in the world.
 // This layer is presentation-only: no collision, score, conquest, or herd-physics authority lives here.
 const SHOWCASE_V115_RUIN_PALETTES=[
   {slab:'#d7b59d',deep:'#704d54',beam:'#7a5844',accent:'#ff79b6'},
@@ -59,18 +59,17 @@ function showcaseV115DrawCheers(){
   if(!level)return;const reduced=globalThis.showcaseSettings?.reducedMotion;
   for(const p of people)if((p.showcaseCheer||0)>.03&&!(p.showcaseAlarm>.05)){const q=Math.min(1,p.showcaseCheer),bob=reduced?0:Math.sin(clock*9+(p.showcaseCheerSeed||0))*.25;X.save();X.globalAlpha=.35+.55*q;X.fillStyle='#fff2a6';text('★',p.x-9,p.y-39-bob*10,8,'center');X.fillStyle='#7be8ff';text('✦',p.x+10,p.y-47+bob*7,7,'center');X.restore()}
 }
-const showcaseV115StartBase=startLevel;
-startLevel=function(n){const r=showcaseV115StartBase(n);showcaseV115Reset();return r};
-const showcaseV115UpdateBase=update;
-update=function(dt){
-  const r=showcaseV115UpdateBase(dt);if(!level)return r;for(const p of people)if(p.showcaseCheer)p.showcaseCheer=Math.max(0,p.showcaseCheer-dt);
+function showcaseV115Tick(ctx){
+  const dt=ctx.args[0]||0;if(!level)return;for(const p of people)if(p.showcaseCheer)p.showcaseCheer=Math.max(0,p.showcaseCheer-dt);
   const f=globalThis.showcaseFlowState?.()||{chain:0,lastId:-1};if(f.chain>=5&&showcaseV115PrevFlow<5){const u=unis[f.lastId]||unis[caps[0]];if(u)showcaseV115CheerAt(u.x,u.y,1.35)}else if(f.chain>=3&&showcaseV115PrevFlow<3){const u=unis[f.lastId]||unis[caps[0]];if(u)showcaseV115CheerAt(u.x,u.y,1)}showcaseV115PrevFlow=f.chain;
   const takeover=showcaseV115TakeoverActive();for(let i=0;i<4;i++){const secured=takeover&&!!(dmask&(1<<i));if(secured&&!showcaseV115Secured[i]){showcaseV115Secured[i]=1;showcaseV115DistrictFlips++;showcaseV115Bursts.push({i,t:2.1});const a=showcaseV115DistrictAnchors()[i];showcaseV115CheerAt(a[0],a[1],1)}else if(!secured)showcaseV115Secured[i]=0}
-  for(const b of showcaseV115Bursts)b.t-=dt;showcaseV115Bursts=showcaseV115Bursts.filter(b=>b.t>0);return r;
-};
-const showcaseV115DecorBase=drawTownStreetDecor;drawTownStreetDecor=function(){showcaseV115DecorBase();showcaseV115DrawDistrictStandards()};
-const showcaseV115ObjsBase=drawObjs;drawObjs=function(){showcaseV115ObjsBase();showcaseV115DrawRuins()};
-const showcaseV115PeopleBase=drawPeople;drawPeople=function(){showcaseV115PeopleBase();showcaseV115DrawCheers()};
-const showcaseV115FliesBase=drawFlies;drawFlies=function(){showcaseV115FliesBase();showcaseV115DrawRouteOrders()};
+  for(const b of showcaseV115Bursts)b.t-=dt;showcaseV115Bursts=showcaseV115Bursts.filter(b=>b.t>0);
+}
+globalThis.showcaseHooks.on('start:after','living.reset',showcaseV115Reset,10);
+globalThis.showcaseHooks.on('update:after','living.tick',showcaseV115Tick,10);
+globalThis.showcaseHooks.on('decor:after','living.districts',showcaseV115DrawDistrictStandards,10);
+globalThis.showcaseHooks.on('objects:after','living.ruins',showcaseV115DrawRuins,10);
+globalThis.showcaseHooks.on('people:after','living.cheers',showcaseV115DrawCheers,10);
+globalThis.showcaseHooks.on('flies:after','living.routes',showcaseV115DrawRouteOrders,10);
 function showcaseV115Snapshot(){return{routes:showcaseV115RouteList().map(u=>({id:u.id,order:u.order,ox:u.ox,oy:u.oy})),ruins:showcaseV115RuinList().length,districts:[0,1,2,3].map(showcaseV115DistrictRatio),secured:[...showcaseV115Secured],takeover:showcaseV115TakeoverActive(),cheers:people?.filter(p=>(p.showcaseCheer||0)>0).length||0,bursts:showcaseV115Bursts.map(b=>({i:b.i,t:b.t})),districtFlips:showcaseV115DistrictFlips}}
 globalThis.showcaseLivingConquest={snapshot:showcaseV115Snapshot,cheer:(u,p=1)=>u?showcaseV115CheerAt(u.x,u.y,p):0,districtRatio:showcaseV115DistrictRatio,anchors:showcaseV115DistrictAnchors,version:'v1.15'};

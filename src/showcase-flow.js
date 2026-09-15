@@ -23,29 +23,26 @@ function showcaseV114CrowdShock(x,y,strength=1){
   for(const p of people){let dx=p.x-x,dy=p.y-y,d=Math.hypot(dx,dy)||1;if(d>=330)continue;const q=(1-d/330)*strength,k=180+420*q;p.vx+=dx/d*k;p.vy+=dy/d*k;p.t=0;p.cool=Math.max(p.cool||0,.7);p.showcaseAlarm=Math.max(p.showcaseAlarm||0,.8+q*.8);moved++}
   return moved;
 }
-const showcaseV114StartBase=startLevel;
-startLevel=function(n){const r=showcaseV114StartBase(n);showcaseV114Reset();if(globalThis.showcaseRunStats){showcaseRunStats.peakFlow=0;showcaseRunStats.flowActions=0;showcaseRunStats.routeOrders=0}return r};
-const showcaseV114CycleBase=cycle;
-cycle=function(){const u=unis[caps[0]],before=u?.order||0,speed=u?Math.hypot(u.vx,u.vy):0,r=showcaseV114CycleBase();if(state==='play'&&level&&u?.live&&speed>35&&u.order>before)showcaseV114Note(u,'route');return r};
-const showcaseV114PowerBase=power;
-power=function(u,p){const on=p?.on,r=showcaseV114PowerBase(u,p);if(on&&!p.on)showcaseV114Note(u,'power');return r};
-const showcaseV114HitBase=hitObj;
-hitObj=function(u,o,d){const before=o?.hp||0,r=showcaseV114HitBase(u,o,d),after=o?.hp||0;if(o&&before>0&&after<=0){showcaseV114Note(u,'smash');showcaseV114CrowdShock(o.x+o.w/2,o.y+o.h/2,1)}return r};
-const showcaseV114UpdateBase=update;
-update=function(dt){
-  const was=showcaseV114Captured,r=showcaseV114UpdateBase(dt),now=new Set();if(typeof cleaners!=='undefined')for(const c of cleaners)if(c.u>=0)now.add(c.u);
-  for(const id of was)if(!now.has(id)&&unis[id]?.live)showcaseV114Note(unis[caps[0]]||unis[id],'rescue');showcaseV114Captured=now;
-  if(showcaseV114Flow.chain&&clock>showcaseV114Flow.until){showcaseV114Flow.chain=0;showcaseV114Flow.ids=[];showcaseV114Flow.stamp=0}
-  showcaseV114Pulse=Math.max(0,showcaseV114Pulse-dt*3.2);if(typeof people!=='undefined')for(const p of people)if(p.showcaseAlarm)p.showcaseAlarm=Math.max(0,p.showcaseAlarm-dt);
-  return r;
-};
 function showcaseV114DrawWorld(){
   if(state!=='play'||!level)return;const reduced=globalThis.showcaseSettings?.reducedMotion,pal=showcaseWorldPalette();X.save();X.translate(ox,oy);X.scale(z,z);
   if(showcaseV114Flow.chain>1){for(const id of showcaseV114Flow.ids){const u=unis[id];if(!u?.live)continue;const recent=id===showcaseV114Flow.lastId,a=recent ? .72 : .22,r=48+(recent&&!reduced?Math.sin(clock*8)*4:0);X.globalAlpha=a;X.strokeStyle=`hsl(${u.h} 92% 72%)`;X.lineWidth=recent?5:3;X.beginPath();X.arc(u.x,u.y,r,0,T);X.stroke()}const u=unis[showcaseV114Flow.lastId];if(u?.live&&showcaseV114Pulse>.08){X.globalAlpha=Math.min(1,showcaseV114Pulse*1.5);X.fillStyle='#07101ddd';rr(u.x-62,u.y+61,124,25,8);X.fillStyle=pal.glow;text('HERD FLOW '+showcaseV114Flow.chain+'X',u.x,u.y+78,10,'center')}}
   if(typeof people!=='undefined')for(const p of people)if(p.showcaseAlarm>.05){const a=Math.min(.9,p.showcaseAlarm),bob=reduced?0:Math.sin(clock*10+p.x*.01)*3;X.globalAlpha=a;X.fillStyle='#fff4bd';text('!',p.x,p.y-37+bob,11,'center')}
   X.restore();
 }
-const showcaseV114WorldBase=world;world=function(){showcaseV114WorldBase();showcaseV114DrawWorld()};
+globalThis.showcaseHooks.on('start:after','flow.reset',()=>{showcaseV114Reset();if(globalThis.showcaseRunStats){showcaseRunStats.peakFlow=0;showcaseRunStats.flowActions=0;showcaseRunStats.routeOrders=0}},20);
+globalThis.showcaseHooks.on('cycle:before','flow.route-snapshot',ctx=>{const u=unis[caps[0]];ctx.flow114={u,before:u?.order||0,speed:u?Math.hypot(u.vx,u.vy):0}},20);
+globalThis.showcaseHooks.on('cycle:after','flow.route-note',ctx=>{const q=ctx.flow114||{},u=q.u;if(state==='play'&&level&&u?.live&&q.speed>35&&u.order>q.before)showcaseV114Note(u,'route')},20);
+globalThis.showcaseHooks.on('power:before','flow.power-snapshot',ctx=>{ctx.flow114On=ctx.args[1]?.on},20);
+globalThis.showcaseHooks.on('power:after','flow.power-note',ctx=>{const[u,p]=ctx.args;if(ctx.flow114On&&!p?.on)showcaseV114Note(u,'power')},20);
+globalThis.showcaseHooks.on('hit:before','flow.hit-snapshot',ctx=>{ctx.flow114Hp=ctx.args[1]?.hp||0},20);
+globalThis.showcaseHooks.on('hit:after','flow.hit-note',ctx=>{const[u,o]=ctx.args,after=o?.hp||0;if(o&&ctx.flow114Hp>0&&after<=0){showcaseV114Note(u,'smash');showcaseV114CrowdShock(o.x+o.w/2,o.y+o.h/2,1)}},20);
+globalThis.showcaseHooks.on('update:after','flow.tick',ctx=>{
+  const dt=ctx.args[0]||0,was=showcaseV114Captured,now=new Set();if(typeof cleaners!=='undefined')for(const c of cleaners)if(c.u>=0)now.add(c.u);
+  for(const id of was)if(!now.has(id)&&unis[id]?.live)showcaseV114Note(unis[caps[0]]||unis[id],'rescue');showcaseV114Captured=now;
+  if(showcaseV114Flow.chain&&clock>showcaseV114Flow.until){showcaseV114Flow.chain=0;showcaseV114Flow.ids=[];showcaseV114Flow.stamp=0}
+  showcaseV114Pulse=Math.max(0,showcaseV114Pulse-dt*3.2);if(typeof people!=='undefined')for(const p of people)if(p.showcaseAlarm)p.showcaseAlarm=Math.max(0,p.showcaseAlarm-dt);
+},20);
+globalThis.showcaseHooks.on('world:after','flow.render',showcaseV114DrawWorld,20);
 function showcaseV114State(){return{chain:showcaseV114Flow.chain,peak:showcaseV114Flow.peak,until:showcaseV114Flow.until,ids:[...showcaseV114Flow.ids],actions:showcaseV114Flow.actions,kinds:{...showcaseV114Flow.kinds},lastKind:showcaseV114Flow.lastKind,lastId:showcaseV114Flow.lastId,pulse:showcaseV114Pulse}}
 globalThis.showcaseFlowState=showcaseV114State;
 globalThis.showcaseFlow={note:showcaseV114Note,shock:showcaseV114CrowdShock,reset:showcaseV114Reset,state:showcaseV114State};
