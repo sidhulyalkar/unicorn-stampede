@@ -65,7 +65,7 @@ const showcaseV115UpdateBase=update;
 update=function(dt){
   const r=showcaseV115UpdateBase(dt);if(!level)return r;for(const p of people)if(p.showcaseCheer)p.showcaseCheer=Math.max(0,p.showcaseCheer-dt);
   const f=globalThis.showcaseFlowState?.()||{chain:0,lastId:-1};if(f.chain>=5&&showcaseV115PrevFlow<5){const u=unis[f.lastId]||unis[caps[0]];if(u)showcaseV115CheerAt(u.x,u.y,1.35)}else if(f.chain>=3&&showcaseV115PrevFlow<3){const u=unis[f.lastId]||unis[caps[0]];if(u)showcaseV115CheerAt(u.x,u.y,1)}showcaseV115PrevFlow=f.chain;
-  const takeover=showcaseV115TakeoverActive();for(let i=0;i<4;i++){const secured=takeover&&showcaseV115DistrictRatio(i)>=1;if(secured&&!showcaseV115Secured[i]){showcaseV115Secured[i]=1;showcaseV115DistrictFlips++;showcaseV115Bursts.push({i,t:2.1});const a=showcaseV115DistrictAnchors()[i];showcaseV115CheerAt(a[0],a[1],1)}else if(!secured)showcaseV115Secured[i]=0}
+  const takeover=showcaseV115TakeoverActive();for(let i=0;i<4;i++){const secured=takeover&&!!(dmask&(1<<i));if(secured&&!showcaseV115Secured[i]){showcaseV115Secured[i]=1;showcaseV115DistrictFlips++;showcaseV115Bursts.push({i,t:2.1});const a=showcaseV115DistrictAnchors()[i];showcaseV115CheerAt(a[0],a[1],1)}else if(!secured)showcaseV115Secured[i]=0}
   for(const b of showcaseV115Bursts)b.t-=dt;showcaseV115Bursts=showcaseV115Bursts.filter(b=>b.t>0);return r;
 };
 const showcaseV115DecorBase=drawTownStreetDecor;drawTownStreetDecor=function(){showcaseV115DecorBase();showcaseV115DrawDistrictStandards()};
