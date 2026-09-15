@@ -1,12 +1,21 @@
 # 🦄 Unicorn Stampede
 
-**A six-unicorn arcade-strategy game for js13kGames 2026.**
+**A six-unicorn arcade-strategy game born as a js13kGames 2026 entry and continued as a richer post-competition showcase.**
 
 You control one unicorn at a time while the rest of the herd keeps moving, follows routes you leave behind, gets distracted, fights the town, and can be captured.
 
 > **Manage the herd. Destroy the town. Recover when the plan goes sideways.**
 
 The challenge is not only steering quickly. It is keeping several chaotic plans useful at once while the town actively fights back.
+
+## Two editions
+
+The repository deliberately has two product targets.
+
+- **Competition artifact:** `release/js13k-2026-submitted` is the frozen, byte-qualified js13k lineage. The submitted package was qualified at **13,307 / 13,312 bytes**.
+- **Showcase edition:** `main` is the post-js13k version intended for continued development and sidhulyalkar.com. It keeps the competition rules at its core, but uses normal web-game headroom for richer towns, four regional worlds, accessibility/settings, cross-browser hardening, Smart Attention feedback, persistent mastery, Herd Flow, and Living Conquest visual consequence.
+
+The showcase is not trying to spend every recovered byte on decoration. New systems should make decisions clearer, make expertise easier to see, or make the town react more convincingly to what the player actually did.
 
 ## The game in 20 seconds
 
@@ -49,9 +58,11 @@ There is **no timer defeat** and no gameplay timer state.
 
 ## The core verbs
 
-### Steer and paint
+### Steer, paint, and leave a plan running
 
 Movement paints Rainbow Highway. Paint is both territory and infrastructure. Unattended unicorns behave better on painted routes, so strong play creates paths that remain useful after you switch away.
+
+When a moving captain is handed off with Shift in the showcase edition, the existing directional order becomes visibly persistent in the world. A fading route ribbon shows where that unicorn is still committed and roughly how long the order remains. This is visualization of existing order state, not a waypoint editor or a second command system.
 
 ### Whip and Dash
 
@@ -65,50 +76,35 @@ Shift is not a blind next-unit button. Its urgency order is:
 
 **DISTRACTED > STALLED > OFF-ROUTE > POWERUP > NEGLECTED**
 
-A nearby useful power-up matters, but it never outranks a real herd crisis.
+The showcase extends that policy with explainable risk signals such as edge danger and Faultline slip. A nearby useful power-up matters, but it never outranks a real herd crisis.
 
 Rapid Shift has short-term memory. Recently visited unicorns are temporarily deprioritized, so several quick taps explore different parts of the herd instead of bouncing between the same pair.
 
 A normal Shift asks **who needs me most right now?** Three rapid Shifts mean **show me the rest of the herd.**
 
+## Herd Flow
+
+The showcase edition makes distributed expertise explicit without adding a new input.
+
+Productive actions by different live unicorns within a short window build **Herd Flow** from 1X to 5X. Intentional moving-captain route handoffs, power-up pickups, structure destruction, and completed rescues can contribute. Repeating actions with the same unicorn refreshes the window but does not inflate the distinct-herd chain.
+
+At 3X the Smart Play feed recognizes **HERD FLOW**. At 5X it recognizes **FULL STAMPEDE**. Flow is currently a feedback and measurement layer, not a score multiplier. Runs record peak Flow, total Flow actions, and player-authored route orders so future balance decisions can be grounded in whether the signal actually predicts better play.
+
 ## Team gates
 
-Some landmarks require several live unicorns nearby before they can take damage. The game now states this directly instead of introducing a separate “Rally” term.
+Some landmarks require several live unicorns nearby before they can take damage. The game states this directly instead of introducing a separate “Rally” term.
 
-A message such as:
+A message such as **TEAM 2/3** means two qualifying unicorns are already near the target and three are required, so bring one more.
 
-**TEAM 2/3**
-
-means **two qualifying unicorns are already near the target and three are required**, so bring one more.
-
-The Clock Tower introduces the idea with a smaller Team requirement. Town Hall requires a larger group, and harder difficulties can raise the requirement. Once Chaos is ready, the live Hall objective itself shows the current count, for example:
-
-**TEAM 2/3 • HALL**
-
-This keeps the mechanic concrete and visible while you play.
+The Clock Tower introduces the idea with a smaller Team requirement. Town Hall requires a larger group, and harder difficulties can raise the requirement. Once Chaos is ready, the live Hall objective itself shows the current count, for example **TEAM 2/3 • HALL**.
 
 ## Contextual coaching on Easy
 
 Easy mode has a deliberately sparse assistance layer. It does not continuously narrate the game and it never outranks important state messages.
 
-When existing gameplay state suggests the player may have tunnel-visioned onto one unicorn, the HUD can briefly show:
+When existing gameplay state suggests the player may have tunnel-visioned onto one unicorn, the HUD can briefly show **TIP • SHIFT → CHECK HERD**. When the herd is safe and useful pickups remain, Normal can occasionally show **TIP • AIM FOR POWER-UPS**.
 
-**TIP • SHIFT → CHECK HERD**
-
-This is derived from the same attention-age data Smart Shift already uses. No extra tutorial timer or hidden progression system is needed.
-
-When the herd is safe and useful pickups remain, Normal can occasionally show:
-
-**TIP • AIM FOR POWER-UPS**
-
-Coaching is suppressed when:
-
-- a capture/prisoner needs attention;
-- an important gameplay or stage message is active;
-- difficulty is Medium, Hard, or Impossible;
-- Stampede+ is active.
-
-The intent is a quiet safety net for first runs, not a permanent hint banner.
+Coaching is suppressed when a capture/prisoner needs attention, an important gameplay or stage message is active, difficulty is Medium/Hard/Impossible, or Stampede+ is active. The intent is a quiet safety net for first runs, not a permanent hint banner.
 
 ## Staged herd progression
 
@@ -137,17 +133,9 @@ Cleaners erase painted infrastructure faster.
 
 ### SNATCH
 
-Cleaners target distracted unattended unicorns.
+Cleaners target distracted unattended unicorns. A captured unicorn rides with its prison truck. The truck carries the captive's color and is explicitly labeled **RESCUE**.
 
-A captured unicorn rides with its prison truck. The truck carries the captive's color and is explicitly labeled **RESCUE**.
-
-To rescue:
-
-1. intercept the prison truck with Dash, Frenzy, or Boost;
-2. stun the truck;
-3. bring **two live unicorns** close to it.
-
-`RESCUE 1/2` means the truck is stopped but a second unicorn still needs to arrive. Successful rescues award score because recovery is part of mastery.
+To rescue, intercept the prison truck with Dash/Frenzy/Boost, stun it, and bring **two live unicorns** close to it. `RESCUE 1/2` means the truck is stopped but a second unicorn still needs to arrive. Successful rescues award score because recovery is part of mastery.
 
 ### REBUILD
 
@@ -157,15 +145,31 @@ Cleaners can rebuild ordinary destroyed structures, reversing some structural pr
 
 ### Prismborough
 
-The open civic-grid baseline. It emphasizes readable streets, distributed herd attention, landmarks, distractions, and free routing.
+The open civic-grid baseline. It emphasizes readable streets, distributed herd attention, landmarks, distractions, formal gardens, civic parades, and free routing.
 
 ### Washwater Bay
 
-A waterfront world built around a winding river, two bridge corridors, marina space, and aggressive cleanup patrols. Crossing the river concentrates routes and makes rescue/territory decisions more deliberate.
+A waterfront world built around a winding river, bridge corridors, marina space, ferries, harbor furniture, and aggressive cleanup patrols. Crossing the river concentrates routes and makes rescue/territory decisions more deliberate.
 
 ### Cloudtop Heights
 
-Alternating stone cliff passes and a reversing crosswind turn the map into a top/bottom slalom. Route timing and recovery matter more than generic distraction pressure.
+Alternating stone cliff passes and a reversing crosswind turn the map into a top/bottom slalom. Cable transit, wind shadows, exposed saddles, rain, and restrained gray architecture make route timing and recovery more important than generic distraction pressure.
+
+### Faultline Frontier
+
+A sunbaked frontier town with stagecoaches, named timber façades, six staged fissures, degrading fences, wranglers, slip pressure, and a capture/rescue loop. It is the showcase's strongest stress test of whether the player can keep several routes useful while the terrain itself becomes unreliable.
+
+## Living Conquest
+
+The post-js13k town is not only a backdrop. It increasingly acts as a record of the run.
+
+- Active player-authored route orders remain visible as fading world-space ribbons.
+- Destroyed structures retain deterministic, world-specific rubble instead of collapsing visually into a generic flat rectangle.
+- District paint progress grows visible rainbow standards around the town.
+- A district is shown as **SECURED** only after Town Hall is down and the core game's authoritative district-completion bit is set.
+- Civilians flee nearby structural collapses, while strong Herd Flow and district securing can produce local celebration. Panic always wins over cheering.
+
+These systems are intentionally presentation-only. They read authoritative game state; they do not create a second set of conquest, collision, scoring, or AI rules.
 
 ## Difficulty
 
@@ -183,11 +187,9 @@ The successful transition has several readable beats:
 
 The explosion is anchored to the actual Town Hall geometry, the town receives a six-band rainbow wash, celebration bursts appear across the city, and the final score is overlaid on the conquered town itself.
 
-Defeat is similarly staged:
+Defeat is similarly staged: **3 CAPTURED! → HERD COLLAPSE! → HERD COLLAPSED**.
 
-**3 CAPTURED! → HERD COLLAPSE! → HERD COLLAPSED**
-
-Result screens remain latched until a fresh Enter press. Space, clicks, held/repeated Enter, and residual gameplay input cannot accidentally restart the run. Fresh Enter returns to the title/world/difficulty page so the next run is deliberate.
+Result screens remain latched until a fresh Enter press. Space, clicks, held/repeated Enter, and residual gameplay input cannot accidentally restart the run. The showcase debrief also surfaces mastery, Smart Play moments, attention reasons, peak Herd Flow, route orders, and Flow actions.
 
 ## Training
 
@@ -208,21 +210,21 @@ The controls do not secretly change between Training and campaign play.
 
 ## Visual architecture
 
-The game does not ship sprite sheets. Town art is generated with a compact procedural drawing grammar shared across buildings and landmarks.
+The game does not depend on sprite sheets. Town art is generated from a procedural drawing grammar shared across buildings and landmarks.
 
-Building family, facade rhythm, roof shape, windows, awnings, masonry, flowers, hue, damage color, and landmark treatment are composed from reusable Canvas primitives. The same approach powers district overlays, roads, traffic, water, vegetation, weather, paint, particles, and the six unicorns.
+Building family, facade rhythm, roof shape, windows, awnings, masonry, flowers, hue, damage color, landmark treatment, gardens, furniture, regional transit, weather, destruction debris, district standards, paint, particles, civilians, and the six unicorns are composed from reusable Canvas primitives.
 
-The goal is a tiny hand-authored vector codebook: **more visual variety from shared geometry instead of stored pixels.**
+The post-js13k renderer also caches invariant world surfaces and can reduce decorative density on slower devices. The goal is still the same tiny-game idea at larger scale: **visual variety from shared geometry and meaningful state, not a pile of stored pixels.**
 
-## Score philosophy
+## Mastery and score philosophy
 
-There is no remaining-time bonus. Score rewards useful play: painting territory, destroying structures, breaking landmarks, Whip/Prism chains, stunning cleaners, rescuing prisoners, and completing conquest.
+There is no remaining-time bonus. Score rewards useful play: painting territory, destroying structures, breaking landmarks, Whip/Prism chains, stunning cleaners, rescuing prisoners, and completing conquest. A messy run can still be worth finishing. Recovery is a skill, not dead time.
 
-A messy run can still be worth finishing. Recovery is a skill, not dead time.
+The showcase adds a separate persistent three-star mastery track per world: **CONQUER**, **CLEAN HERD**, and **SHOWCASE FLAIR**. Stars describe how cleanly the player managed the town; they do not lock the campaign worlds.
 
-## Canonical source architecture
+## Architecture
 
-v0.36 keeps the readable source as the shipped game architecture. The release graph is nine modules:
+The frozen competition build keeps the readable nine-module source graph:
 
 ```text
 core.js
@@ -236,9 +238,11 @@ worlds.js
 expansion.js
 ```
 
-There is no hidden semantic rewrite pass before packing. `release-prune.mjs` acts as a contract/auditor and rejects retired architecture if it reappears.
+There is no hidden semantic rewrite pass before packing. `release-prune.mjs` acts as a contract/auditor for that release lineage.
 
-Retired state includes timer defeat/runtime state, elapsed-time herd unlocks, dual-captain Dash architecture, release-only best-score persistence, movement-release auto-switching, and superseded intermediate HUD layers.
+The **showcase edition** deliberately layers additional readable modules over that stable core: regional surface/art systems, world actors, Faultline simulation, settings/audio/input, performance and boundary guards, Smart Attention, transition safety, feel/telemetry, authored satisfaction, Herd Flow, Living Conquest, mastery, and native menu/session UI.
+
+That layering has been productive, but it also creates a growing chain of wrappers around global lifecycle functions such as `startLevel`, `update`, `world`, and `cycle`. A future architectural pass should replace that order-sensitive wrapper stack with a small explicit lifecycle/hook bus before many more showcase systems are added.
 
 ## Qualification
 
@@ -248,6 +252,8 @@ npm test
 npm run build
 ```
 
-The qualification suite protects the 13,312-byte js13k ceiling, canonical release-source parity, staged 4 → 5 → 6 progression, no timer state, Shift-only handoff, Smart Shift urgency/rapid scan, Whip/Dash behavior, procedural facades, direct Team gates, Normal contextual coaching, SWEEP/SNATCH/REBUILD, rescue/collapse, difficulty separation, explicit Takeover objectives, immediate conquest latching, clickable title configuration, packed pointer interactions, latched results, menu replay, browser-safe preview parity, and one-root-file submission ZIP integrity.
+The competition suite protects the 13,312-byte ceiling, canonical release-source parity, staged 4 → 5 → 6 progression, no timer state, Shift-only handoff, Smart Shift urgency/rapid scan, Whip/Dash behavior, procedural facades, Team gates, coaching, defensive doctrines, rescue/collapse, difficulty separation, Takeover objectives, conquest latching, packed pointer interactions, latched results, browser-safe preview parity, and one-root-file submission ZIP integrity.
 
-The project treats the byte limit as a design constraint: bytes should buy clearer decisions, richer feedback, stronger game feel, or reusable visual grammar. Decorative code that does not improve play has to earn its seat on the unicorn bus.
+The post-js13k showcase adds Chromium and Firefox qualification for visual/system composition, pedestrian/building solidity, deterministic long-run stress, capture/rescue transitions, Faultline lifecycle seams, Smart Attention readability, authored satisfaction/mastery, Herd Flow semantics, Living Conquest state authority, menu UX, and standalone HTML packaging.
+
+The original byte philosophy still applies even without the hard 13 KB ceiling: a new system should buy clearer decisions, stronger game feel, measurable mastery, or a more reactive world. Decorative complexity that does none of those things still has to earn its seat on the unicorn bus.

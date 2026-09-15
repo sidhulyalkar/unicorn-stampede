@@ -1,5 +1,5 @@
 // Lightweight run telemetry for the portfolio/showcase edition.
-function showcaseFreshStats(){return{time:0,switches:0,whips:0,dashes:0,powerups:0,buildings:0,damage:0,maxCharge:0,switchReasons:{}}}
+function showcaseFreshStats(){return{time:0,switches:0,whips:0,dashes:0,powerups:0,buildings:0,damage:0,maxCharge:0,flowActions:0,peakFlow:0,routeOrders:0,switchReasons:{}}}
 globalThis.showcaseRunStats=showcaseFreshStats();
 const showcaseStatsStartBase=startLevel;
 startLevel=function(n){showcaseRunStats=showcaseFreshStats();globalThis.showcaseRunStats=showcaseRunStats;return showcaseStatsStartBase(n)};
@@ -17,15 +17,17 @@ const showcaseStatsHitBase=hitObj;
 hitObj=function(u,o,d){const before=o?.hp||0,r=showcaseStatsHitBase(u,o,d);if(o&&before>o.hp){showcaseRunStats.damage+=before-o.hp;if(before>0&&o.hp<=0)showcaseRunStats.buildings++}return r};
 function showcaseFormatTime(seconds){const s=Math.max(0,seconds|0);return`${s/60|0}:${String(s%60).padStart(2,'0')}`}
 function showcaseAttentionSummaryText(s){const a=Object.entries(s.switchReasons).filter(([r])=>r!=='unknown').sort((x,y)=>y[1]-x[1]||x[0].localeCompare(y[0])).slice(0,3);return a.length?a.map(([r,n])=>`${globalThis.showcaseReasonLabel?.(r)||r.toUpperCase()} ${n}`).join('  •  '):'NO SWITCHES'}
+function showcaseFlowSummaryText(s){return`PEAK ${s.peakFlow||0}X  •  ROUTES ${s.routeOrders||0}  •  ACTIONS ${s.flowActions||0}`}
 const showcaseStatsEndBase=end;
 end=function(){
   showcaseStatsEndBase();
   const s=showcaseRunStats;
-  X.fillStyle='#07101dcc';rr(W/2-330,350,660,190,18);
+  X.fillStyle='#07101dcc';rr(W/2-330,350,660,228,18);
   X.fillStyle='#ffe77d';text('RUN TELEMETRY',W/2,380,14,'center');
   X.fillStyle='#fff';
   const cells=[['TIME',showcaseFormatTime(s.time)],['SWITCHES',s.switches],['WHIPS',s.whips],['DASHES',s.dashes],['POWER-UPS',s.powerups],['STRUCTURES',s.buildings],['MAX CHARGE',s.maxCharge+'/5'],['DAMAGE',Math.round(s.damage)]];
   cells.forEach(([label,value],i)=>{const col=i%4,row=i/4|0,x=W/2-245+col*165,y=416+row*48;text(String(value),x,y,18,'center');X.fillStyle='#a9bdd2';text(label,x,y+18,9,'center');X.fillStyle='#fff'});
-  X.fillStyle='#a9bdd2';text('ATTENTION DIRECTOR',W/2,508,9,'center');X.fillStyle='#fff';text(showcaseAttentionSummaryText(s),W/2,526,11,'center');
+  X.fillStyle='#a9bdd2';text('HERD FLOW',W/2,516,9,'center');X.fillStyle='#ffe9a3';text(showcaseFlowSummaryText(s),W/2,534,11,'center');
+  X.fillStyle='#a9bdd2';text('ATTENTION DIRECTOR',W/2,553,9,'center');X.fillStyle='#fff';text(showcaseAttentionSummaryText(s),W/2,571,11,'center');
 };
-globalThis.showcaseAttentionSummary=()=>showcaseAttentionSummaryText(showcaseRunStats);
+globalThis.showcaseAttentionSummary=()=>showcaseAttentionSummaryText(showcaseRunStats);globalThis.showcaseFlowSummary=()=>showcaseFlowSummaryText(showcaseRunStats);
