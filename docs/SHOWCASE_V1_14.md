@@ -1,4 +1,4 @@
-# Unicorn Stampede showcase v1.14 — Herd Flow
+# Unicorn Stampede showcase v1.14 - Herd Flow
 
 ## Goal
 
@@ -10,9 +10,12 @@ The v1.14 pass adds a short-lived **Herd Flow** state. Productive actions perfor
 
 The first v1.14 contract counts only actions that already have clear game value:
 
+- committing a moving unicorn to a route during a Smart Attention handoff;
 - collecting a power-up;
 - destroying a structure;
 - completing a capture/rescue transition.
+
+Route handoffs are the most intentional input in this set. They make Flow achievable through deliberate multi-unicorn planning rather than relying on autonomous destruction to line up by chance.
 
 At 3X, the existing Smart Play feed calls out **HERD FLOW**. At 5X it calls out **FULL STAMPEDE**. These use the current satisfaction/mastery vocabulary instead of introducing another reward system.
 
@@ -26,8 +29,8 @@ Structure collapse now also produces a crowd response: nearby civilians receive 
 
 The run stats object now records:
 
-- `flowActions` — productive actions observed by v1.14;
-- `peakFlow` — highest distinct-unicorn chain reached during the run.
+- `flowActions` - productive actions observed by v1.14;
+- `peakFlow` - highest distinct-unicorn chain reached during the run.
 
 The public `showcaseFlowState()` snapshot is intentionally read-only and supports playtest instrumentation and deterministic browser qualification.
 
@@ -37,10 +40,11 @@ Cross-browser Chromium and Firefox coverage requires:
 
 1. repeated productive actions by one unicorn do not grow the chain;
 2. three different live unicorns produce exactly a 3X chain and fire the `herd-flow` Smart Play event;
-3. flow telemetry records actions and peak chain;
-4. the six-second window expires deterministically;
-5. crowd shock moves nearby civilians without leaving them inside solid pedestrian space;
-6. no page errors occur during the contract.
+3. a moving captain handoff creates a route and registers that outgoing unicorn as a Flow contributor;
+4. flow telemetry records actions and peak chain;
+5. the six-second window expires deterministically;
+6. crowd shock moves nearby civilians without leaving them inside solid pedestrian space;
+7. no page errors occur during the contract.
 
 ## Next measurements
 
