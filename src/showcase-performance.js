@@ -13,6 +13,7 @@ function showcasePersonHitsObject(x,y,o){
   const b=showcasePersonObstacleBounds(o),p=showcasePersonBounds;
   return x+p.halfW>b.left&&x-p.halfW<b.right&&y+p.bottom>b.top&&y-p.top<b.bottom;
 }
+function showcasePersonBlockedFull(x,y){return objs.some(o=>o.hp>0&&showcasePersonHitsObject(x,y,o))}
 function showcaseBuildObjectGrid(){
   showcaseObjectGrid.clear();showcaseObjectGridSource=objs;
   for(const o of objs){
@@ -25,27 +26,28 @@ personBlocked=function(x,y){
   // startLevel rebuilds objs before the spatial grid can be refreshed. During that short
   // lifecycle seam, use the authoritative object list so title/game pedestrians are settled
   // against the new town rather than a stale previous grid.
-  if(showcaseObjectGridSource!==objs)return objs.some(o=>o.hp>0&&showcasePersonHitsObject(x,y,o));
+  if(showcaseObjectGridSource!==objs)return showcasePersonBlockedFull(x,y);
   const a=showcaseObjectGrid.get(showcaseGridKey(Math.floor(x/SHOWCASE_GRID),Math.floor(y/SHOWCASE_GRID)));
   if(!a)return false;
   for(const o of a)if(o.hp>0&&showcasePersonHitsObject(x,y,o))return true;
   return false;
 };
 function showcaseRecoverPerson(p,index){
-  if(!personBlocked(p.x,p.y))return true;
+  // Spawn/title recovery deliberately uses the authoritative full object set rather than the
+  // hot-path grid. It runs rarely and guarantees that a visually complete civilian fits.
+  if(!showcasePersonBlockedFull(p.x,p.y))return true;
   const ox=p.x,oy=p.y;
-  // Preserve the intended neighborhood first: expand in deterministic rings around the spawn.
   for(let ring=1;ring<=18;ring++)for(let step=0;step<12;step++){
     const a=(step+(index%12))*T/12,r=ring*28,x=cl(ox+Math.cos(a)*r,24,WW-24),y=cl(oy+Math.sin(a)*r,18,WH-52);
-    if(!personBlocked(x,y)){p.x=x;p.y=y;p.vx=p.vy=0;return true}
+    if(!showcasePersonBlockedFull(x,y)){p.x=x;p.y=y;p.vx=p.vy=0;return true}
   }
-  // Pathological fallback: scan a hashed world lattice so different civilians do not pile up.
   const dx=52,dy=58,cols=Math.max(1,Math.floor((WW-48)/dx)),rows=Math.max(1,Math.floor((WH-70)/dy)),count=cols*rows,start=(index*97+(p.h|0)*13)%count;
-  for(let i=0;i<count;i++){const q=(start+i)%count,x=24+(q%cols)*dx,y=18+Math.floor(q/cols)*dy;if(!personBlocked(x,y)){p.x=x;p.y=y;p.vx=p.vy=0;return true}}
+  for(let i=0;i<count;i++){const q=(start+i)%count,x=24+(q%cols)*dx,y=18+Math.floor(q/cols)*dy;if(!showcasePersonBlockedFull(x,y)){p.x=x;p.y=y;p.vx=p.vy=0;return true}}
   return false;
 }
+function showcaseEnsurePeopleClear(){let moved=0;for(let i=0;i<people.length;i++)if(showcasePersonBlockedFull(people[i].x,people[i].y)){showcaseRecoverPerson(people[i],i);moved++}return moved}
 const showcaseSettlePeopleBase=settlePeople;
-settlePeople=function(){showcaseSettlePeopleBase();for(let i=0;i<people.length;i++)showcaseRecoverPerson(people[i],i)};
+settlePeople=function(){showcaseSettlePeopleBase();showcaseEnsurePeopleClear()};
 // Cloudtop and Frontier custom facades are complete buildings, so do not render the generic facade underneath them.
 const showcaseDetailedBuilding=drawTownBuilding;
 function showcaseDrawDetailedBuildingClean(o,tall,d){
@@ -63,7 +65,7 @@ drawTownBuilding=function(o,tall,d){
 };
 function showcaseMotionDensity(n){return Math.max(1,Math.round(n*showcaseQuality))}
 const showcasePerformanceStartBase=startLevel;
-startLevel=function(n){const r=showcasePerformanceStartBase(n);showcaseBuildObjectGrid();for(let i=0;i<people.length;i++)showcaseRecoverPerson(people[i],i);showcaseInvalidateSurface();return r};
+startLevel=function(n){const r=showcasePerformanceStartBase(n);showcaseBuildObjectGrid();showcaseEnsurePeopleClear();showcaseInvalidateSurface();return r};
 const showcasePerformanceUpdateBase=update;
 update=function(dt){
   const ms=Math.max(1,dt*1000);showcaseFrameMs=showcaseFrameMs*.94+ms*.06;
@@ -72,5 +74,6 @@ update=function(dt){
   return showcasePerformanceUpdateBase(dt);
 };
 globalThis.showcaseMotionDensity=showcaseMotionDensity;
-globalThis.showcasePersonCollision={bounds:showcasePersonBounds,obstacle:showcasePersonObstacleBounds,intersects:showcasePersonHitsObject,recover:showcaseRecoverPerson};
+globalThis.showcaseEnsurePeopleClear=showcaseEnsurePeopleClear;
+globalThis.showcasePersonCollision={bounds:showcasePersonBounds,obstacle:showcasePersonObstacleBounds,intersects:showcasePersonHitsObject,recover:showcaseRecoverPerson,blockedFull:showcasePersonBlockedFull};
 globalThis.showcasePerformance=()=>({frameMs:+showcaseFrameMs.toFixed(2),quality:showcaseQuality,gridBuckets:showcaseObjectGrid.size,surface:showcaseSurfaceStats(),facadeFastPath:level&&zone>=2});
