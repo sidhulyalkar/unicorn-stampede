@@ -32,7 +32,10 @@ showcaseMenu.innerHTML=`<button type="button" data-world-step="-1">Previous worl
 const worldCurrent=showcaseMenu.querySelector('[data-world-current]'),modeCurrent=showcaseMenu.querySelector('[data-mode-current]'),startButton=showcaseMenu.querySelector('[data-action="start"]'),tutorialButton=showcaseMenu.querySelector('[data-action="tutorial"]');
 function showcaseRefreshMenu(){
   const visible=state==='title'&&!guide;showcaseMenu.dataset.visible=visible?'1':'0';showcaseMenu.setAttribute('aria-hidden',String(!visible));
-  worldCurrent.textContent=showcaseWorldMeta[zone][0];modeCurrent.textContent=showcaseDifficultyMeta[mode][0];startButton.textContent=train?'Start tutorial':'Start';tutorialButton.textContent='Tutorial '+(train?'on':'off');tutorialButton.setAttribute('aria-pressed',String(!!train));
+  const mastery=globalThis.showcaseMastery?.get?.(zone),stars=mastery?'★'.repeat(mastery.stars)+'☆'.repeat(3-mastery.stars):'';
+  worldCurrent.textContent=mastery?`${showcaseWorldMeta[zone][0]} ${stars} ${mastery.next}`:showcaseWorldMeta[zone][0];
+  worldCurrent.setAttribute('aria-label',mastery?`${showcaseWorldMeta[zone][0]}, ${mastery.stars} of 3 mastery stars, ${mastery.next}`:showcaseWorldMeta[zone][0]);
+  modeCurrent.textContent=showcaseDifficultyMeta[mode][0];startButton.textContent=train?'Start tutorial':'Start';tutorialButton.textContent='Tutorial '+(train?'on':'off');tutorialButton.setAttribute('aria-pressed',String(!!train));
 }
 showcaseMenu.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.worldStep)showcaseSetWorld(zone+(+b.dataset.worldStep));else if(b.hasAttribute('data-world-current'))showcaseSetWorld(zone+1);else if(b.dataset.modeStep)showcaseSetMode(mode+(+b.dataset.modeStep));else if(b.hasAttribute('data-mode-current'))showcaseSetMode(mode+1);else if(b.dataset.action==='start')showcaseStart();else if(b.dataset.action==='tutorial'){train=!train;showcaseMenuTone(360);showcaseRefreshMenu()}else if(b.dataset.action==='rules'){guide=1;showcaseMenuTone(400);showcaseRefreshMenu()}});
 document.body.append(showcaseMenu);
