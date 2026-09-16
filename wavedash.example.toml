@@ -1,0 +1,5 @@
+# Copy to wavedash.toml after creating/selecting the Wavedash project.
+# Keep the real project ID local; wavedash.toml is ignored on this branch.
+game_id = "YOUR_WAVEDASH_GAME_ID"
+upload_dir = "./wavedash-dist"
+entrypoint = "index.html"
