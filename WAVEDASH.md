@@ -28,7 +28,7 @@ The competition source under `src/`, the original `index.html`, `dist/index.html
 
 Historical helper snapshots such as `dist/preview.html` are not part of the submitted ZIP and are not allowed to redefine the frozen artifact after submission. Likewise, the historical `prune-audit` asks source to match a current rewrite transform; it is useful during active byte optimization but is not an eligibility test for an already-submitted immutable build.
 
-The Wavedash lane therefore runs the original gameplay/runtime contracts plus an authoritative packed smoke against `dist/index.html`, followed by the byte-integrity check again. It never rebuilds or rewrites the competition artifact.
+The Wavedash lane therefore runs the complete frozen readable-source gameplay/runtime matrix and separately verifies the submitted ZIP by exact Git blob and byte size before and after those tests. It does not rebuild or rewrite the competition artifact. The generated Wavedash upload is then tested independently with a fake SDK contract.
 
 ## Wavedash SDK surface
 
