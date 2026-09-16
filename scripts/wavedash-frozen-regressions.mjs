@@ -8,7 +8,7 @@ const tests=[
   'v047-waterfront-smoke.mjs','v048-cloudtop-smoke.mjs','v049-world-identity-smoke.mjs',
   'v050-menu-smoke.mjs','v051-launch-config-smoke.mjs','v052-gameplay-liveness-smoke.mjs',
   'v053-conquest-menu-smoke.mjs','v054-semantic-cloudtop-smoke.mjs','v055-structured-storefronts-smoke.mjs',
-  'v056-town-difficulty-smoke.mjs','packed-smoke.mjs','size.mjs'
+  'v056-town-difficulty-smoke.mjs','wavedash-packed-submission-smoke.mjs','size.mjs'
 ];
 
 for(const file of tests){
