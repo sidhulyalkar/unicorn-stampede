@@ -1,0 +1,41 @@
+name: Wavedash js13k competition
+
+on:
+  push:
+    branches: [wavedash/js13k-competition]
+  pull_request:
+    branches: [release/js13k-2026-submitted]
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Frozen submission integrity
+        run: node scripts/wavedash-js13k-integrity.mjs
+      - name: SDK layer syntax
+        run: |
+          node --check wavedash/sdk.js
+          node --check scripts/build-wavedash-js13k.mjs
+          node --check scripts/wavedash-js13k-integrity.mjs
+          node --check scripts/wavedash-sdk-smoke.mjs
+      - name: Original js13k qualification
+        run: npm test
+      - name: Frozen submission still identical after rebuild
+        run: node scripts/wavedash-js13k-integrity.mjs
+      - name: Build isolated Wavedash upload
+        run: node scripts/build-wavedash-js13k.mjs
+      - name: Wavedash SDK behavior contract
+        run: node scripts/wavedash-sdk-smoke.mjs
+      - name: Upload qualified Wavedash build
+        uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-wavedash-js13k
+          path: wavedash-dist/
+          if-no-files-found: error
