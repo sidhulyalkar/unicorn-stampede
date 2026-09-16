@@ -12,15 +12,23 @@ The competition game is frozen. Wavedash work may observe the game and call the 
 - Submitted artifact size on this lineage: **13,203 bytes**
 - Submitted ZIP Git blob: `c4bb95f3790bb7757c045e93ca6d6e194a551f9b`
 
-`scripts/wavedash-js13k-integrity.mjs` fails if the gameplay source, original entrypoint, packed HTML, or submitted ZIP differs from that frozen base.
+`scripts/wavedash-js13k-integrity.mjs` fails if the gameplay source, original entrypoint, packed submitted HTML, or submitted ZIP differs from that frozen base.
 
 The Wavedash upload is generated separately in `wavedash-dist/`. `scripts/build-wavedash-js13k.mjs` copies the original readable source byte-for-byte and injects only `wavedash/sdk.js` into the generated Wavedash entrypoint.
 
 ## Why use the readable build on Wavedash?
 
-The 13,203-byte ZIP remains the actual js13k submission and proof of the constraint. Wavedash does not require the uploaded browser build to remain compressed to 13 KB during the SDK integration window. Using the readable submitted source lets the SDK adapter observe authoritative run state without changing or reverse-engineering Roadroller/Terser-mangled gameplay internals.
+The 13,203-byte ZIP remains the actual js13k submission and proof of the constraint. The SDK integration lane has no reason to rewrite the frozen game just to expose stable runtime values to the host. Using the readable submitted source lets the SDK adapter observe authoritative run state without changing or reverse-engineering Roadroller/Terser-mangled gameplay internals.
 
 The actual game rules are still the submitted rules. Only platform calls are added.
+
+## What counts as authoritative for qualification?
+
+The competition source under `src/`, the original `index.html`, `dist/index.html`, and `dist/unicorn-stampede.zip` are byte-locked to the submitted commit.
+
+Historical helper snapshots such as `dist/preview.html` are not part of the submitted ZIP and are not allowed to redefine the frozen artifact after submission. Likewise, the historical `prune-audit` asks source to match a current rewrite transform; it is useful during active byte optimization but is not an eligibility test for an already-submitted immutable build.
+
+The Wavedash lane therefore runs the original gameplay/runtime contracts plus an authoritative packed smoke against `dist/index.html`, followed by the byte-integrity check again. It never rebuilds or rewrites the competition artifact.
 
 ## Wavedash SDK surface
 
@@ -96,7 +104,7 @@ Those belong to the later Wavedash **Showcase Edition** listing based on `main`.
 ```bash
 npm install
 node scripts/wavedash-js13k-integrity.mjs
-npm test
+node scripts/wavedash-frozen-regressions.mjs
 node scripts/wavedash-js13k-integrity.mjs
 node scripts/build-wavedash-js13k.mjs
 node scripts/wavedash-sdk-smoke.mjs
