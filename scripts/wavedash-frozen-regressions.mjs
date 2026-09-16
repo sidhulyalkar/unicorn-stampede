@@ -8,11 +8,11 @@ const tests=[
   'v047-waterfront-smoke.mjs','v048-cloudtop-smoke.mjs','v049-world-identity-smoke.mjs',
   'v050-menu-smoke.mjs','v051-launch-config-smoke.mjs','v052-gameplay-liveness-smoke.mjs',
   'v053-conquest-menu-smoke.mjs','v054-semantic-cloudtop-smoke.mjs','v055-structured-storefronts-smoke.mjs',
-  'v056-town-difficulty-smoke.mjs','wavedash-packed-submission-smoke.mjs','size.mjs'
+  'v056-town-difficulty-smoke.mjs','size.mjs'
 ];
 
 for(const file of tests){
   const result=spawnSync(process.execPath,[`scripts/${file}`],{stdio:'inherit'});
   if(result.status!==0)throw new Error(`Frozen regression failed: ${file}`);
 }
-console.log(`Frozen submitted regression lane PASS: ${tests.length} checks; no source rewrite or rebuild performed.`);
+console.log(`Frozen readable-source regression lane PASS: ${tests.length} checks; submitted ZIP is independently hash/size-locked by the integrity gate.`);
