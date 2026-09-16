@@ -1,0 +1,31 @@
+{
+  "achievements": [
+    {"identifier":"FIRST_STAMPEDE","display_name":"First Stampede","description":"Complete your first Unicorn Stampede run.","stat_requirement":null},
+    {"identifier":"TOWN_CONQUERED","display_name":"Town Conquered","description":"Complete a successful rainbow takeover.","stat_requirement":null},
+    {"identifier":"PRISMATIC_TAKEOVER","display_name":"Prismatic Takeover","description":"Conquer Prismborough.","stat_requirement":null},
+    {"identifier":"HARBOR_TAKEOVER","display_name":"Harbor Takeover","description":"Conquer Washwater Bay.","stat_requirement":null},
+    {"identifier":"CLOUDTOP_TAKEOVER","display_name":"Above the Clouds","description":"Conquer Cloudtop Heights.","stat_requirement":null},
+    {"identifier":"IMPOSSIBLE_CONQUEST","display_name":"Impossible Is Nothing","description":"Conquer a town on Impossible difficulty.","stat_requirement":null},
+    {"identifier":"CLEAN_HERD","display_name":"Clean Herd","description":"Conquer a town without any unicorn being captured during the run.","stat_requirement":null},
+    {"identifier":"SIX_FIGURES","display_name":"Six-Figure Stampede","description":"Finish a run with a score of at least 100,000.","stat_requirement":null},
+    {"identifier":"CHAIN_REACTION","display_name":"Chain Reaction","description":"Finish a run with at least three Whip chains.","stat_requirement":null},
+    {"identifier":"RAINBOW_SURGE","display_name":"Rainbow Surge","description":"Finish a run with at least 60% town color coverage.","stat_requirement":null},
+    {"identifier":"DEMOLITION_DERBY","display_name":"Demolition Derby","description":"Finish a run with at least 70% structural destruction.","stat_requirement":null},
+    {"identifier":"MASTER_TAKEOVER","display_name":"Master Takeover","description":"Earn the submitted game's highest three-star world grade on a conquest.","stat_requirement":null}
+  ],
+  "stats": [
+    {"identifier":"RUNS","display_name":"Runs Completed"},
+    {"identifier":"WINS","display_name":"Towns Conquered"},
+    {"identifier":"TOTAL_SCORE","display_name":"Lifetime Score"},
+    {"identifier":"BEST_SCORE","display_name":"Best Score"},
+    {"identifier":"PRISM_WINS","display_name":"Prismborough Conquests"},
+    {"identifier":"WASHWATER_WINS","display_name":"Washwater Bay Conquests"},
+    {"identifier":"CLOUDTOP_WINS","display_name":"Cloudtop Heights Conquests"},
+    {"identifier":"IMPOSSIBLE_WINS","display_name":"Impossible Conquests"},
+    {"identifier":"CLEAN_WINS","display_name":"Capture-Free Conquests"},
+    {"identifier":"BEST_PAINT_PERCENT","display_name":"Best Color Coverage %"},
+    {"identifier":"BEST_STRUCTURE_PERCENT","display_name":"Best Structural Destruction %"},
+    {"identifier":"MAX_WHIP_CHAINS","display_name":"Best Whip Chain Count"},
+    {"identifier":"FASTEST_CONQUEST_MS","display_name":"Fastest Conquest (ms)"}
+  ]
+}
