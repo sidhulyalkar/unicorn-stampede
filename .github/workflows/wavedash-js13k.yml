@@ -24,6 +24,7 @@ jobs:
           node --check wavedash/sdk.js
           node --check scripts/build-wavedash-js13k.mjs
           node --check scripts/wavedash-js13k-integrity.mjs
+          node --check scripts/wavedash-packed-submission-smoke.mjs
           node --check scripts/wavedash-frozen-regressions.mjs
           node --check scripts/wavedash-sdk-smoke.mjs
       - name: Frozen submitted gameplay regressions
