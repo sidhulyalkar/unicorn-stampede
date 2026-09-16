@@ -39,7 +39,7 @@ await page.addInitScript(()=>{
 
 try{
   await page.goto('http://127.0.0.1:4177/',{waitUntil:'load'});
-  await page.waitForFunction(()=>globalThis.UnicornStampedeWavedash&&globalThis.state==='title');
+  await page.waitForFunction(()=>globalThis.UnicornStampedeWavedash&&typeof state!=='undefined'&&state==='title');
   await page.evaluate(()=>UnicornStampedeWavedash.flush());
   const boot=await page.evaluate(()=>({
     init:__wdCalls.init,progress:[...__wdCalls.progress],boards:[...__wdCalls.boards],presence:[...__wdCalls.presence],
