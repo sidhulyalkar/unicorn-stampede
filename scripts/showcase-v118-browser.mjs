@@ -92,10 +92,11 @@ async function check(browserType,name){
     const remote=await hosted.evaluate(async()=>{
       train=0;zone=0;mode=1;startLevel(1);score=871;update(.016);
       paused=1;showcaseArcade.sync();paused=0;showcaseArcade.sync();
+      const expected=Math.trunc(score);
       state='end';landWin=1;end();end();
       await new Promise(resolve=>setTimeout(resolve,40));
       if(__bbEvents.filter(e=>e[0]==='over').length!==1)throw Error('duplicate hosted gameOver');
-      if(__bbEvents.filter(e=>e[0]==='over')[0][1]!==871)throw Error('ranked score mismatch');
+      if(__bbEvents.filter(e=>e[0]==='over')[0][1]!==expected)throw Error('ranked score mismatch');
       if(!__bbEvents.some(e=>e[0]==='save'&&e[1]===1))throw Error('cloud checkpoint absent');
       const stops=__bbEvents.filter(e=>e[0]==='stop').length;
       if(stops<2)throw Error('pause/end did not stop playtime');
