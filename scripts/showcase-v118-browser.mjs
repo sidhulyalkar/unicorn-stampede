@@ -69,6 +69,43 @@ async function check(browserType,name){
     if(changed===newCaptain)throw Error(name+' Q handoff did not change active captain');
     await page.evaluate(()=>{zone=0;mode=1;startLevel(1);});
     await page.screenshot({path:'dist/arcade/'+name+'-launch.png'});
+    // Fake-host contract in a real running game, covering actual SDK insertion and lifecycle.
+    const hosted=await browser.newPage({viewport:{width:1280,height:720}});
+    await hosted.route('https://www.bountyboard.gg/arcade-sdk/v1.js',route=>
+      route.fulfill({status:200,contentType:'text/javascript',body:`
+        window.__bbEvents=[];
+        window.BBArcade={
+          init(){__bbEvents.push(['init']);return Promise.resolve()},
+          gameLoadingFinished(){__bbEvents.push(['loaded'])},
+          gameplayStart(){__bbEvents.push(['start'])},
+          gameplayStop(){__bbEvents.push(['stop'])},
+          submitScore(n){__bbEvents.push(['score',n])},
+          gameOver(n){__bbEvents.push(['over',n])},
+          getPlayer:async()=>({name:'Arcade QA'}),
+          onPlayerChange(){return()=>{}},
+          load:async()=>null,
+          save:async data=>{__bbEvents.push(['save',JSON.parse(data).version])}
+        };
+      `}));
+    await hosted.goto(url);
+    await hosted.waitForFunction(()=>state==='title'&&showcaseArcade.snapshot().ready);
+    const remote=await hosted.evaluate(async()=>{
+      train=0;zone=0;mode=1;startLevel(1);score=871;update(.016);
+      paused=1;showcaseArcade.sync();paused=0;showcaseArcade.sync();
+      state='end';landWin=1;end();end();
+      await new Promise(resolve=>setTimeout(resolve,40));
+      if(__bbEvents.filter(e=>e[0]==='over').length!==1)throw Error('duplicate hosted gameOver');
+      if(__bbEvents.filter(e=>e[0]==='over')[0][1]!==871)throw Error('ranked score mismatch');
+      if(!__bbEvents.some(e=>e[0]==='save'&&e[1]===1))throw Error('cloud checkpoint absent');
+      const stops=__bbEvents.filter(e=>e[0]==='stop').length;
+      if(stops<2)throw Error('pause/end did not stop playtime');
+      zone=1;mode=0;startLevel(1);score=1453;state='end';end();end();
+      const scores=__bbEvents.filter(e=>e[0]==='over');
+      if(scores.length!==2||scores[1][1]!==0)throw Error('free play contaminated shared ranking');
+      return{scores:scores.map(e=>e[1]),stops,cloud:true};
+    });
+    await hosted.close();
+    console.log(name+' Bounty fake-host lifecycle: PASS',JSON.stringify(remote));
     // Verify that the same game boots without native localStorage.
     const isolated=await browser.newPage({viewport:{width:1120,height:700}});
     const isolatedErrors=[];isolated.on('pageerror',e=>isolatedErrors.push(String(e)));
