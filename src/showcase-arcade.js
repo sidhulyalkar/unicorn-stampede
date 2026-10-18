@@ -21,7 +21,7 @@
       if(!blob){saveStatus='cloud-ready';return}
       if(state==='title'&&globalThis.showcaseStorage?.restore(JSON.parse(blob))){
         saveStatus='cloud-restored';
-      }else saveStatus='cloud-later';
+      }else{saveStatus='cloud-later';restored=false}
     }catch(error){
       saveStatus=error?.code==='unsupported'?'local-only':'cloud-unavailable';
     }
