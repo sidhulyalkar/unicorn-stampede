@@ -10,7 +10,7 @@ The challenge is not only steering quickly. It is keeping several chaotic plans 
 
 ## Bounty Board Arcade readiness (v1.17 preview)
 
-The **showcase edition only** now contains an optional Bounty Board SDK bridge in `src/showcase-arcade.js`. It reports active campaign playtime, score updates, and once-only game-over events. It must not affect the original js13k artifact, offline gameplay, or personal-site play when the SDK is unavailable. The new `Q` switch shortcut and transient objective coach are likewise showcase-only. The integration includes a dependency-free contract test via `npm run test:arcade`.
+The **showcase edition only** now contains an optional Bounty Board SDK bridge in `src/showcase-arcade.js`. It reports active campaign playtime, score updates, and once-only game-over events. It must not affect the original js13k artifact, offline gameplay, or personal-site play when the SDK is unavailable. The new `Q` switch shortcut and transient objective coach are likewise showcase-only. The integration includes a dependency-free contract test via `npm run test:arcade`. The reproducible submission ZIP is generated with `npm run build:arcade` under `dist/arcade/`, together with a SHA-256 manifest; this build does not mutate the frozen js13k release.
 
 **Not yet approved or published:** leaderboard fairness by world/difficulty, fresh-player usability tests, browser/host preview qualification, and an Arcade-specific distribution ZIP still need to be finalized. See [Arcade launch plan](docs/BOUNTYBOARD_ARCADE_PLAN.md).
 
