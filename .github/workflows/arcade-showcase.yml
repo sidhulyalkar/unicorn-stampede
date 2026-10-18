@@ -1,0 +1,52 @@
+name: Arcade showcase qualification
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "src/showcase-arcade.js"
+      - "src/showcase-coach.js"
+      - "src/showcase-coach.css"
+      - "scripts/showcase-v117-arcade-smoke.mjs"
+      - "scripts/build-arcade.mjs"
+      - "package.json"
+      - ".github/workflows/arcade-showcase.yml"
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify SDK and onboarding contract
+        run: node scripts/showcase-v117-arcade-smoke.mjs
+      - name: Build Arcade archive
+        run: node scripts/build-arcade.mjs
+      - name: Independently inspect ZIP integrity
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          p='dist/arcade/unicorn-stampede-arcade.zip'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              names=z.namelist()
+              assert len(names)==len(set(names))
+              assert 'index.html' in names
+              assert all(not n.startswith('/') and '..' not in n.split('/') for n in names)
+              print('Arcade ZIP entries:',len(names))
+          PY
+      - name: Install browser runner
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium firefox
+      - name: Live game and landmark qualification
+        run: node scripts/showcase-v118-browser.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unicorn-stampede-arcade-preview
+          path: |
+            dist/arcade/unicorn-stampede-arcade.zip
+            dist/arcade/manifest.json
+            dist/arcade/*-launch.png

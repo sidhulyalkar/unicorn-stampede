@@ -8,6 +8,14 @@ You control one unicorn at a time while the rest of the herd keeps moving, follo
 
 The challenge is not only steering quickly. It is keeping several chaotic plans useful at once while the town actively fights back.
 
+## Bounty Board Arcade readiness (v1.17 preview)
+
+The **showcase edition only** now contains an optional Bounty Board SDK bridge in `src/showcase-arcade.js`. It reports active campaign playtime, score updates, and once-only game-over events. It must not affect the original js13k artifact, offline gameplay, or personal-site play when the SDK is unavailable. The new `Q` switch shortcut and transient objective coach are likewise showcase-only. The integration includes a dependency-free contract test via `npm run test:arcade`. The reproducible submission ZIP is generated with `npm run build:arcade` under `dist/arcade/`, together with a SHA-256 manifest; this build does not mutate the frozen js13k release.
+
+**v1.18 release candidate:** A canonical Prismborough/Medium shared-seed leaderboard config now starts at zero each time. Other maps/difficulties remain free-play. The first-run coach is paired with authoritative building health, live Team requirements, repairable failed-smash feedback, Smart Attention/status labels, and explicit capture-truck rescue tags. Session-safe progress storage and cloud-save callbacks have been added for signed-in Bounty-hosted play. The Arcade workflow produces a self-verified standalone ZIP, authentic 1280×720 cover screenshot, and Chromium/Firefox browser QA captures. See [submission copy and host-preview checklist](docs/BOUNTYBOARD_SUBMISSION.md).
+
+**Still requiring human/host validation:** fresh-player usability tests, real Bounty-hosted signed-in and guest sessions, review of Bounty's leaderboard score ceiling, and studio approval. The build is not published yet. See [Arcade launch plan](docs/BOUNTYBOARD_ARCADE_PLAN.md).
+
 ## Two editions
 
 The repository deliberately has two product targets.
@@ -45,8 +53,8 @@ There is **no timer defeat** and no gameplay timer state.
 | **Mouse** | aim the Rainbow Whip |
 | **Left click beside the white ring** | crack the Whip and build charge |
 | **Space** | spend 2/5 to 5/5 Whip charge on Dash |
-| **Shift** | smart-switch to the herd member that most needs attention |
-| **Shift ×3 quickly** | sweep through different herd members to scan the map |
+| **Shift or Q** | smart-switch to the herd member that most needs attention (Q avoids Sticky Keys prompts) |
+| **Shift or Q ×3 quickly** | sweep through different herd members to scan the map |
 | **P / Esc** | pause and view Rules |
 | **A / D or click world on title** | change world |
 | **M or click difficulty on title** | change difficulty |

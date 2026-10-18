@@ -1,9 +1,9 @@
 // Persistent settings with direct page toggles. No options overlay or modal state.
 const SHOWCASE_SETTINGS_KEY='unicornShowcaseSettingsV1';
 const showcaseDefaults={reducedMotion:false,screenShake:true,highContrast:false,music:true,sfx:true,touchControls:true};
-function showcaseLoadSettings(){try{return{...showcaseDefaults,...JSON.parse(localStorage.getItem(SHOWCASE_SETTINGS_KEY)||'{}')}}catch{return{...showcaseDefaults}}}
+function showcaseLoadSettings(){try{return{...showcaseDefaults,...JSON.parse((globalThis.showcaseStorage?.getItem(SHOWCASE_SETTINGS_KEY) ?? localStorage.getItem(SHOWCASE_SETTINGS_KEY))||'{}')}}catch{return{...showcaseDefaults}}}
 globalThis.showcaseSettings=showcaseLoadSettings();
-function showcaseSaveSettings(){try{localStorage.setItem(SHOWCASE_SETTINGS_KEY,JSON.stringify(globalThis.showcaseSettings))}catch{}document.body.classList.toggle('showcase-reduced-motion',!!showcaseSettings.reducedMotion);document.body.classList.toggle('showcase-high-contrast',!!showcaseSettings.highContrast);document.dispatchEvent(new CustomEvent('unicorn-settings-changed',{detail:{...showcaseSettings}}));showcaseRenderSettings()}
+function showcaseSaveSettings(){try{(globalThis.showcaseStorage?.setItem(SHOWCASE_SETTINGS_KEY,JSON.stringify(globalThis.showcaseSettings)) ?? localStorage.setItem(SHOWCASE_SETTINGS_KEY,JSON.stringify(globalThis.showcaseSettings)))}catch{}document.body.classList.toggle('showcase-reduced-motion',!!showcaseSettings.reducedMotion);document.body.classList.toggle('showcase-high-contrast',!!showcaseSettings.highContrast);document.dispatchEvent(new CustomEvent('unicorn-settings-changed',{detail:{...showcaseSettings}}));showcaseRenderSettings()}
 function showcaseToggleSetting(key,value){showcaseSettings[key]=value??!showcaseSettings[key];showcaseSaveSettings()}
 const settingLabels={music:'MUSIC',sfx:'SFX',screenShake:'SHAKE',reducedMotion:'MOTION',highContrast:'CONTRAST',touchControls:'TOUCH'};
 const settingsBar=document.createElement('nav');settingsBar.id='showcase-settings-bar';settingsBar.setAttribute('aria-label','Game options');settingsBar.tabIndex=-1;
