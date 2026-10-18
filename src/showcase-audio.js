@@ -2,7 +2,11 @@
 // this layer adds a separate music bus and honors independent music/SFX settings.
 let showcaseMusicBus,showcaseDroneA,showcaseDroneB,showcaseMusicPulse=-1;
 const showcaseAudioBase=audio;
-audio=function(){showcaseAudioBase();showcaseEnsureMusic()};
+audio=function(){
+  showcaseAudioBase();
+  try{if(AC?.state==='suspended'){const result=AC.resume?.();result?.catch?.(()=>{})}}catch{}
+  showcaseEnsureMusic();
+};
 const showcaseToneBase=tone;
 tone=function(...args){if(globalThis.showcaseSettings?.sfx===false)return;return showcaseToneBase(...args)};
 function showcaseEnsureMusic(){
@@ -28,3 +32,7 @@ function showcaseUpdateMusic(){
 }
 const showcaseMusicUpdateBase=update;update=function(dt){showcaseMusicUpdateBase(dt);showcaseUpdateMusic()};
 document.addEventListener('unicorn-settings-changed',showcaseApplyAudioSettings);
+
+// The options click is a real user gesture, so it can unlock suspended WebAudio.
+// No autoplay retries, permission overlays or hidden audio on off-host play.
+document.getElementById('showcase-settings-bar')?.addEventListener('click',()=>{audio();showcaseApplyAudioSettings()});
