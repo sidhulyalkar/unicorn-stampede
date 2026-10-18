@@ -12,11 +12,11 @@
   function stop(){if(run?.active){safe('gameplayStop');run.active=false}}
   async function restoreCloud(){
     if(!ready||!api?.getPlayer||!api?.load||restored)return;
+    if(state!=='title'){saveStatus='cloud-later';return}
     restored=true;
     try{
       const player=await api.getPlayer();
       if(!player){saveStatus='guest-session';return}
-      if(state!=='title'){saveStatus='cloud-later';return}
       const blob=await api.load();
       if(!blob){saveStatus='cloud-ready';return}
       if(state==='title'&&globalThis.showcaseStorage?.restore(JSON.parse(blob))){
@@ -54,6 +54,7 @@
     reportFinish();
   }
   function sync(){
+    if(ready&&!restored&&state==='title')void restoreCloud();
     if(!ready||!run)return;
     if(run.ended){reportFinish();return}
     if(state==='end'){finish();return}
@@ -82,6 +83,7 @@
       Promise.resolve(api.init()).then(()=>{
         ready=true;
         safe('gameLoadingFinished');
+        safe('onPlayerChange',()=>{restored=false;if(state==='title')void restoreCloud()});
         void restoreCloud();
         sync();
       },()=>{saveStatus='host-unavailable'});
