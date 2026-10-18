@@ -7,7 +7,7 @@ import {createHash} from 'node:crypto';
 const root=process.cwd(),out=path.join(root,'dist/arcade/unicorn-stampede-arcade.zip');
 const names=new Set(['index.html']);
 const safeName=(s,owner='index.html')=>{
-  const raw=s.split(/[?#]/)[0].replaceAll('\\\\','/');
+  const raw=s.split(/[?#]/)[0].replaceAll(String.fromCharCode(92),'/');
   if(!raw||/^(?:https?:|data:|blob:|\/|#)/i.test(raw))return null;
   const name=path.posix.normalize(path.posix.join(path.posix.dirname(owner),raw));
   if(name==='..'||name.startsWith('../')||name.startsWith('/'))throw Error('unsafe Arcade resource path: '+s);
