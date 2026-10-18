@@ -8,12 +8,14 @@
   document.body.append(event);
   let lastReason='',until=0,lastAt=-99,lastHit=null,lastSwitchAt=-99;
   function notice(text){
-    if(!text||state!=='play'||!level)return;
+    if(!text||state!=='play')return;
     if(text===lastReason&&clock-lastAt<1.4)return;
     lastReason=text;lastAt=clock;until=clock+2.7;event.textContent=text;event.hidden=false;
   }
   function gate(o,u){
     if(!o||!u)return '';
+    if(!level&&o.lm==='bakery'&&intro.step<8)
+      return 'TUTORIAL · LEARN CHARGE, DASH AND HERD SWITCH BEFORE BAKERY';
     if(o.lm==='hall'){
       if(!outerDone())return 'TOWN HALL LOCKED · BREAK FOUR LANDMARKS';
       if(takeover()<chaos())return 'HALL LOCKED · BUILD MORE CHAOS';
@@ -29,7 +31,7 @@
   }
   const collideBase=collide;
   collide=function(u,o,dt){
-    const active=state==='play'&&level>0&&u===unis[caps[0]];
+    const active=state==='play'&&u===unis[caps[0]]&&(level>0||o?.lm==='bakery');
     const overlap=active&&o?.hp>0&&o.val>0&&
       u.x>o.x-32&&u.x<o.x+o.w+32&&u.y>o.y-32&&u.y<o.y+o.h+32;
     const before=o?.hp||0,charge=u?.power||0;
