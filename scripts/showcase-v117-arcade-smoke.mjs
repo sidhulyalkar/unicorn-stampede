@@ -8,6 +8,7 @@ function harness(file){
   let appended=null,coachPanel=null,cycles=0;
   const doc={
     hidden:false,
+    addEventListener(name,fn){const arr=listeners.get('document:'+name)||[];arr.push(fn);listeners.set('document:'+name,arr)},
     head:{append(node){appended=node}},
     body:{append(node){coachPanel=node}},
     createElement(tag){
