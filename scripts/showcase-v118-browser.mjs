@@ -21,6 +21,8 @@ async function check(browserType,name){
     const errs=[];page.on('pageerror',error=>errs.push(String(error)));
     await page.goto(url);
     await page.waitForFunction(()=>state==='title'&&globalThis.showcaseCompetition&&globalThis.showcaseClarity&&globalThis.showcaseArcade&&globalThis.showcaseStorage&&globalThis.showcaseCoach);
+    // Submission cover: exact 16:9 game title rendered by the shipping build.
+    await page.screenshot({path:'dist/arcade/unicorn-stampede-cover.png'});
     const report=await page.evaluate(()=>{
       train=0;zone=0;mode=1;S.s('ccZone',0);S.s('ccMode',1);
       startLevel(1);
