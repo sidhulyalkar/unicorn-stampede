@@ -49,4 +49,5 @@ jobs:
           path: |
             dist/arcade/unicorn-stampede-arcade.zip
             dist/arcade/manifest.json
+            dist/arcade/unicorn-stampede-cover.png
             dist/arcade/*-launch.png
