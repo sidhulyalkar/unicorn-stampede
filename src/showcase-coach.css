@@ -1,0 +1,24 @@
+/* v1.17 short-lived objective guidance; no blocking hit target on top of Canvas. */
+#showcase-coach {
+  position:fixed;
+  left:max(18px,env(safe-area-inset-left,0px));
+  bottom:max(62px,env(safe-area-inset-bottom,0px));
+  z-index:9;
+  width:min(440px,calc(100vw - 36px));
+  box-sizing:border-box;
+  padding:12px 15px 13px;
+  color:#eefbff;
+  background:linear-gradient(105deg,rgba(10,24,43,.94),rgba(24,18,48,.92));
+  border:1px solid rgba(137,236,250,.7);
+  border-left:5px solid #ffe97b;
+  border-radius:13px;
+  box-shadow:0 9px 30px rgba(0,0,0,.35);
+  pointer-events:none;
+  font:500 13px/1.4 system-ui,-apple-system,sans-serif;
+}
+#showcase-coach[hidden]{display:none!important}
+#showcase-coach strong{display:block;color:#ffe97b;font-size:12px;letter-spacing:.075em;margin-bottom:5px}
+#showcase-coach span{display:block}
+@media (max-width:600px){
+  #showcase-coach{left:12px;bottom:92px;width:min(340px,calc(100vw - 24px));font-size:12px;padding:9px 11px}
+}
