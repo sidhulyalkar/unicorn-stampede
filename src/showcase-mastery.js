@@ -6,8 +6,8 @@ const showcaseV110MasteryGoals=[
   ['SHOWCASE FLAIR','Win after earning 3 different Smart Play moments.']
 ];
 function showcaseV110BlankMastery(){return{worlds:Array.from({length:4},()=>({mask:0,wins:0,bestTime:0,bestFlair:0})),version:1}}
-function showcaseV110LoadMastery(){let d;try{d=JSON.parse(localStorage.getItem(showcaseV110MasteryKey)||'null')}catch{}if(!d||!Array.isArray(d.worlds))d=showcaseV110BlankMastery();while(d.worlds.length<4)d.worlds.push({mask:0,wins:0,bestTime:0,bestFlair:0});d.worlds=d.worlds.slice(0,4).map((w,i)=>({mask:(w?.mask|0)|(S.g('ccC'+i)>0?1:0),wins:w?.wins|0,bestTime:+w?.bestTime||0,bestFlair:w?.bestFlair|0}));return d}
-function showcaseV110SaveMastery(){try{localStorage.setItem(showcaseV110MasteryKey,JSON.stringify(showcaseV110MasteryData))}catch{}}
+function showcaseV110LoadMastery(){let d;try{d=JSON.parse((globalThis.showcaseStorage?.getItem(showcaseV110MasteryKey) ?? localStorage.getItem(showcaseV110MasteryKey))||'null')}catch{}if(!d||!Array.isArray(d.worlds))d=showcaseV110BlankMastery();while(d.worlds.length<4)d.worlds.push({mask:0,wins:0,bestTime:0,bestFlair:0});d.worlds=d.worlds.slice(0,4).map((w,i)=>({mask:(w?.mask|0)|(S.g('ccC'+i)>0?1:0),wins:w?.wins|0,bestTime:+w?.bestTime||0,bestFlair:w?.bestFlair|0}));return d}
+function showcaseV110SaveMastery(){try{(globalThis.showcaseStorage?.setItem(showcaseV110MasteryKey,JSON.stringify(showcaseV110MasteryData)) ?? localStorage.setItem(showcaseV110MasteryKey,JSON.stringify(showcaseV110MasteryData)))}catch{}}
 function showcaseV110Stars(mask){return(mask&1?1:0)+(mask&2?1:0)+(mask&4?1:0)}
 function showcaseV110TotalStars(){return showcaseV110MasteryData.worlds.reduce((n,w)=>n+showcaseV110Stars(w.mask),0)}
 function showcaseV110Rank(){const n=showcaseV110TotalStars();return n>=12?'TOWN LEGEND':n>=9?'MASTER STAMPEDE':n>=6?'RAINBOW RIOT':n>=3?'STREET RUMBLE':'STARTING HERD'}
