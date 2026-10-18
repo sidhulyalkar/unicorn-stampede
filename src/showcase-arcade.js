@@ -31,9 +31,9 @@
   async function restoreCloud(){
     if(!ready||!api?.getPlayer||!api?.load||hydrated||Date.now()<cloudRetryAt)return;
     if(state!=='title'){saveStatus='cloud-later';return}
-    if(readInFlight)return readInFlight;
+    if(readInFlight?.token===playerEpoch)return readInFlight.promise;
     const token=playerEpoch,baseline=globalThis.showcaseStorage?.snapshot();
-    readInFlight=(async()=>{
+    const reading=(async()=>{
       try{
         const player=await api.getPlayer();
         if(playerEpoch!==token)return;
@@ -57,10 +57,11 @@
         cloudRetryAt=Date.now()+(error?.code==='unsupported'?60000:5000);
       }
     })().finally(()=>{
-      readInFlight=null;
+      if(readInFlight?.token===token)readInFlight=null;
       if(hydrated&&pendingSave&&playerEpoch===token)void saveCloud();
     });
-    return readInFlight;
+    readInFlight={token,promise:reading};
+    return reading;
   }
   async function saveCloud(){
     pendingSave=true;
@@ -70,10 +71,10 @@
       if(state==='title')void restoreCloud();
       return;
     }
-    if(saveInFlight)return saveInFlight;
+    if(saveInFlight?.token===playerEpoch)return saveInFlight.promise;
     const token=playerEpoch;
     // Snapshot is taken after hydrating; never upload stale pre-merge progress.
-    saveInFlight=(async()=>{
+    const saving=(async()=>{
       pendingSave=false;
       try{
         const player=await api.getPlayer();
@@ -90,10 +91,11 @@
           error?.code==='too_large'?'save-too-large':'cloud-save-failed';
       }
     })().finally(()=>{
-      saveInFlight=null;
+      if(saveInFlight?.token===token)saveInFlight=null;
       if(hydrated&&pendingSave&&playerEpoch===token)void saveCloud();
     });
-    return saveInFlight;
+    saveInFlight={token,promise:saving};
+    return saving;
   }
   function sync(){
     if(ready&&!hydrated&&state==='title')void restoreCloud();
