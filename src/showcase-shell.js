@@ -7,6 +7,9 @@ showcaseFullscreen.addEventListener('click',async()=>{try{if(document.fullscreen
 document.addEventListener('fullscreenchange',()=>{const on=!!document.fullscreenElement;showcaseFullscreen.textContent=on?'×':'⛶';showcaseFullscreen.setAttribute('aria-label',on?'Exit fullscreen':'Enter fullscreen')});
 document.body.append(showcaseStatus,showcaseFullscreen);
 const showcaseWorldNames=['PRISMBOROUGH','WASHWATER BAY','CLOUDTOP HEIGHTS','FAULTLINE FRONTIER'];
-function showcaseRefreshStatus(){const world=showcaseWorldNames[typeof zone==='number'?zone:0]||showcaseWorldNames[0];const phase=state==='play'?(paused?'PAUSED':''):state==='end'?'COMPLETE':'';showcaseStatus.textContent=phase?`${world} · ${phase}`:world;showcaseStatus.classList.toggle('showcase-status-quiet',state==='title')}
+function showcaseRefreshStatus(){const world=showcaseWorldNames[typeof zone==='number'?zone:0]||showcaseWorldNames[0];const phase=state==='play'?(paused?'PAUSED':''):state==='end'?'COMPLETE':'';const ranked=state==='play'||state==='end'
+    ?(globalThis.showcaseCompetition?.eligible?'RANKED':'FREE PLAY')
+    :zone===0&&mode===1?'RANKED AVAILABLE':'FREE PLAY';
+  showcaseStatus.textContent=world+' · '+ranked+(phase?' · '+phase:'');showcaseStatus.classList.toggle('showcase-status-quiet',state==='title')}
 showcaseRefreshStatus();setInterval(showcaseRefreshStatus,500);
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='play')paused=1});
