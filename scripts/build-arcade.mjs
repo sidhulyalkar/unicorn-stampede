@@ -6,19 +6,20 @@ import {deflateRawSync,inflateRawSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 const root=process.cwd(),out=path.join(root,'dist/arcade/unicorn-stampede-arcade.zip');
 const names=new Set(['index.html']);
-const safeName=s=>{
-  const n=s.split(/[?#]/)[0].replace(/^\.\//,'').replaceAll('\\','/');
-  if(!n||/^(?:https?:|data:|blob:|\/|#)/i.test(n))return null;
-  if(n.split('/').some(x=>x==='..'||!x))throw Error('unsafe Arcade resource path: '+s);
-  return n;
+const safeName=(s,owner='index.html')=>{
+  const raw=s.split(/[?#]/)[0].replaceAll('\\\\','/');
+  if(!raw||/^(?:https?:|data:|blob:|\/|#)/i.test(raw))return null;
+  const name=path.posix.normalize(path.posix.join(path.posix.dirname(owner),raw));
+  if(name==='..'||name.startsWith('../')||name.startsWith('/'))throw Error('unsafe Arcade resource path: '+s);
+  return name;
 };
-function addResource(s){const n=safeName(s);if(n)names.add(n)}
+function addResource(s,owner){const n=safeName(s,owner);if(n)names.add(n)}
 const html=fs.readFileSync('index.html','utf8');
 for(const m of html.matchAll(/<(?:script|link)\b[^>]*\b(?:src|href)\s*=\s*["']([^"']+)["']/gi))addResource(m[1]);
 for(const name of [...names]){
   if(!name.endsWith('.css'))continue;
   const css=fs.readFileSync(path.join(root,name),'utf8');
-  for(const m of css.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/gi))addResource(m[1].trim());
+  for(const m of css.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/gi))addResource(m[1].trim(),name);
 }
 const files=[...names].sort(),MB=1024*1024;
 if(files.length>160)throw Error('Arcade file-count cap exceeded: '+files.length);
