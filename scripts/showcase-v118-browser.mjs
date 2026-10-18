@@ -96,7 +96,7 @@ async function check(browserType,name){
       state='end';landWin=1;end();end();
       await new Promise(resolve=>setTimeout(resolve,40));
       if(__bbEvents.filter(e=>e[0]==='over').length!==1)throw Error('duplicate hosted gameOver');
-      if(__bbEvents.filter(e=>e[0]==='over')[0][1]!==expected)throw Error('ranked score mismatch');
+      if(__bbEvents.filter(e=>e[0]==='over')[0][1]!==expected)throw Error('ranked score mismatch '+JSON.stringify({expected,events:__bbEvents,competition:showcaseCompetition.snapshot(),arcade:showcaseArcade.snapshot(),score}));
       if(!__bbEvents.some(e=>e[0]==='save'&&e[1]===1))throw Error('cloud checkpoint absent');
       const stops=__bbEvents.filter(e=>e[0]==='stop').length;
       if(stops<2)throw Error('pause/end did not stop playtime');
@@ -142,7 +142,16 @@ async function check(browserType,name){
       `+original});
     });
     await blocked.goto(url);
-    await blocked.waitForFunction(()=>state==='title'&&globalThis.showcaseStorage?.nativeAvailable===false);
+    try{
+      await blocked.waitForFunction(()=>state==='title'&&globalThis.showcaseStorage?.nativeAvailable===false,{timeout:9000});
+    }catch(e){
+      const detail=await blocked.evaluate(()=>({
+        state:typeof state==='undefined'?'missing':state,
+        storage:typeof showcaseStorage==='undefined'?'missing':showcaseStorage.nativeAvailable,
+        canvas:!!document.querySelector('#game')
+      }));
+      throw Error(name+' opaque-origin boot failed '+JSON.stringify({detail,errors:blockedErrors}));
+    }
     const memoryResult=await blocked.evaluate(()=>{
       S.s('ccMode',3);S.s('ccZone',2);
       if(S.g('ccMode')!==3||S.g('ccZone')!==2)throw Error('S shorthand memory fallback broken');
