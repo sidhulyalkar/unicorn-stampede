@@ -9,6 +9,8 @@ on:
       - "scripts/showcase-v117-arcade-smoke.mjs"
       - "scripts/build-arcade.mjs"
       - "package.json"
+      - "scripts/showcase-v119-browser.mjs"
+      - "src/showcase-storage.js"
       - ".github/workflows/arcade-showcase.yml"
   workflow_dispatch:
 
@@ -43,6 +45,8 @@ jobs:
           npx playwright install --with-deps chromium firefox
       - name: Live game and landmark qualification
         run: node scripts/showcase-v118-browser.mjs
+      - name: Conquest, replay and cloud race qualification
+        run: node scripts/showcase-v119-browser.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: unicorn-stampede-arcade-preview
@@ -51,3 +55,4 @@ jobs:
             dist/arcade/manifest.json
             dist/arcade/unicorn-stampede-cover.png
             dist/arcade/*-launch.png
+            dist/arcade/qualification-v119.json
