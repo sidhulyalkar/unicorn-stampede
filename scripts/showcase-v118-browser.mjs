@@ -92,6 +92,38 @@ async function check(browserType,name){
       });
     },url);
     if(sandbox!=='loaded')throw Error(name+' restricted-storage frame did not load');
+    // Simulate the opaque-origin SecurityError in a fully observable browser page.
+    const blocked=await browser.newPage({viewport:{width:1024,height:768}});
+    const blockedErrors=[];blocked.on('pageerror',e=>blockedErrors.push(String(e)));
+    await blocked.route('**/src/core.js',async route=>{
+      const response=await route.fetch(),original=await response.text();
+      await route.fulfill({response,body:`
+        Object.defineProperty(window,'localStorage',{
+          configurable:true,get(){throw new DOMException('Opaque origin','SecurityError')}
+        });
+      `+original});
+    });
+    await blocked.goto(url);
+    await blocked.waitForFunction(()=>state==='title'&&globalThis.showcaseStorage?.nativeAvailable===false);
+    const memoryResult=await blocked.evaluate(()=>{
+      S.s('ccMode',3);S.s('ccZone',2);
+      if(S.g('ccMode')!==3||S.g('ccZone')!==2)throw Error('S shorthand memory fallback broken');
+      showcaseStorage.setItem('usMasteryV110',JSON.stringify({
+        worlds:[{mask:1,wins:1,bestTime:100,bestFlair:2},
+                {mask:0,wins:0,bestTime:0,bestFlair:0},
+                {mask:0,wins:0,bestTime:0,bestFlair:0},
+                {mask:0,wins:0,bestTime:0,bestFlair:0}],version:1
+      }));
+      showcaseMastery.reload();
+      if(showcaseMastery.get(0).stars!==1)throw Error('mastery memory fallback broken');
+      const snap=showcaseStorage.snapshot();
+      showcaseStorage.restore(snap);
+      zone=0;mode=1;startLevel(1);
+      if(state!=='play'||!unis.some(u=>u.live))throw Error('game inaccessible in opaque storage mode');
+      return{mode:S.g('ccMode'),mastery:showcaseMastery.get(0).stars};
+    });
+    if(blockedErrors.length)throw Error(name+' opaque-origin errors '+blockedErrors.join('|'));
+    await blocked.close();
     if(errs.length||isolatedErrors.length)throw Error(name+' browser errors '+[...errs,...isolatedErrors].join('|'));
     console.log(name+' v1.18 browser: PASS',JSON.stringify(report));
     await page.close();await isolated.close();
