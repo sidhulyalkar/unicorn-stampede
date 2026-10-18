@@ -135,13 +135,10 @@ async function check(browserType,name){
     const blockedErrors=[];blocked.on('pageerror',e=>blockedErrors.push(String(e)));
     // Reject the optional SDK here so its official memory shim cannot hide the test's SecurityError.
     await blocked.route('https://www.bountyboard.gg/arcade-sdk/v1.js',route=>route.abort());
-    await blocked.route('**/src/core.js',async route=>{
-      const response=await route.fetch(),original=await response.text();
-      await route.fulfill({response,body:`
-        Object.defineProperty(window,'localStorage',{
-          configurable:true,get(){throw new DOMException('Opaque origin','SecurityError')}
-        });
-      `+original});
+    await blocked.addInitScript(()=>{
+      Object.defineProperty(window,'localStorage',{
+        configurable:true,get(){throw new DOMException('Opaque origin','SecurityError')}
+      });
     });
     await blocked.goto(url);
     try{
