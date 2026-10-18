@@ -121,7 +121,7 @@ async function qualify(kind,engine){
       const mastery=JSON.parse(saved.usMasteryV110).worlds[0];
       if(current.mask!==3||mastery.mask!==3)throw Error('cloud merge dropped earned stars');
       if(mastery.wins!==3||mastery.bestTime!==80||mastery.bestFlair!==5)
-        throw Error('cloud merge damaged historical bests');
+        throw Error('cloud merge damaged historical bests '+JSON.stringify({mastery,current,savedMask:saved.usMasteryV110}));
       if(!showcaseArcade.snapshot().restored)throw Error('hydration never finished');
       return{mask:mastery.mask,wins:mastery.wins,bestTime:mastery.bestTime,bestFlair:mastery.bestFlair};
     });
