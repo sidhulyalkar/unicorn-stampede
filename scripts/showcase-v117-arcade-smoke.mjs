@@ -24,6 +24,7 @@ function harness(file){
   const ctx=vm.createContext({
     console,document:doc,Date:{now:()=>t.now},
     state:'title',level:0,paused:0,score:0,clock:0,goal:'LANDMARKS 0/4',
+    showcaseCompetition:{eligible:true},
     objective:()=>ctx.goal,
     cycle:()=>{cycles++},
     showcaseHooks:{on(name,id,fn){const arr=hooks.get(name)||[];arr.push(fn);hooks.set(name,arr)}},

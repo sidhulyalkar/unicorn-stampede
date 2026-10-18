@@ -1,43 +1,24 @@
-// Showcase-only Bounty Board bridge. Standalone, offline, and guest play do not depend on it.
+// Bounty Board bridge. Arcade features must never be required for standalone play.
+// Cloud hydration is serialized before uploads, and identity changes invalidate old loads.
 (function(){
   'use strict';
   const SDK_URL='https://www.bountyboard.gg/arcade-sdk/v1.js';
-  let api=null,ready=false,loaded=false,run=null,serial=0,lastSubmitted=-1,lastSubmittedAt=0;
-  let saveStatus='session-only',restored=false,lastSaveAttempt=0;
-  const safe=(name,...args)=>{try{
-    if(typeof api?.[name]==='function')return api[name](...args);
-  }catch(error){console.warn('[arcade] '+name+' unavailable',error)}};
+  let api=null,ready=false,loaded=false,run=null,serial=0;
+  let lastSubmitted=-1,lastSubmittedAt=0,saveStatus='session-only';
+  let hydrated=false,readInFlight=null,saveInFlight=null,pendingSave=false,playerEpoch=0;
+  let lastSaveAttempt=0,cloudRetryAt=0;
+  const safe=(method,...args)=>{
+    try{if(typeof api?.[method]==='function')return api[method](...args)}
+    catch(error){console.warn('[arcade] '+method+' unavailable',error)}
+  };
   const scoreNow=()=>Math.max(0,Math.trunc(Number(score)||0));
-  const eligible=()=>globalThis.showcaseCompetition?.eligible!==false;
-  function stop(){if(run?.active){safe('gameplayStop');run.active=false}}
-  async function restoreCloud(){
-    if(!ready||!api?.getPlayer||!api?.load||restored)return;
-    if(state!=='title'){saveStatus='cloud-later';return}
-    restored=true;
-    try{
-      const player=await api.getPlayer();
-      if(!player){saveStatus='guest-session';return}
-      const blob=await api.load();
-      if(!blob){saveStatus='cloud-ready';return}
-      if(state==='title'&&globalThis.showcaseStorage?.restore(JSON.parse(blob))){
-        saveStatus='cloud-restored';
-      }else{saveStatus='cloud-later';restored=false}
-    }catch(error){
-      saveStatus=error?.code==='unsupported'?'local-only':'cloud-unavailable';
-    }
-  }
-  async function saveCloud(){
-    if(!ready||!api?.getPlayer||!api?.save||!globalThis.showcaseStorage)return;
-    try{
-      const player=await api.getPlayer();
-      if(!player){saveStatus='guest-session';return}
-      const data=JSON.stringify(showcaseStorage.snapshot());
-      if(data.length>800000){saveStatus='save-too-large';return}
-      await api.save(data);
-      saveStatus='cloud-saved';
-    }catch(error){
-      saveStatus=error?.code==='unsupported'?'local-only':error?.code==='unauthenticated'?'guest-session':'cloud-save-failed';
-    }
+  const eligible=()=>globalThis.showcaseCompetition?.eligible===true;
+  function stop(){if(run?.active){run.active=false;safe('gameplayStop')}}
+  function gameFinished(){
+    if(!run||run.ended)return;
+    run.finalScore=run.ranked?scoreNow():0;
+    run.ended=true;
+    reportFinish();
   }
   function reportFinish(){
     if(!run||!run.ended||run.reported||!ready)return;
@@ -47,23 +28,84 @@
     run.reported=true;
     void saveCloud();
   }
-  function finish(){
-    if(!run||run.ended)return;
-    run.finalScore=run.ranked?scoreNow():0;
-    run.ended=true;
-    reportFinish();
+  async function restoreCloud(){
+    if(!ready||!api?.getPlayer||!api?.load||hydrated||Date.now()<cloudRetryAt)return;
+    if(state!=='title'){saveStatus='cloud-later';return}
+    if(readInFlight?.token===playerEpoch)return readInFlight.promise;
+    const token=playerEpoch,baseline=globalThis.showcaseStorage?.snapshot();
+    const reading=(async()=>{
+      try{
+        const player=await api.getPlayer();
+        if(playerEpoch!==token)return;
+        if(!player){hydrated=true;saveStatus='guest-session';return}
+        const blob=await api.load();
+        if(playerEpoch!==token)return;
+        if(state!=='title'){saveStatus='cloud-later';return}
+        if(blob){
+          let data;
+          try{data=JSON.parse(blob)}catch{saveStatus='cloud-invalid';cloudRetryAt=Date.now()+60000;return}
+          if(!globalThis.showcaseStorage?.restore(data,baseline)){
+            saveStatus='cloud-invalid';cloudRetryAt=Date.now()+60000;return;
+          }
+          saveStatus='cloud-restored';
+        }else saveStatus='cloud-ready';
+        hydrated=true;cloudRetryAt=0;
+      }catch(error){
+        if(playerEpoch!==token)return;
+        // A transient failure never licenses overwriting unknown cloud progress.
+        saveStatus=error?.code==='unsupported'?'local-only':'cloud-unavailable';
+        cloudRetryAt=Date.now()+(error?.code==='unsupported'?60000:5000);
+      }
+    })().finally(()=>{
+      if(readInFlight?.token===token)readInFlight=null;
+      if(hydrated&&pendingSave&&playerEpoch===token)void saveCloud();
+    });
+    readInFlight={token,promise:reading};
+    return reading;
+  }
+  async function saveCloud(){
+    pendingSave=true;
+    if(!ready||!api?.getPlayer||!api?.save||!globalThis.showcaseStorage)return;
+    if(!hydrated){
+      saveStatus='waiting-for-hydration';
+      if(state==='title')void restoreCloud();
+      return;
+    }
+    if(saveInFlight?.token===playerEpoch)return saveInFlight.promise;
+    const token=playerEpoch;
+    // Snapshot is taken after hydrating; never upload stale pre-merge progress.
+    const saving=(async()=>{
+      pendingSave=false;
+      try{
+        const player=await api.getPlayer();
+        if(playerEpoch!==token)return;
+        if(!player){saveStatus='guest-session';return}
+        const blob=JSON.stringify(showcaseStorage.snapshot());
+        if(blob.length>800000){saveStatus='save-too-large';return}
+        await api.save(blob);
+        if(playerEpoch===token)saveStatus='cloud-saved';
+      }catch(error){
+        if(playerEpoch!==token)return;
+        saveStatus=error?.code==='unsupported'?'local-only':
+          error?.code==='unauthenticated'?'guest-session':
+          error?.code==='too_large'?'save-too-large':'cloud-save-failed';
+      }
+    })().finally(()=>{
+      if(saveInFlight?.token===token)saveInFlight=null;
+      if(hydrated&&pendingSave&&playerEpoch===token)void saveCloud();
+    });
+    saveInFlight={token,promise:saving};
+    return saving;
   }
   function sync(){
-    if(ready&&!restored&&state==='title')void restoreCloud();
+    if(ready&&!hydrated&&state==='title')void restoreCloud();
     if(!ready||!run)return;
     if(run.ended){reportFinish();return}
-    if(state==='end'){finish();return}
+    if(state==='end'){gameFinished();return}
     const playing=state==='play'&&level>0&&!paused&&!document.hidden;
     if(!playing){stop();return}
-    if(!run.active){safe('gameplayStart');run.active=true}
-    // Non-ranked gameplay still tracks active playtime but contributes no
-    // positive score to the shared global board.
-    if(!run.ranked)return;
+    if(!run.active){run.active=true;safe('gameplayStart')}
+    if(!run.ranked)return; // All other maps/difficulties are explicitly free play.
     const value=scoreNow(),now=Date.now();
     if(value!==lastSubmitted&&(lastSubmitted<0||now-lastSubmittedAt>=1500)){
       safe('submitScore',value);lastSubmitted=value;lastSubmittedAt=now;
@@ -71,10 +113,15 @@
   }
   function start(){
     if(run&&!run.ended)stop();
-    run=level>0&&state==='play'?{
+    run=state==='play'&&level>0?{
       id:++serial,ranked:eligible(),active:false,ended:false,reported:false,finalScore:0
     }:null;
     lastSubmitted=-1;lastSubmittedAt=0;sync();
+  }
+  function onIdentityChange(){
+    playerEpoch++;hydrated=false;pendingSave=true;cloudRetryAt=0;
+    saveStatus='identity-changed';
+    if(state==='title')void restoreCloud();
   }
   function attach(sdk){
     if(loaded||!sdk)return;
@@ -83,7 +130,7 @@
       Promise.resolve(api.init()).then(()=>{
         ready=true;
         safe('gameLoadingFinished');
-        safe('onPlayerChange',()=>{restored=false;if(state==='title')void restoreCloud()});
+        safe('onPlayerChange',onIdentityChange);
         void restoreCloud();
         sync();
       },()=>{saveStatus='host-unavailable'});
@@ -91,7 +138,7 @@
   }
   showcaseHooks.on('start:after','arcade.new-run',start,-80);
   showcaseHooks.on('update:after','arcade.lifecycle',sync,-80);
-  showcaseHooks.on('end:after','arcade.finish',finish,-80);
+  showcaseHooks.on('end:after','arcade.finish',gameFinished,-80);
   addEventListener('pagehide',stop);
   addEventListener('visibilitychange',sync);
   document.addEventListener('unicorn-settings-changed',()=>{
@@ -104,8 +151,10 @@
   script.onload=()=>attach(globalThis.BBArcade);
   script.onerror=()=>{saveStatus='offline'};
   document.head.append(script);
-  globalThis.showcaseArcade={attach,sync,finish,saveCloud,restoreCloud,
-    snapshot:()=>({ready,loaded,saveStatus,restored,runId:run?.id||null,
-      ranked:!!run?.ranked,active:!!run?.active,ended:!!run?.ended,
-      reported:!!run?.reported,finalScore:run?.finalScore??null})};
+  globalThis.showcaseArcade={
+    attach,sync,finish:gameFinished,saveCloud,restoreCloud,
+    snapshot:()=>({ready,loaded,restored:hydrated,saveStatus,playerEpoch,pendingSave,
+      runId:run?.id||null,ranked:!!run?.ranked,active:!!run?.active,
+      ended:!!run?.ended,reported:!!run?.reported,finalScore:run?.finalScore??null})
+  };
 })();
