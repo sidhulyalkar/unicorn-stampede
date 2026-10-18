@@ -8,6 +8,12 @@ You control one unicorn at a time while the rest of the herd keeps moving, follo
 
 The challenge is not only steering quickly. It is keeping several chaotic plans useful at once while the town actively fights back.
 
+## Bounty Board Arcade readiness (v1.17 preview)
+
+The **showcase edition only** now contains an optional Bounty Board SDK bridge in `src/showcase-arcade.js`. It reports active campaign playtime, score updates, and once-only game-over events. It must not affect the original js13k artifact, offline gameplay, or personal-site play when the SDK is unavailable. The new `Q` switch shortcut and transient objective coach are likewise showcase-only. The integration includes a dependency-free contract test via `npm run test:arcade`.
+
+**Not yet approved or published:** leaderboard fairness by world/difficulty, fresh-player usability tests, browser/host preview qualification, and an Arcade-specific distribution ZIP still need to be finalized. See [Arcade launch plan](docs/BOUNTYBOARD_ARCADE_PLAN.md).
+
 ## Two editions
 
 The repository deliberately has two product targets.
@@ -45,8 +51,8 @@ There is **no timer defeat** and no gameplay timer state.
 | **Mouse** | aim the Rainbow Whip |
 | **Left click beside the white ring** | crack the Whip and build charge |
 | **Space** | spend 2/5 to 5/5 Whip charge on Dash |
-| **Shift** | smart-switch to the herd member that most needs attention |
-| **Shift ×3 quickly** | sweep through different herd members to scan the map |
+| **Shift or Q** | smart-switch to the herd member that most needs attention (Q avoids Sticky Keys prompts) |
+| **Shift or Q ×3 quickly** | sweep through different herd members to scan the map |
 | **P / Esc** | pause and view Rules |
 | **A / D or click world on title** | change world |
 | **M or click difficulty on title** | change difficulty |
