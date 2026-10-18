@@ -37,9 +37,16 @@ jobs:
               assert all(not n.startswith('/') and '..' not in n.split('/') for n in names)
               print('Arcade ZIP entries:',len(names))
           PY
+      - name: Install browser runner
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium firefox
+      - name: Live game and landmark qualification
+        run: node scripts/showcase-v118-browser.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: unicorn-stampede-arcade-preview
           path: |
             dist/arcade/unicorn-stampede-arcade.zip
             dist/arcade/manifest.json
+            dist/arcade/*-launch.png
