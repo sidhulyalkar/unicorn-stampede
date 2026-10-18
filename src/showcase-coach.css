@@ -22,3 +22,6 @@
 @media (max-width:600px){
   #showcase-coach{left:12px;bottom:92px;width:min(340px,calc(100vw - 24px));font-size:12px;padding:9px 11px}
 }
+
+/* Keep touch controls completely unobstructed when they are enabled. */
+body.showcase-touch-enabled #showcase-coach{top:85px;bottom:auto;left:50%;transform:translateX(-50%)}
