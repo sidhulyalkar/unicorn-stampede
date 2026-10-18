@@ -1,0 +1,12 @@
+#showcase-impact-help{
+position:fixed;right:18px;bottom:72px;z-index:10;
+max-width:min(410px,calc(100vw - 36px));
+padding:12px 16px;border:1px solid #ffe69c9e;border-left:4px solid #ffb96e;
+border-radius:11px;background:#080e20e8;color:#fff0c5;
+font:700 13px/1.4 system-ui,-apple-system,sans-serif;
+letter-spacing:.025em;text-shadow:0 1px 1px #000;
+box-shadow:0 8px 30px #0009;pointer-events:none;
+}
+#showcase-impact-help[hidden]{display:none!important}
+body.showcase-touch-enabled #showcase-impact-help{top:160px;bottom:auto;left:50%;right:auto;transform:translateX(-50%);font-size:11px}
+@media (max-width:760px){#showcase-impact-help{right:12px;bottom:115px;font-size:11px}}
