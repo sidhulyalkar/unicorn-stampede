@@ -133,6 +133,8 @@ async function check(browserType,name){
     // Simulate the opaque-origin SecurityError in a fully observable browser page.
     const blocked=await browser.newPage({viewport:{width:1024,height:768}});
     const blockedErrors=[];blocked.on('pageerror',e=>blockedErrors.push(String(e)));
+    // Reject the optional SDK here so its official memory shim cannot hide the test's SecurityError.
+    await blocked.route('https://www.bountyboard.gg/arcade-sdk/v1.js',route=>route.abort());
     await blocked.route('**/src/core.js',async route=>{
       const response=await route.fetch(),original=await response.text();
       await route.fulfill({response,body:`
