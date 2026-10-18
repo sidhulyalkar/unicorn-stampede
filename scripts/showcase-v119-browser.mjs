@@ -105,13 +105,14 @@ async function qualify(kind,engine){
         {mask:2,wins:1,bestTime:95,bestFlair:5},{mask:0,wins:0,bestTime:0,bestFlair:0},
         {mask:0,wins:0,bestTime:0,bestFlair:0},{mask:0,wins:0,bestTime:0,bestFlair:0}
       ]}));
+      showcaseMastery.reload(); // The UI and persistence must observe the same in-memory mastery.
       state='end';landWin=1;end();
       if(__bb.saves.length)throw Error('saved before initial hydration');
       __bb.loads[0](null);
     });
     // When read completes while the run is terminal, it must not mark progress hydrated.
     await hosted.waitForFunction(()=>showcaseArcade.snapshot().saveStatus==='cloud-later');
-    await hosted.evaluate(()=>{showcaseSessionMenuAPI.menu();showcaseArcade.sync()});
+    await hosted.evaluate(()=>{showcaseSessionMenuAPI.menu();showcaseArcade.sync();S.s('ccMode',2);mode=2});
     await hosted.waitForFunction(()=>__bb.loads.length>=2);
     await hosted.evaluate(blob=>{__bb.loads[1](blob)},remote);
     await hosted.waitForFunction(()=>showcaseArcade.snapshot().restored&&__bb.saves.length>=1);
@@ -123,6 +124,7 @@ async function qualify(kind,engine){
       if(mastery.wins!==3||mastery.bestTime!==80||mastery.bestFlair!==5)
         throw Error('cloud merge damaged historical bests '+JSON.stringify({mastery,current,savedMask:saved.usMasteryV110}));
       if(!showcaseArcade.snapshot().restored)throw Error('hydration never finished');
+      if(S.g('ccMode')!==2||saved.ccMode!=='2')throw Error('late cloud read overwrote user-selected mode');
       return{mask:mastery.mask,wins:mastery.wins,bestTime:mastery.bestTime,bestFlair:mastery.bestFlair};
     });
     // A stale signed-in load must never install its data after account switches.
