@@ -50,7 +50,8 @@ assert.match(a.appended.src,/bountyboard\.gg\/arcade-sdk/);
 a.ctx.state='play';a.ctx.level=1;a.emit('start:after');
 assert.equal(a.ctx.showcaseArcade.snapshot().ready,false,'unavailable SDK cannot block play');
 a.ctx.BBArcade=api;a.appended.onload();
-await Promise.resolve();await Promise.resolve();
+// VM-context promises resolve on a later microtask turn than this test's outer realm.
+await new Promise(resolve=>setImmediate(resolve));
 assert.deepEqual(calls.slice(0,4),['init','ready','start','score:0']);
 a.ctx.score=57;a.t.now=2500;a.emit('update:after');
 assert.ok(calls.includes('score:57'));
