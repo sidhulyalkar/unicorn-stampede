@@ -90,7 +90,7 @@ async function check(browserType,name){
     await hosted.goto(url);
     await hosted.waitForFunction(()=>state==='title'&&showcaseArcade.snapshot().ready);
     const remote=await hosted.evaluate(async()=>{
-      train=0;zone=0;mode=1;startLevel(1);score=871;update(.016);
+      train=0;zone=0;mode=1;S.s('ccZone',0);S.s('ccMode',1);startLevel(1);score=871;update(.016);
       paused=1;showcaseArcade.sync();paused=0;showcaseArcade.sync();
       const expected=Math.trunc(score);
       state='end';landWin=1;end();end();
@@ -100,7 +100,7 @@ async function check(browserType,name){
       if(!__bbEvents.some(e=>e[0]==='save'&&e[1]===1))throw Error('cloud checkpoint absent');
       const stops=__bbEvents.filter(e=>e[0]==='stop').length;
       if(stops<2)throw Error('pause/end did not stop playtime');
-      zone=1;mode=0;startLevel(1);score=1453;state='end';end();end();
+      zone=1;mode=0;S.s('ccZone',1);S.s('ccMode',0);startLevel(1);score=1453;state='end';end();end();
       const scores=__bbEvents.filter(e=>e[0]==='over');
       if(scores.length!==2||scores[1][1]!==0)throw Error('free play contaminated shared ranking');
       return{scores:scores.map(e=>e[1]),stops,cloud:true};
