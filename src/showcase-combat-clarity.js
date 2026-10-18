@@ -53,11 +53,13 @@
     if((u.distract||0)>.5)return 'DISTRACTED';
     if(u.x<55||u.y<55||u.x>WW-55||u.y>WH-55)return 'EDGE RISK';
     if((u.order||0)>.25)return 'ON ROUTE';
+    if((u.dash||u.frenzy||u.boost)&&objs.some(o=>o.hp>0&&o.val>0&&
+      Math.hypot(o.x+o.w/2-u.x,o.y+o.h/2-u.y)<160))return 'SMASHING';
     if(Math.hypot(u.vx||0,u.vy||0)<35&&u.id!==caps[0])return 'STALLED';
     return 'WORKING';
   }
   const COLORS={'CAPTURED':'#ff627f','DISTRACTED':'#ffcb60','STALLED':'#ffe09b',
-    'SLIPPING':'#ff756c','EDGE RISK':'#ff9d8f','ON ROUTE':'#94edff','WORKING':'#9df1b5'};
+    'SLIPPING':'#ff756c','EDGE RISK':'#ff9d8f','ON ROUTE':'#94edff','SMASHING':'#ffeb8d','WORKING':'#9df1b5'};
   function plaque(x,y,label,color){
     const w=Math.max(82,Math.min(154,label.length*7+18));
     X.fillStyle='#091022e8';rr(x-w/2,y-16,w,23,7);
@@ -77,6 +79,10 @@
                      ['SLIPPING','EDGE RISK','DISTRACTED','STALLED'].indexOf(b.s)).slice(0,3);
     for(const v of [...(active?[{u:active,s:status(active)}]:[]),...risk]){
       plaque(v.u.x,v.u.y-57,v.u.name.toUpperCase()+' · '+v.s,COLORS[v.s]||'#fff');
+    }
+    // Captive status follows the real prison truck rather than a stale unit position.
+    for(const c of cleaners.filter(q=>q.u>=0).slice(0,2)){
+      const captive=unis[c.u];if(captive)plaque(c.x,c.y-54,'RESCUE · '+captive.name.toUpperCase(),'#ff8ba4');
     }
     // Prerequisites and damage derive directly from the actual building HP.
     for(const o of objs){
