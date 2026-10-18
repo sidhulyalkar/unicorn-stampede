@@ -6,7 +6,7 @@
   let api=null,ready=false,loaded=false,run=null,serial=0;
   let lastSubmitted=-1,lastSubmittedAt=0,saveStatus='session-only';
   let hydrated=false,readInFlight=null,saveInFlight=null,pendingSave=false,playerEpoch=0;
-  let lastSaveAttempt=0;
+  let lastSaveAttempt=0,cloudRetryAt=0;
   const safe=(method,...args)=>{
     try{if(typeof api?.[method]==='function')return api[method](...args)}
     catch(error){console.warn('[arcade] '+method+' unavailable',error)}
@@ -29,7 +29,7 @@
     void saveCloud();
   }
   async function restoreCloud(){
-    if(!ready||!api?.getPlayer||!api?.load||hydrated)return;
+    if(!ready||!api?.getPlayer||!api?.load||hydrated||Date.now()<cloudRetryAt)return;
     if(state!=='title'){saveStatus='cloud-later';return}
     if(readInFlight)return readInFlight;
     const token=playerEpoch,baseline=globalThis.showcaseStorage?.snapshot();
@@ -43,17 +43,18 @@
         if(state!=='title'){saveStatus='cloud-later';return}
         if(blob){
           let data;
-          try{data=JSON.parse(blob)}catch{saveStatus='cloud-invalid';return}
+          try{data=JSON.parse(blob)}catch{saveStatus='cloud-invalid';cloudRetryAt=Date.now()+60000;return}
           if(!globalThis.showcaseStorage?.restore(data,baseline)){
-            saveStatus='cloud-invalid';return;
+            saveStatus='cloud-invalid';cloudRetryAt=Date.now()+60000;return;
           }
           saveStatus='cloud-restored';
         }else saveStatus='cloud-ready';
-        hydrated=true;
+        hydrated=true;cloudRetryAt=0;
       }catch(error){
         if(playerEpoch!==token)return;
         // A transient failure never licenses overwriting unknown cloud progress.
         saveStatus=error?.code==='unsupported'?'local-only':'cloud-unavailable';
+        cloudRetryAt=Date.now()+(error?.code==='unsupported'?60000:5000);
       }
     })().finally(()=>{
       readInFlight=null;
@@ -116,7 +117,7 @@
     lastSubmitted=-1;lastSubmittedAt=0;sync();
   }
   function onIdentityChange(){
-    playerEpoch++;hydrated=false;pendingSave=false;
+    playerEpoch++;hydrated=false;pendingSave=true;cloudRetryAt=0;
     saveStatus='identity-changed';
     if(state==='title')void restoreCloud();
   }
