@@ -88,7 +88,7 @@ async function check(browserType,name){
         };
       `}));
     await hosted.goto(url);
-    await hosted.waitForFunction(()=>state==='title'&&showcaseArcade.snapshot().ready);
+    await hosted.waitForFunction(()=>state==='title'&&showcaseArcade.snapshot().ready&&showcaseArcade.snapshot().restored);
     const remote=await hosted.evaluate(async()=>{
       train=0;zone=0;mode=1;S.s('ccZone',0);S.s('ccMode',1);startLevel(1);score=871;update(.016);
       paused=1;showcaseArcade.sync();paused=0;showcaseArcade.sync();
