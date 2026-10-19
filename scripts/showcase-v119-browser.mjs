@@ -4,7 +4,8 @@ import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import {chromium,firefox} from 'playwright';
-const root=process.cwd(),port=4195,results=[];
+// Qualify the exact extracted submission ZIP when ARCADE_TEST_ROOT is configured.
+const root=path.resolve(process.env.ARCADE_TEST_ROOT||process.cwd()),port=4195,results=[];
 const srv=http.createServer((req,res)=>{
   const name=decodeURIComponent(req.url.split('?')[0]).replace(/^\/+/,'')||'index.html';
   const file=path.resolve(root,name);

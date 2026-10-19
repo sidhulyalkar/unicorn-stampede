@@ -1,16 +1,14 @@
 name: Arcade showcase qualification
 on:
+  push:
+    branches: [main]
   pull_request:
+    branches: [main]
     paths:
       - "index.html"
-      - "src/showcase-arcade.js"
-      - "src/showcase-coach.js"
-      - "src/showcase-coach.css"
-      - "scripts/showcase-v117-arcade-smoke.mjs"
-      - "scripts/build-arcade.mjs"
+      - "src/**"
+      - "scripts/**"
       - "package.json"
-      - "scripts/showcase-v119-browser.mjs"
-      - "src/showcase-storage.js"
       - ".github/workflows/arcade-showcase.yml"
   workflow_dispatch:
 
@@ -43,13 +41,23 @@ jobs:
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium firefox
-      - name: Live game and landmark qualification
+      - name: Extract the exact Arcade submission ZIP
+        run: |
+          mkdir -p dist/arcade/extracted
+          unzip -qq dist/arcade/unicorn-stampede-arcade.zip -d dist/arcade/extracted
+          test -f dist/arcade/extracted/index.html
+      - name: Live game and landmark qualification from uploaded ZIP
+        env:
+          ARCADE_TEST_ROOT: dist/arcade/extracted
         run: node scripts/showcase-v118-browser.mjs
-      - name: Conquest, replay and cloud race qualification
+      - name: Conquest, replay and cloud race qualification from uploaded ZIP
+        env:
+          ARCADE_TEST_ROOT: dist/arcade/extracted
         run: node scripts/showcase-v119-browser.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: unicorn-stampede-arcade-preview
+          if-no-files-found: error
           path: |
             dist/arcade/unicorn-stampede-arcade.zip
             dist/arcade/manifest.json
