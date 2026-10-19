@@ -2,7 +2,8 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import {chromium,firefox} from 'playwright';
-const root=process.cwd(),port=4193;
+// When CI sets ARCADE_TEST_ROOT, load the extracted submission archive, not the working tree.
+const root=path.resolve(process.env.ARCADE_TEST_ROOT||process.cwd()),port=4193;
 const srv=http.createServer((req,res)=>{
   const raw=decodeURIComponent(req.url.split('?')[0]);
   const rel=raw==='/'?'index.html':raw.slice(1),file=path.resolve(root,rel);
