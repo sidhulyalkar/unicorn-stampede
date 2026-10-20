@@ -25,6 +25,9 @@ function harness(file){
     console,document:doc,Date:{now:()=>t.now},
     state:'title',level:0,paused:0,score:0,clock:0,goal:'LANDMARKS 0/4',
     showcaseCompetition:{eligible:true},
+    // Host-lifecycle test uses a controlled score fixture; a separate v1.21
+    // suite verifies the real capped progress-score algorithm and farming resistance.
+    showcaseRankedScore:{MAX_SCORE:99500,begin(){},current(){return{score:Math.max(0,Math.trunc(ctx.score))}},finish(){return this.current()}},
     objective:()=>ctx.goal,
     cycle:()=>{cycles++},
     showcaseHooks:{on(name,id,fn){const arr=hooks.get(name)||[];arr.push(fn);hooks.set(name,arr)}},
