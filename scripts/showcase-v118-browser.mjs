@@ -27,12 +27,17 @@ async function check(browserType,name){
     const report=await page.evaluate(()=>{
       train=0;zone=0;mode=1;S.s('ccZone',0);S.s('ccMode',1);
       startLevel(1);
-      if(!showcaseCompetition.eligible||score!==0)throw Error('ranked must start from zero');
+      if(!showcaseCompetition.eligible||score!==0||showcaseRankedScore.current().score!==0)
+        throw Error('ranked must start from zero');
+      score=100000000;
+      if(showcaseRankedScore.current().score!==0)throw Error('raw score leaks into global board');
+      score=0;
       const slots=()=>objs.filter(o=>o.t==='b'&&!o.lm).slice(0,18)
         .map(o=>[Math.round(o.x),Math.round(o.y),Math.round(o.w),Math.round(o.h)]);
       const before=JSON.stringify(slots());
       score=99000;startLevel(1);
-      if(score!==0||JSON.stringify(slots())!==before)throw Error('ranked seed/score not repeatable');
+      if(score!==0||showcaseRankedScore.current().score!==0||JSON.stringify(slots())!==before)
+        throw Error('ranked seed/score not repeatable');
       if(!showcaseClarity.status(unis[caps[0]]))throw Error('herd status missing');
       const bakery=objs.find(o=>o.lm==='bakery'),clockObj=objs.find(o=>o.lm==='clock'),hall=objs.find(o=>o.lm==='hall');
       if(!bakery||!clockObj||!hall)throw Error('required landmarks absent');
