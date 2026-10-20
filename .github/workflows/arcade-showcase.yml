@@ -20,8 +20,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify SDK and onboarding contract
-        run: node scripts/showcase-v117-arcade-smoke.mjs
+      - name: Verify bounded board score, SDK and onboarding
+        run: |
+          node scripts/showcase-v121-ranked-score.mjs
+          node scripts/showcase-v117-arcade-smoke.mjs
       - name: Build Arcade archive
         run: node scripts/build-arcade.mjs
       - name: Independently inspect ZIP integrity
