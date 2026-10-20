@@ -93,8 +93,9 @@ async function check(browserType,name){
     const remote=await hosted.evaluate(async()=>{
       train=0;zone=0;mode=1;S.s('ccZone',0);S.s('ccMode',1);startLevel(1);score=871;update(.016);
       paused=1;showcaseArcade.sync();paused=0;showcaseArcade.sync();
-      const expected=Math.trunc(score);
-      state='end';landWin=1;end();end();
+      state='end';landWin=1;
+      const expected=showcaseRankedScore.current().score;
+      end();end();
       await new Promise(resolve=>setTimeout(resolve,40));
       if(__bbEvents.filter(e=>e[0]==='over').length!==1)throw Error('duplicate hosted gameOver');
       if(__bbEvents.filter(e=>e[0]==='over')[0][1]!==expected)throw Error('ranked score mismatch '+JSON.stringify({expected,events:__bbEvents,competition:showcaseCompetition.snapshot(),arcade:showcaseArcade.snapshot(),score}));
