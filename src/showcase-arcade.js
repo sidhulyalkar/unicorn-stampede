@@ -11,12 +11,14 @@
     try{if(typeof api?.[method]==='function')return api[method](...args)}
     catch(error){console.warn('[arcade] '+method+' unavailable',error)}
   };
-  const scoreNow=()=>Math.max(0,Math.trunc(Number(score)||0));
+  // The campaign's raw score remains a standalone game mechanic, not a ranked currency.
+  const scoreNow=()=>run?.ranked?(globalThis.showcaseRankedScore?.current()?.score||0):0;
   const eligible=()=>globalThis.showcaseCompetition?.eligible===true;
   function stop(){if(run?.active){run.active=false;safe('gameplayStop')}}
   function gameFinished(){
     if(!run||run.ended)return;
-    run.finalScore=run.ranked?scoreNow():0;
+    run.breakdown=globalThis.showcaseRankedScore?.finish?.()||null;
+    run.finalScore=run.ranked?(run.breakdown?.score||0):0;
     run.ended=true;
     reportFinish();
   }
@@ -116,6 +118,7 @@
     run=state==='play'&&level>0?{
       id:++serial,ranked:eligible(),active:false,ended:false,reported:false,finalScore:0
     }:null;
+    globalThis.showcaseRankedScore?.begin?.(!!run?.ranked);
     lastSubmitted=-1;lastSubmittedAt=0;sync();
   }
   function onIdentityChange(){
@@ -155,6 +158,8 @@
     attach,sync,finish:gameFinished,saveCloud,restoreCloud,
     snapshot:()=>({ready,loaded,restored:hydrated,saveStatus,playerEpoch,pendingSave,
       runId:run?.id||null,ranked:!!run?.ranked,active:!!run?.active,
-      ended:!!run?.ended,reported:!!run?.reported,finalScore:run?.finalScore??null})
+      ended:!!run?.ended,reported:!!run?.reported,finalScore:run?.finalScore??null,
+      boardScore:run?.ranked?(run?.breakdown?.score??scoreNow()):0,
+      boardMax:globalThis.showcaseRankedScore?.MAX_SCORE??null})
   };
 })();
