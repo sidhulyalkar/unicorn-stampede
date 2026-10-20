@@ -6,7 +6,7 @@ import path from 'node:path';
 import {chromium,firefox} from 'playwright';
 const root=path.resolve(process.env.ARCADE_TEST_ROOT||process.cwd()),port=4197,results=[];
 const server=http.createServer((req,res)=>{
-  const name=decodeURIComponent(req.url.split('?')[0]).replace(/^\\/+/, '')||'index.html';
+  const name=decodeURIComponent(req.url.split('?')[0]).slice(1)||'index.html';
   const file=path.resolve(root,name);
   if(!file.startsWith(root+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile()){
     res.writeHead(404);res.end('missing');return;
