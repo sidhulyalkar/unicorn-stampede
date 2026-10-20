@@ -56,6 +56,10 @@ jobs:
         env:
           ARCADE_TEST_ROOT: dist/arcade/extracted
         run: node scripts/showcase-v119-browser.mjs
+      - name: Real keyboard and pointer input qualification from uploaded ZIP
+        env:
+          ARCADE_TEST_ROOT: dist/arcade/extracted
+        run: node scripts/showcase-v122-input-browser.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: unicorn-stampede-arcade-preview
@@ -66,3 +70,5 @@ jobs:
             dist/arcade/unicorn-stampede-cover.png
             dist/arcade/*-launch.png
             dist/arcade/qualification-v119.json
+            dist/arcade/qualification-v122.json
+            dist/arcade/*-input.png
