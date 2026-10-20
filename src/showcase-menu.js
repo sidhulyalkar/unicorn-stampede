@@ -19,7 +19,7 @@ title=function(){
   X.shadowBlur=5;X.fillStyle='#fff';text('< '+showcaseWorldMeta[zone][0]+' >',W/2,585,13,'center');
   X.fillStyle='#ffe56d';text('< '+showcaseDifficultyMeta[mode][0]+' >',W/2,610,14,'center');
   X.fillStyle=zone===0&&mode===1?'#b2f5c3':'#ffeeb7';
-  text(zone===0&&mode===1?'RANKED • SHARED MAP + ZERO-START SCORE':'FREE PLAY • RANKED IN PRISMBOROUGH / MEDIUM',W/2,552,11,'center');
+  text(zone===0&&mode===1?'RANKED • SHARED MAP + FINITE MASTERY SCORE':'FREE PLAY • RANKED IN PRISMBOROUGH / MEDIUM',W/2,552,11,'center');
   X.fillStyle='#fff';text('START',W/2,650,20,'center');
   X.fillStyle='#f5f7fb';text('TUTORIAL '+(train?'ON':'OFF')+'   ·   ? RULES',W/2,680,12,'center');
   const mastery=globalThis.showcaseMastery;if(mastery){X.fillStyle='#ffe56d';text(mastery.total+'/12 ★  ·  '+mastery.rank,W/2,706,9,'center')}
