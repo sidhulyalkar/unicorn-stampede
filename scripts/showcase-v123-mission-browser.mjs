@@ -88,7 +88,7 @@ async function qualify(name,engine){
 
     // Check no overlay obstructs an actual touch control or becomes an invisible
     // click-capturing surface in narrow viewports.
-    const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+    const mobile=await browser.newPage({viewport:{width:390,height:844},hasTouch:true});
     const mobileErrors=[];mobile.on('pageerror',e=>mobileErrors.push(String(e)));
     await mobile.route('https://www.bountyboard.gg/arcade-sdk/v1.js',r=>r.abort());
     await mobile.goto('http://127.0.0.1:'+port+'/?touch');
