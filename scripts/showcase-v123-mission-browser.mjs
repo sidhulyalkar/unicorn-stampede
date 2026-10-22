@@ -63,8 +63,14 @@ async function qualify(name,engine){
     // Use actual keyboard movement; the entire world must keep processing input.
     await page.keyboard.down('d');await page.waitForTimeout(900);await page.keyboard.up('d');
     await page.waitForFunction(()=>showcaseMission.progress().steps[0]);
-    await page.keyboard.press('q');
+    await page.keyboard.press('f');
     await page.waitForFunction(()=>showcaseMission.progress().steps[3]);
+    const beforeLegacyShift=await page.evaluate(()=>caps[0]);
+    await page.keyboard.press('ShiftLeft');
+    await page.keyboard.press('ShiftRight');
+    if(await page.evaluate(()=>caps[0])!==beforeLegacyShift)
+      throw Error(name+' Shift still triggers switching during onboarding');
+
     async function whip(){
       const point=await page.evaluate(()=>{
         const u=unis[caps[0]],r=C.getBoundingClientRect(),s=Math.min(r.width/W,r.height/H);
