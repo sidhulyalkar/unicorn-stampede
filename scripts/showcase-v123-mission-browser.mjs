@@ -35,6 +35,31 @@ async function qualify(name,engine){
     });
     if(!initial.visible||initial.kind!=='landmark')
       throw Error(name+' missing initial landmark direction '+JSON.stringify(initial));
+    // Canvas HUD is drawn at stable logical coordinates. Chrome must not
+    // overlap any of the three HUD regions during active desktop play.
+    await page.waitForFunction(()=>document.body.classList.contains('showcase-playing'));
+    const clearance=await page.evaluate(()=>{
+      const r=C.getBoundingClientRect(),sx=r.width/W,sy=r.height/H;
+      const hud=[[16,14,356,48],[W-150,14,W-16,48],[W/2-190,18,W/2+190,54]]
+        .map(([x1,y1,x2,y2])=>({
+          left:r.left+x1*sx,top:r.top+y1*sy,right:r.left+x2*sx,bottom:r.top+y2*sy
+        }));
+      const named=['showcase-fullscreen','showcase-settings-bar','showcase-status'];
+      const intersections=[];
+      for(const id of named){
+        const el=document.getElementById(id),box=el.getBoundingClientRect();
+        for(let i=0;i<hud.length;i++){
+          const h=hud[i],ox=Math.max(0,Math.min(box.right,h.right)-Math.max(box.left,h.left));
+          const oy=Math.max(0,Math.min(box.bottom,h.bottom)-Math.max(box.top,h.top));
+          if(ox*oy>1)intersections.push({chrome:id,hud:i,area:Math.round(ox*oy)});
+        }
+      }
+      return{intersections};
+    });
+    if(clearance.intersections.length)
+      throw Error(name+' active HUD control overlap '+JSON.stringify(clearance));
+    await page.screenshot({path:'dist/arcade/'+name+'-first-run.png'});
+
     // Use actual keyboard movement; the entire world must keep processing input.
     await page.keyboard.down('d');await page.waitForTimeout(900);await page.keyboard.up('d');
     await page.waitForFunction(()=>showcaseMission.progress().steps[0]);
