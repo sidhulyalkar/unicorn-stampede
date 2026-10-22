@@ -90,12 +90,16 @@ async function check(label,engine){
       startLevel(0);
       intro.step=3;intro.o=caps[0];
       unis[caps[0]].vx=180;
-      const old=X.fillText,seen=[];
-      X.fillText=function(label,...args){seen.push(String(label));return old.call(this,label,...args)};
-      try{introHud();rules()}finally{X.fillText=old}
-      return{captain:caps[0],seen};
+      // Verify the very same translator function used by the real Canvas
+      // renderer, without replacing that renderer and bypassing the shim.
+      const raw=['MOVE + SHIFT • SEND UNICORN',
+        'SHIFT • SWITCH • MOVE+SHIFT SENDS CURRENT UNICORN',
+        'SHIFT ×3 • SWEEP DIFFERENT HERD MEMBERS'];
+      const seen=raw.map(showcaseHandoffKeys.translateLabel);
+      introHud();rules();
+      return{captain:caps[0],seen,rendererInstalled:Object.hasOwn(X,'fillText')};
     });
-    if(tutorialBefore.seen.some(x=>/SHIFT/i.test(x))||
+    if(!tutorialBefore.rendererInstalled||tutorialBefore.seen.some(x=>/SHIFT/i.test(x))||
       !tutorialBefore.seen.some(x=>x.includes('MOVE + F'))||
       !tutorialBefore.seen.some(x=>x.includes('F • SWITCH')))
       throw Error(label+' tutorial or rules still teach Shift '+JSON.stringify(tutorialBefore.seen.filter(x=>/SHIFT|MOVE \+|SWITCH/i.test(x))));
