@@ -10,6 +10,6 @@ const showcaseWorldNames=['PRISMBOROUGH','WASHWATER BAY','CLOUDTOP HEIGHTS','FAU
 function showcaseRefreshStatus(){const world=showcaseWorldNames[typeof zone==='number'?zone:0]||showcaseWorldNames[0];const phase=state==='play'?(paused?'PAUSED':''):state==='end'?'COMPLETE':'';const ranked=state==='play'||state==='end'
     ?(globalThis.showcaseCompetition?.eligible?'RANKED':'FREE PLAY')
     :zone===0&&mode===1?'RANKED AVAILABLE':'FREE PLAY';
-  showcaseStatus.textContent=world+' · '+ranked+(phase?' · '+phase:'');showcaseStatus.classList.toggle('showcase-status-quiet',state==='title')}
+  showcaseStatus.textContent=world+' · '+ranked+(phase?' · '+phase:'');showcaseStatus.classList.toggle('showcase-status-quiet',state==='title');document.body.classList.toggle('showcase-playing',state==='play')}
 showcaseRefreshStatus();setInterval(showcaseRefreshStatus,500);
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='play')paused=1});
