@@ -39,9 +39,28 @@ async function check(label,engine){
     }));
     if(Math.hypot(moved.x-start.x,moved.y-start.y)<12||moved.paint<=start.paint)
       throw Error(label+' real WASD movement/painting absent '+JSON.stringify({start,moved}));
-    await page.keyboard.press('q');
+    // Legacy Shift is deliberately disabled in the showcase. Neither side may
+    // trigger Smart Attention, including repeated taps that caused Sticky Keys.
+    for(const key of ['ShiftLeft','ShiftRight']){
+      await page.keyboard.down(key);
+      await page.keyboard.up(key);
+      const afterShift=await page.evaluate(()=>caps[0]);
+      if(afterShift!==start.active)throw Error(label+' '+key+' unexpectedly changed herd captain');
+    }
+    await page.keyboard.press('f');
     const captain=await page.evaluate(()=>caps[0]);
-    if(captain===start.active)throw Error(label+' actual Q did not change captain');
+    if(captain===start.active)throw Error(label+' actual F did not change captain');
+    const aliasBefore=captain;
+    await page.keyboard.press('q');
+    const aliasAfter=await page.evaluate(()=>caps[0]);
+    if(aliasAfter===aliasBefore)throw Error(label+' Q fallback did not change captain');
+    await page.keyboard.down('f');
+    const repeatCaptain=await page.evaluate(()=>caps[0]);
+    await page.keyboard.down('f'); // browser autorepeat should not issue two switches
+    const repeatAfter=await page.evaluate(()=>caps[0]);
+    await page.keyboard.up('f');
+    if(repeatCaptain!==repeatAfter)throw Error(label+' repeat F switched twice');
+
     // Pointer coordinates follow the real canvas screen transform at every Whip.
     async function whip(){
       const point=await page.evaluate(()=>{
@@ -69,7 +88,7 @@ async function check(label,engine){
     if(errors.length)throw Error(label+' browser errors '+errors.join('|'));
     const report={browser:label,setup,start,moved,captain,beforeDash,afterDash};
     results.push(report);
-    console.log(label+' real title/WASD/Q/mouse Whip/Space/P: PASS '+JSON.stringify(report));
+    console.log(label+' real title/WASD/F/mouse Whip/Space/P: PASS '+JSON.stringify(report));
     await page.close();
   }finally{await browser.close()}
 }
