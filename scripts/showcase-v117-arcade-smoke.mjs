@@ -88,6 +88,6 @@ c.key({code:'KeyQ'});assert.equal(c.cycles,2,'Q fallback should continue working
 c.key({code:'ShiftLeft'});c.key({code:'ShiftRight'});
 assert.equal(c.cycles,2,'Shift must not be implemented by the showcase coach');
 
-c.ctx.paused=1;c.key();assert.equal(c.cycles,1);
+c.ctx.paused=1;c.key();assert.equal(c.cycles,2);
 c.ctx.paused=0;c.ctx.level=0;c.emit('start:after');assert.equal(c.panel.hidden,true,'training owns its prompts');
-console.log('v1.17 arcade + coach smoke: PASS optional SDK, active time, score, once-only result, replay, Q input, phase coaching');
+console.log('v1.17 arcade + coach smoke: PASS optional SDK, active time, score, once-only result, replay, F primary and Q alias, phase coaching');
