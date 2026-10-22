@@ -21,7 +21,7 @@ These are reports, not independently reproduced bugs. Each issue needs a precise
 
 ## v1.17 first tranche (implemented on a feature branch)
 - Optional `src/showcase-arcade.js`: game load, actual active play/pause boundaries, integer score updates, once-only run-end submission. Standalone game never blocks on SDK.
-- `Q` as a non-modifier alternative to Shift, while preserving all existing Smart Attention behavior and the tutorial's unrestricted whip.
+- First introduced `Q` as a non-modifier alternative to Shift; the v1.23 showcase later made **F** primary, kept Q as an optional alias, and disabled Shift switching entirely. The original js13k module remains frozen.
 - `src/showcase-coach.js`: brief phase-change instructions for the four landmarks, Chaos, Town Hall team-up, district takeover, global color target and rescue. No per-frame flood, no gameplay-authority changes.
 - `npm run test:arcade`: source-level lifecycle, repeat-end, pause/resume, offline and input behavior smoke.
 - **Not yet verified in the actual Bounty-hosted player.** SDK events require real host-preview qualification and competition-scoring policy.
@@ -36,7 +36,7 @@ These are reports, not independently reproduced bugs. Each issue needs a precise
 ## P1: make herd strategy visible
 1. Each herd member shows whether it is **WORKING**, **TRAVELLING**, **DISTRACTED**, **STALLED**, **CAPTURED**, or **RALLY NEEDED**; derive status from existing state with stable thresholds and minimal overlap.
 2. Preserve persistent route ribbons and improve color/arrow legibility at whole-town zoom.
-3. Make Smart Shift's reason briefly visible after a handoff; tapping Q rapidly should still cycle through distinct nearby crises.
+3. Make Smart Switch's reason briefly visible after a handoff; tapping F rapidly should still cycle through distinct nearby crises.
 4. Visualize multi-herd destruction through one satisfying synchronized smash that emerges from proximity and correctly timed dashes; do not invent new movement buttons.
 5. Test gameplay liveness over all four worlds and multiple seeds with/without hazard pressure: no off-map routing, irrecoverable stuck units, unwinnable Hall or dead input.
 
@@ -62,7 +62,7 @@ Collect a 30-second uncoached attempt, then a normal play session. Record:
 - Can player state the goal in ~10 seconds? Target ≥80%.
 - First successful whip and smash latency. Target median <=45 s.
 - Fraction that understands **TEAM 2/3** without external coaching. Target ≥80%.
-- Median time before first meaningful Shift/Q to recover an ineffective teammate.
+- Median time before first meaningful F to recover an ineffective teammate.
 - First-run crash/softlock incidence: **zero** in the qualification set.
 - Capture/rescue comprehension and actual success rate.
 - First Easy conquest completion and voluntary replay, compared across runs 1, 2 and 3.
