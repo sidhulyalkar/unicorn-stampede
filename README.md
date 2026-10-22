@@ -14,6 +14,8 @@ The **showcase edition only** now contains an optional Bounty Board SDK bridge i
 
 **v1.18 release candidate:** A canonical Prismborough/Medium shared-seed leaderboard config now starts at zero each time. Other maps/difficulties remain free-play. The first-run coach is paired with authoritative building health, live Team requirements, repairable failed-smash feedback, Smart Attention/status labels, and explicit capture-truck rescue tags. Session-safe progress storage and cloud-save callbacks have been added for signed-in Bounty-hosted play. The Arcade workflow produces a self-verified standalone ZIP, authentic 1280×720 cover screenshot, and Chromium/Firefox browser QA captures. See [submission copy and host-preview checklist](docs/BOUNTYBOARD_SUBMISSION.md).
 
+**v1.23 first-run wayfinding:** The expanded edition adds a nonblocking Mission Compass pointing to live conquest targets and a short skills ribbon confirming real movement, double Whip charge, a destroyed structure and a herd handoff. The ribbon disappears when those actions are learned, and its completion syncs through cloud progress. **H** toggles the wayfinder at any point during gameplay. It does not move units, change destruction rules, or affect ranked scoring. The Arcade ZIP is tested with actual keyboard/mouse input and touch-safe layouts in Chromium/Firefox.
+
 **Still requiring human/host validation:** fresh-player usability tests, real Bounty-hosted signed-in and guest sessions, review of Bounty's leaderboard score ceiling, and studio approval. The build is not published yet. See [Arcade launch plan](docs/BOUNTYBOARD_ARCADE_PLAN.md).
 
 ## Two editions
@@ -55,6 +57,7 @@ There is **no timer defeat** and no gameplay timer state.
 | **Space** | spend 2/5 to 5/5 Whip charge on Dash |
 | **Shift or Q** | smart-switch to the herd member that most needs attention (Q avoids Sticky Keys prompts) |
 | **Shift or Q ×3 quickly** | sweep through different herd members to scan the map |
+| **H** | show or hide the objective wayfinder arrow (showcase edition only) |
 | **P / Esc** | pause and view Rules |
 | **A / D or click world on title** | change world |
 | **M or click difficulty on title** | change difficulty |
