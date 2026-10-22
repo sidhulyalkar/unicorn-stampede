@@ -84,6 +84,29 @@ async function check(label,engine){
     if(!await page.evaluate(()=>!!paused))throw Error(label+' pause key not active');
     await page.keyboard.press('p');
     if(await page.evaluate(()=>!!paused))throw Error(label+' resume key not active');
+    // The standalone 13 KB tutorial still retains its historical Shift labels
+    // in source. The showcase must render *F* guidance and dispatch *F* instead.
+    const tutorialBefore=await page.evaluate(()=>{
+      startLevel(0);
+      intro.step=3;intro.o=caps[0];
+      unis[caps[0]].vx=180;
+      const old=X.fillText,seen=[];
+      X.fillText=function(label,...args){seen.push(String(label));return old.call(this,label,...args)};
+      try{introHud();rules()}finally{X.fillText=old}
+      return{captain:caps[0],seen};
+    });
+    if(tutorialBefore.seen.some(x=>/SHIFT/i.test(x))||
+      !tutorialBefore.seen.some(x=>x.includes('MOVE + F'))||
+      !tutorialBefore.seen.some(x=>x.includes('F • SWITCH')))
+      throw Error(label+' tutorial or rules still teach Shift '+JSON.stringify(tutorialBefore.seen.filter(x=>/SHIFT|MOVE \+|SWITCH/i.test(x))));
+    await page.keyboard.press('ShiftLeft');
+    await page.keyboard.press('ShiftRight');
+    if(await page.evaluate(()=>caps[0])!==tutorialBefore.captain)
+      throw Error(label+' Shift should not work in tutorial');
+    await page.keyboard.press('f');
+    const tutorialAfter=await page.evaluate(()=>({captain:caps[0],step:intro.step}));
+    if(tutorialAfter.captain===tutorialBefore.captain||tutorialAfter.step!==4)
+      throw Error(label+' F did not advance tutorial handoff '+JSON.stringify(tutorialAfter));
     await page.screenshot({path:'dist/arcade/'+label+'-input.png'});
     if(errors.length)throw Error(label+' browser errors '+errors.join('|'));
     const report={browser:label,setup,start,moved,captain,beforeDash,afterDash};
