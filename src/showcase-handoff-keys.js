@@ -11,16 +11,14 @@
   addEventListener('keydown',before,true);
   // The old tutorial and rules paint their legends straight onto the Canvas.
   // Translate only the inherited text when rendering the expanded edition.
+  const translateLabel=value=>typeof value==='string'
+    ?value.replace(/\bSHIFT\b/gi,'F'):value;
   const fill=X.fillText;
   X.fillText=function(label,...args){
-    if(typeof label==='string'&&/\bSHIFT\b/i.test(label)){
-      label=label.replace(/\bSHIFT\b/gi,'F');
-    }
-    return fill.call(this,label,...args);
+    return fill.call(this,translateLabel(label),...args);
   };
   globalThis.showcaseHandoffKeys=Object.freeze({
     primary:'KeyF',alternate:'KeyQ',disabled:['ShiftLeft','ShiftRight'],
-    label:'F',translateLabel:value=>typeof value==='string'
-      ?value.replace(/\bSHIFT\b/gi,'F'):value
+    label:'F',translateLabel
   });
 })();
