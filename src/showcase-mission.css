@@ -1,0 +1,19 @@
+/* Compact only during the first meaningful herd sequence; it never captures inputs. */
+#showcase-mission-progress{
+  position:fixed;z-index:8;bottom:12px;left:50%;transform:translateX(-50%);
+  width:max-content;max-width:calc(100vw - 28px);box-sizing:border-box;
+  display:flex;align-items:center;gap:12px;padding:9px 13px;
+  color:#f3fcff;border:1px solid #88ddeb88;border-radius:12px;
+  background:linear-gradient(100deg,#081525ed,#172641e8);box-shadow:0 6px 18px #0006;
+  font:650 11px/1.25 system-ui,-apple-system,sans-serif;pointer-events:none;
+}
+#showcase-mission-progress[hidden]{display:none!important}
+#showcase-mission-progress strong{font-size:9px;letter-spacing:.075em;color:#ffec92}
+#showcase-mission-progress span{white-space:nowrap;font-size:10px}
+#showcase-mission-progress small{color:#aed3df;font-size:9px;white-space:nowrap}
+body.showcase-touch-enabled #showcase-mission-progress{display:none!important}
+@media(max-width:740px){
+ #showcase-mission-progress{flex-wrap:wrap;justify-content:center;gap:4px 12px;bottom:9px;}
+ #showcase-mission-progress small{display:none}
+}
+@media(prefers-reduced-motion:reduce){#showcase-mission-progress{transition:none}}
