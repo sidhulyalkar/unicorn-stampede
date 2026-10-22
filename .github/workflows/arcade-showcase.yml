@@ -78,3 +78,4 @@ jobs:
             dist/arcade/*-input.png
             dist/arcade/qualification-v123.json
             dist/arcade/*-mission.png
+            dist/arcade/*-first-run.png
