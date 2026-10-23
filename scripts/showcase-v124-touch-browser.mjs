@@ -59,7 +59,14 @@ async function check(engine,label){
     await page.locator('.showcase-touch-btn[data-action=pause]').tap();
     const pausedNow=await page.evaluate(()=>!!paused);
     if(pausedNow===pausedBefore)throw Error(label+' touch pause toggle missing');
-    await page.locator('.showcase-touch-btn[data-action=pause]').tap();
+    // Pausing correctly opens the modal run menu. Touchscreen users resume via
+    // its visible RESUME RUN button, not the obscured joystick controls.
+    const resume=page.locator('#showcase-session-menu [data-session-action=primary]');
+    await resume.waitFor({state:'visible'});
+    if(!(await resume.textContent()).includes('RESUME'))
+      throw Error(label+' paused run does not offer a touchscreen resume button');
+    await resume.tap();
+    if(await page.evaluate(()=>!!paused))throw Error(label+' touchscreen resume did not work');
     // Actual drag across the DOM steering pad, no mutation of gameplay variables.
     const pad=page.locator('.showcase-touch-pad'),bounds=await pad.boundingBox();
     if(!bounds)throw Error(label+' no virtual joystick box');
