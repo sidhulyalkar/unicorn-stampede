@@ -39,9 +39,28 @@ async function check(label,engine){
     }));
     if(Math.hypot(moved.x-start.x,moved.y-start.y)<12||moved.paint<=start.paint)
       throw Error(label+' real WASD movement/painting absent '+JSON.stringify({start,moved}));
-    await page.keyboard.press('q');
+    // Legacy Shift is deliberately disabled in the showcase. Neither side may
+    // trigger Smart Attention, including repeated taps that caused Sticky Keys.
+    for(const key of ['ShiftLeft','ShiftRight']){
+      await page.keyboard.down(key);
+      await page.keyboard.up(key);
+      const afterShift=await page.evaluate(()=>caps[0]);
+      if(afterShift!==start.active)throw Error(label+' '+key+' unexpectedly changed herd captain');
+    }
+    await page.keyboard.press('f');
     const captain=await page.evaluate(()=>caps[0]);
-    if(captain===start.active)throw Error(label+' actual Q did not change captain');
+    if(captain===start.active)throw Error(label+' actual F did not change captain');
+    const aliasBefore=captain;
+    await page.keyboard.press('q');
+    const aliasAfter=await page.evaluate(()=>caps[0]);
+    if(aliasAfter===aliasBefore)throw Error(label+' Q fallback did not change captain');
+    await page.keyboard.down('f');
+    const repeatCaptain=await page.evaluate(()=>caps[0]);
+    await page.keyboard.down('f'); // browser autorepeat should not issue two switches
+    const repeatAfter=await page.evaluate(()=>caps[0]);
+    await page.keyboard.up('f');
+    if(repeatCaptain!==repeatAfter)throw Error(label+' repeat F switched twice');
+
     // Pointer coordinates follow the real canvas screen transform at every Whip.
     async function whip(){
       const point=await page.evaluate(()=>{
@@ -65,11 +84,38 @@ async function check(label,engine){
     if(!await page.evaluate(()=>!!paused))throw Error(label+' pause key not active');
     await page.keyboard.press('p');
     if(await page.evaluate(()=>!!paused))throw Error(label+' resume key not active');
+    // The standalone 13 KB tutorial still retains its historical Shift labels
+    // in source. The showcase must render *F* guidance and dispatch *F* instead.
+    const tutorialBefore=await page.evaluate(()=>{
+      startLevel(0);
+      intro.step=3;intro.o=caps[0];
+      unis[caps[0]].vx=180;
+      // Verify the very same translator function used by the real Canvas
+      // renderer, without replacing that renderer and bypassing the shim.
+      const raw=['MOVE + SHIFT • SEND UNICORN',
+        'SHIFT • SWITCH • MOVE+SHIFT SENDS CURRENT UNICORN',
+        'SHIFT ×3 • SWEEP DIFFERENT HERD MEMBERS'];
+      const seen=raw.map(showcaseHandoffKeys.translateLabel);
+      introHud();rules();
+      return{captain:caps[0],seen,rendererInstalled:Object.hasOwn(X,'fillText')};
+    });
+    if(!tutorialBefore.rendererInstalled||tutorialBefore.seen.some(x=>/SHIFT/i.test(x))||
+      !tutorialBefore.seen.some(x=>x.includes('MOVE + F'))||
+      !tutorialBefore.seen.some(x=>x.includes('F • SWITCH')))
+      throw Error(label+' tutorial or rules still teach Shift '+JSON.stringify(tutorialBefore.seen.filter(x=>/SHIFT|MOVE \+|SWITCH/i.test(x))));
+    await page.keyboard.press('ShiftLeft');
+    await page.keyboard.press('ShiftRight');
+    if(await page.evaluate(()=>caps[0])!==tutorialBefore.captain)
+      throw Error(label+' Shift should not work in tutorial');
+    await page.keyboard.press('f');
+    const tutorialAfter=await page.evaluate(()=>({captain:caps[0],step:intro.step}));
+    if(tutorialAfter.captain===tutorialBefore.captain||tutorialAfter.step!==4)
+      throw Error(label+' F did not advance tutorial handoff '+JSON.stringify(tutorialAfter));
     await page.screenshot({path:'dist/arcade/'+label+'-input.png'});
     if(errors.length)throw Error(label+' browser errors '+errors.join('|'));
     const report={browser:label,setup,start,moved,captain,beforeDash,afterDash};
     results.push(report);
-    console.log(label+' real title/WASD/Q/mouse Whip/Space/P: PASS '+JSON.stringify(report));
+    console.log(label+' real title/WASD/F/mouse Whip/Space/P: PASS '+JSON.stringify(report));
     await page.close();
   }finally{await browser.close()}
 }

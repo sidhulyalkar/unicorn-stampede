@@ -3,8 +3,8 @@
 (function(){
   'use strict';
   const keys=['ccIntro16','ccZone','ccMode','ccRun','ccHeat','ccC0','ccC1','ccC2','ccC3',
-    'unicornShowcaseSettingsV1','usMasteryV110'];
-  const progressKeys=new Set(['ccIntro16','ccRun','ccHeat','ccC0','ccC1','ccC2','ccC3']);
+    'unicornShowcaseSettingsV1','usMasteryV110','usIntroProgressV123'];
+  const progressKeys=new Set(['ccIntro16','ccRun','ccHeat','ccC0','ccC1','ccC2','ccC3','usIntroProgressV123']);
   const values=new Map();
   let revision=0;
   function nativeGet(k){try{return localStorage.getItem(k)}catch{return null}}

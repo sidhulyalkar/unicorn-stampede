@@ -60,6 +60,10 @@ jobs:
         env:
           ARCADE_TEST_ROOT: dist/arcade/extracted
         run: node scripts/showcase-v122-input-browser.mjs
+      - name: Real first-run mission compass qualification from uploaded ZIP
+        env:
+          ARCADE_TEST_ROOT: dist/arcade/extracted
+        run: node scripts/showcase-v123-mission-browser.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: unicorn-stampede-arcade-preview
@@ -72,3 +76,6 @@ jobs:
             dist/arcade/qualification-v119.json
             dist/arcade/qualification-v122.json
             dist/arcade/*-input.png
+            dist/arcade/qualification-v123.json
+            dist/arcade/*-mission.png
+            dist/arcade/*-first-run.png

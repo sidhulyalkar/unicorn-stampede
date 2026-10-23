@@ -10,9 +10,11 @@ The challenge is not only steering quickly. It is keeping several chaotic plans 
 
 ## Bounty Board Arcade readiness (v1.17 preview)
 
-The **showcase edition only** now contains an optional Bounty Board SDK bridge in `src/showcase-arcade.js`. It reports active campaign playtime, score updates, and once-only game-over events. It must not affect the original js13k artifact, offline gameplay, or personal-site play when the SDK is unavailable. The new `Q` switch shortcut and transient objective coach are likewise showcase-only. The integration includes a dependency-free contract test via `npm run test:arcade`. The reproducible submission ZIP is generated with `npm run build:arcade` under `dist/arcade/`, together with a SHA-256 manifest; this build does not mutate the frozen js13k release.
+The **showcase edition only** now contains an optional Bounty Board SDK bridge in `src/showcase-arcade.js`. It reports active campaign playtime, score updates, and once-only game-over events. It must not affect the original js13k artifact, offline gameplay, or personal-site play when the SDK is unavailable. The showcase uses **F** for herd switching, retains **Q** as an optional alternative, and disables the original Shift shortcut to avoid Sticky Keys. The transient objective coach is showcase-only. The integration includes a dependency-free contract test via `npm run test:arcade`. The reproducible submission ZIP is generated with `npm run build:arcade` under `dist/arcade/`, together with a SHA-256 manifest; this build does not mutate the frozen js13k release.
 
 **v1.18 release candidate:** A canonical Prismborough/Medium shared-seed leaderboard config now starts at zero each time. Other maps/difficulties remain free-play. The first-run coach is paired with authoritative building health, live Team requirements, repairable failed-smash feedback, Smart Attention/status labels, and explicit capture-truck rescue tags. Session-safe progress storage and cloud-save callbacks have been added for signed-in Bounty-hosted play. The Arcade workflow produces a self-verified standalone ZIP, authentic 1280×720 cover screenshot, and Chromium/Firefox browser QA captures. See [submission copy and host-preview checklist](docs/BOUNTYBOARD_SUBMISSION.md).
+
+**v1.23 first-run wayfinding:** The expanded edition adds a nonblocking Mission Compass pointing to live conquest targets and a short skills ribbon confirming real movement, double Whip charge, a destroyed structure and a herd handoff. The ribbon disappears when those actions are learned, and its completion syncs through cloud progress. **H** toggles the wayfinder at any point during gameplay. It does not move units, change destruction rules, or affect ranked scoring. The Arcade ZIP is tested with actual keyboard/mouse input and touch-safe layouts in Chromium/Firefox.
 
 **Still requiring human/host validation:** fresh-player usability tests, real Bounty-hosted signed-in and guest sessions, review of Bounty's leaderboard score ceiling, and studio approval. The build is not published yet. See [Arcade launch plan](docs/BOUNTYBOARD_ARCADE_PLAN.md).
 
@@ -53,8 +55,9 @@ There is **no timer defeat** and no gameplay timer state.
 | **Mouse** | aim the Rainbow Whip |
 | **Left click beside the white ring** | crack the Whip and build charge |
 | **Space** | spend 2/5 to 5/5 Whip charge on Dash |
-| **Shift or Q** | smart-switch to the herd member that most needs attention (Q avoids Sticky Keys prompts) |
-| **Shift or Q ×3 quickly** | sweep through different herd members to scan the map |
+| **F** (Q also works) | smart-switch to the herd member most in need of attention; Shift does not switch in the showcase |
+| **F ×3 quickly** | sweep through different herd members to scan the map |
+| **H** | show or hide the objective wayfinder arrow (showcase edition only) |
 | **P / Esc** | pause and view Rules |
 | **A / D or click world on title** | change world |
 | **M or click difficulty on title** | change difficulty |
@@ -62,7 +65,7 @@ There is **no timer defeat** and no gameplay timer state.
 | **C or click Rules on title** | open Rules |
 | **Enter / Space or click Start** | launch the selected configuration |
 
-**Releasing WASD never switches unicorns. Shift is the intentional herd-handoff control.**
+**Releasing WASD never switches unicorns. Press F to hand off; Shift is intentionally disabled in the showcase to avoid Sticky Keys.**
 
 ## The core verbs
 
@@ -70,7 +73,7 @@ There is **no timer defeat** and no gameplay timer state.
 
 Movement paints Rainbow Highway. Paint is both territory and infrastructure. Unattended unicorns behave better on painted routes, so strong play creates paths that remain useful after you switch away.
 
-When a moving captain is handed off with Shift in the showcase edition, the existing directional order becomes visibly persistent in the world. A fading route ribbon shows where that unicorn is still committed and roughly how long the order remains. This is visualization of existing order state, not a waypoint editor or a second command system.
+When a moving captain is handed off with F in the showcase edition, the existing directional order becomes visibly persistent in the world. A fading route ribbon shows where that unicorn is still committed and roughly how long the order remains. This is visualization of existing order state, not a waypoint editor or a second command system.
 
 ### Whip and Dash
 
@@ -78,17 +81,17 @@ Click beside the active unicorn's white ring to crack the Rainbow Whip. Charge g
 
 Use Whip + Dash to smash structures, reach power-ups, intercept cleaners, repaint endangered districts, chase prison trucks, and rescue captured unicorns. Three rapid Whips can trigger a Prism burst with nearby structural damage.
 
-### Smart Shift
+### Smart Switch (F)
 
-Shift is not a blind next-unit button. Its urgency order is:
+F is not a blind next-unit button. Its urgency order is:
 
 **DISTRACTED > STALLED > OFF-ROUTE > POWERUP > NEGLECTED**
 
 The showcase extends that policy with explainable risk signals such as edge danger and Faultline slip. A nearby useful power-up matters, but it never outranks a real herd crisis.
 
-Rapid Shift has short-term memory. Recently visited unicorns are temporarily deprioritized, so several quick taps explore different parts of the herd instead of bouncing between the same pair.
+Rapid F switching has short-term memory. Recently visited unicorns are temporarily deprioritized, so several quick taps explore different parts of the herd instead of bouncing between the same pair.
 
-A normal Shift asks **who needs me most right now?** Three rapid Shifts mean **show me the rest of the herd.**
+One press of F asks **who needs me most right now?** Three rapid F presses mean **show me the rest of the herd.**
 
 ## Herd Flow
 
@@ -129,7 +132,7 @@ The HUD briefly shows each stage card, then returns to the live objective so esc
 
 The town contains things unicorns find irresistible: fountains, flowers, ponds, flies, and other herd members. Unattended unicorns can become distracted. If several bunch together too heavily they can enter **BICKER** and stop contributing useful building damage.
 
-Painted routes, Smart Shift, and deliberate spreading help keep the herd productive.
+Painted routes, Smart Switching, and deliberate spreading help keep the herd productive.
 
 ## The town fights back
 
@@ -214,13 +217,13 @@ Training teaches the permanent control language in a small town:
 1. WASD movement;
 2. Whip the white ring twice;
 3. Dash;
-4. Shift to another unicorn;
+4. Press F to switch to another unicorn;
 5. leave a route running;
 6. identify a stuck/distracted herd member;
-7. Shift back and pull it free;
+7. Press F again to switch back and pull it free;
 8. Whip twice again;
 9. smash the Bakery;
-10. **Shift ×3 to scan the herd, then Whip and Dash freely.**
+10. **F ×3 to scan the herd, then Whip and Dash freely.**
 
 The controls do not secretly change between Training and campaign play.
 

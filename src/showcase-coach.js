@@ -29,17 +29,17 @@
     if(changed){key=next[0];until=clock+(next[0]==='rescue'?11:8);seen++}
     if(changed){
       title.textContent=next[1];
-      body.textContent=next[2]+'  Q / Shift switches herd members; movement orders keep running.';
+      body.textContent=next[2]+'  F switches herd members; movement orders keep running.';
     }
     panel.hidden=clock>until;
   }
   function start(){key='';until=0;seen=0;panel.hidden=true;refresh()}
   showcaseHooks.on('start:after','coach.reset',start,-90);
   showcaseHooks.on('update:after','coach.refresh',refresh,-90);
-  // Optional non-modifier alternative to Shift, preventing OS Sticky Keys prompts.
+  // F is the showcase's primary non-modifier handoff. Q remains an optional legacy alias.
   // One keydown produces exactly one Smart Attention handoff.
   addEventListener('keydown',e=>{
-    if(e.code!=='KeyQ'||e.repeat||e.ctrlKey||e.metaKey||e.altKey||
+    if((e.code!=='KeyF'&&e.code!=='KeyQ')||e.repeat||e.ctrlKey||e.metaKey||e.altKey||
        state!=='play'||paused||e.target?.closest?.('input, textarea, select, [contenteditable]'))return;
     e.preventDefault();
     e.stopImmediatePropagation();

@@ -1,0 +1,13 @@
+/* Keep shell controls away from the canvas's authoritative mission HUD.
+   Game HUD boxes are at (16,14)-(356,48), (1130,14)-(1264,48) and
+   (450,18)-(830,54) in 1280×720 logical coordinates. */
+@media(min-width:761px){
+  body.showcase-playing #showcase-fullscreen{top:56px;left:12px}
+  body.showcase-playing #showcase-settings-bar{top:56px;right:12px}
+  body.showcase-playing #showcase-status{top:65px!important;opacity:.88}
+}
+/* The mobile canvas is letterboxed and scaled, so controls remain in the
+   safe outer chrome without shifting over joystick or action buttons. */
+@media(max-width:760px){
+  body.showcase-playing #showcase-status{top:52px!important}
+}

@@ -21,7 +21,7 @@ Earn Style-like satisfaction from coordinated demolition, successful rescues, pe
 - **W A S D:** steer the active unicorn and paint a rainbow route
 - **Mouse + left click near the active unicorn's ring:** charge the Rainbow Whip
 - **Space:** spend Whip charge to Dash, rescue or smash
-- **Q or Shift:** hand off to the herd member needing the most attention; rapidly tap to scan the herd
+- **F (or Q):** switch to the herd member most in need; tap F rapidly to scan the herd. Shift is not a switch key in the Arcade edition
 - **P or Esc:** pause or resume
 - **Enter / Space on title:** start selected world and difficulty
 - **Options:** music, SFX, screen shake, reduced motion, contrast, touch controls
