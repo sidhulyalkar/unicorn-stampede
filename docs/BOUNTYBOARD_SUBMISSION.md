@@ -42,3 +42,17 @@ The four worlds still support free-play and three-star local/cloud mastery progr
 4. Submit the ZIP, cover, this 100+ word description and controls at https://www.bountyboard.gg/arcade/submit .
 5. In the Bounty studio dashboard's **Test your build** preview, test signed in and Guest modes, score rejection ceilings, score callbacks, pause/resume, the cloud save read/write, and full win/loss runs. Do not infer SDK host success solely from GitHub CI.
 6. Only publish when Bounty's review approves the submission and real player playtests confirm onboarding and fairness.
+
+## v1.24 packaging and first-play readiness
+
+The submission workflow now produces `submission-listing.txt`, a `submission-v124.json` technical attestation, the complete ZIP, the verified 16:9 cover, and screenshots from keyboard/mouse **and touch** tests in Chromium and Firefox. The attestation only means the submitted archive passed local/CI qualification. It does **not** indicate Bounty has approved the game.
+
+**Touchscreen behavior:** on narrow portrait devices, a separate accessible Play/Tutorial control appears beneath the letterboxed game with a suggestion to rotate for a wider view. In landscape, real taps on the canvas title select world, difficulty and tutorial and start play. During play, the virtual joystick, Whip, Switch, Dash and Pause controls are available. Phone landscape is the preferred play format because the game is designed as a wide-screen arcade strategy title; do not advertise immersive portrait gameplay as equivalent.
+
+**Studio form:** upload the versioned ZIP and 1280×720 cover from the **same** passing artifact. Set game features to **Leaderboards**, **Cloud saves**, and **Player identity**. Use a bounded score ceiling of at least 99,500 (assuming Bounty accepts that configured value), with `Prismborough / Medium` clearly designated the ranked lane. Do not enable Rewarded Ads, Multiplayer or A/B Experiments because they are not implemented in this version.
+
+**Real host preview checks:** In Studio → **Test your build**, verify a signed-in player's first boot and a Guest's first boot. Inspect `gameLoadingFinished`, active-play `gameplayStart` and `gameplayStop`, integer `submitScore`, and one `gameOver` per run. Complete a short run, reload, inspect the saved mastery and settings on the signed-in identity, then switch to Guest and confirm no false cloud-save claim. Test a second, unranked world and ensure it does not post a positive ranked result. Validate the host's response to the leaderboard ceiling.
+
+**First-player usability:** Recruit 5–8 people who have not seen the game, preferably including one touch-only player. Give them no special instructions beyond those shown. Measure time until the first deliberate smash, whether F switching is understood, whether they can interpret **TEAM x/y**, whether the mission compass helps, and whether anyone gets stuck without knowing the next objective. Ask one question afterward: "What was the most satisfying thing you did, and what confused you?" Treat repeated comprehension failures as changes to fix before promotion.
+
+Review and launch remain separate decisions. Bounty's real preview is available on a submitted build while under review; local simulations and GitHub Actions cannot substitute for it.
