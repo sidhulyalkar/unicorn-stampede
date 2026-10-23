@@ -80,9 +80,15 @@ async function check(engine,label){
     const before=await page.evaluate(()=>({x:unis[caps[0]].x,y:unis[caps[0]].y}));
     await page.mouse.move(x,y);await page.mouse.down();
     await page.mouse.move(x+bounds.width*.32,y,{steps:4});
+    const during=await page.evaluate(()=>({
+      touchVector:{...showcaseTouchVec},moveKey:!!K.KeyD,pointerId:touchPointer,
+      paused:!!paused,state,world:zone,
+      control:getComputedStyle(document.querySelector('.showcase-touch-pad')).display
+    }));
     await page.waitForTimeout(450);await page.mouse.up();
     const after=await page.evaluate(()=>({x:unis[caps[0]].x,y:unis[caps[0]].y}));
-    if(after.x-before.x<12)throw Error(label+' joystick failed to move player '+JSON.stringify({before,after}));
+    if(after.x-before.x<12)
+      throw Error(label+' joystick failed to move player '+JSON.stringify({before,during,after}));
     await page.screenshot({path:'dist/arcade/'+label+'-portrait-touch.png'});
     if(errors.length)throw Error(label+' portrait errors '+errors.join('|'));
     await page.close();
