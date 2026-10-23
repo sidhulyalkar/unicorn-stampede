@@ -97,7 +97,10 @@ async function check(engine,label){
     // joystick steering from a random building collision after smart switching.
     await page.evaluate(()=>{
       const u=unis[caps[0]];
-      u.x=270;u.y=270;u.vx=u.vy=0;u.dash=u.stun=0;
+      // Intersecting road corridors are guaranteed clear by the map generator.
+      u.x=850;u.y=635;u.vx=u.vy=0;u.dash=u.stun=u.distract=0;
+      if(globalThis.showcaseBoundaries?.overlap?.(u))
+        throw Error('steering test waypoint is obstructed');
     });
     // Actual pointer drag across the DOM steering pad, no direct movement calls.
     const pad=page.locator('.showcase-touch-pad'),bounds=await pad.boundingBox();
