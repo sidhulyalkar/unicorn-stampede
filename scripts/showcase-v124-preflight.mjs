@@ -25,7 +25,7 @@ const wordCount=description.split(/\s+/).length;
 if(wordCount<100)throw Error('Description must contain 100 words');
 const controlSection=docs.match(/## Keyboard and mouse controls\n\n([\s\S]*?)\n\n## Leaderboard policy/);
 if(!controlSection)throw Error('Missing controls');
-if(!/\*\*F \(or Q\)\*\*/.test(controlSection[1])||/\*\*Q or Shift\*\*/.test(controlSection[1]))
+if(!/^\s*-\s*\*\*F \(or Q\):\*\*/m.test(controlSection[1])||/\*\*(?:Q or Shift|Shift or Q):?\*\*/.test(controlSection[1]))
   throw Error('Submission controls do not reflect F key');
 for(const name of ['qualification-v119.json','qualification-v122.json',
   'qualification-v123.json','qualification-v124.json']){
