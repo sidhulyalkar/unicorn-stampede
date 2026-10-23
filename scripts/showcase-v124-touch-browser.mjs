@@ -29,6 +29,19 @@ async function check(engine,label){
   const browser=await engine.launch({headless:true});
   try{
     const {page,errors}=await boot(browser,label,{width:390,height:844});
+    // The compact runtime intentionally recovers from uncaught errors by going
+    // back to title. Retain that diagnostic rather than silently timing out.
+    await page.evaluate(()=>{
+      globalThis.__touchDiagnostics={errors:[],states:[]};
+      addEventListener('error',event=>{
+        __touchDiagnostics.errors.push(String(event.error?.stack||event.message));
+      });
+      const source=globalThis.onerror;
+      globalThis.onerror=function(...args){
+        __touchDiagnostics.errors.push('onerror: '+args.slice(0,3).map(String).join(' / '));
+        return source?.apply(this,args);
+      };
+    });
     // Uncoached mobile start: no mousemove or JS startLevel call.
     await page.locator('#showcase-mobile-entry [data-action=tutorial]').tap();
     if(await page.evaluate(()=>train))throw Error(label+' portrait tutorial toggle did not work');
@@ -67,9 +80,19 @@ async function check(engine,label){
       throw Error(label+' paused run does not offer a touchscreen resume button');
     await resume.tap();
     if(await page.evaluate(()=>!!paused))throw Error(label+' touchscreen resume did not work');
+    if(await page.evaluate(()=>state)!=='play')
+      throw Error(label+' returned to title on resume '+JSON.stringify(await page.evaluate(()=>({
+        state,errors:__touchDiagnostics.errors.slice(-4)
+      }))));
     // The run menu has a short visibility transition. Let it stop intercepting
     // pointers before testing the gameplay joystick underneath.
     await page.locator('#showcase-session-menu').waitFor({state:'hidden'});
+    const afterResume=await page.evaluate(()=>({
+      state,level,errors:__touchDiagnostics.errors.slice(-4),
+      sessionText:document.querySelector('#showcase-session-menu h2').textContent
+    }));
+    if(afterResume.state!=='play')
+      throw Error(label+' left gameplay after resume '+JSON.stringify(afterResume));
     // Place the selected unicorn on the known-clear spawn road to isolate
     // joystick steering from a random building collision after smart switching.
     await page.evaluate(()=>{
@@ -85,7 +108,7 @@ async function check(engine,label){
     await page.mouse.move(x+bounds.width*.32,y,{steps:4});
     const during=await page.evaluate(()=>({
       touchVector:{...showcaseTouchVec},moveKey:!!K.KeyD,pointerId:touchPointer,
-      paused:!!paused,state,world:zone,
+      paused:!!paused,state,world:zone,errors:__touchDiagnostics.errors.slice(-5),
       control:getComputedStyle(document.querySelector('.showcase-touch-pad')).display
     }));
     await page.waitForTimeout(450);await page.mouse.up();
