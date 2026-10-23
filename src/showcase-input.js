@@ -42,7 +42,9 @@ document.body.append(touchRoot);
 const touchPad=touchRoot.querySelector('.showcase-touch-pad'),touchKnob=touchRoot.querySelector('.showcase-touch-knob');
 let touchPointer=-1;
 function showcaseSetTouchPad(e){
-  const r=touchPad.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,dx=e.clientX-cx,dy=e.clientY-cy,m=Math.hypot(dx,dy),lim=r.width*.34,q=m>lim?lim/m:1;
+  const r=touchPad.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  let dx=e.clientX-cx,dy=e.clientY-cy;
+  const m=Math.hypot(dx,dy),lim=r.width*.34,q=m>lim?lim/m:1;
   dx*=q;dy*=q;showcaseTouchVec={x:dx/lim,y:dy/lim};touchKnob.style.transform=`translate(${dx}px,${dy}px)`;showcaseMergeMoveKeys();
 }
 touchPad.addEventListener('pointerdown',e=>{touchPointer=e.pointerId;touchPad.setPointerCapture(e.pointerId);showcaseSetTouchPad(e)});
