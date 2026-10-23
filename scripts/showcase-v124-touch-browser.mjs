@@ -67,6 +67,9 @@ async function check(engine,label){
       throw Error(label+' paused run does not offer a touchscreen resume button');
     await resume.tap();
     if(await page.evaluate(()=>!!paused))throw Error(label+' touchscreen resume did not work');
+    // The run menu has a short visibility transition. Let it stop intercepting
+    // pointers before testing the gameplay joystick underneath.
+    await page.locator('#showcase-session-menu').waitFor({state:'hidden'});
     // Place the selected unicorn on the known-clear spawn road to isolate
     // joystick steering from a random building collision after smart switching.
     await page.evaluate(()=>{
