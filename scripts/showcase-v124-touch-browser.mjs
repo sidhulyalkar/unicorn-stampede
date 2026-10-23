@@ -67,7 +67,13 @@ async function check(engine,label){
       throw Error(label+' paused run does not offer a touchscreen resume button');
     await resume.tap();
     if(await page.evaluate(()=>!!paused))throw Error(label+' touchscreen resume did not work');
-    // Actual drag across the DOM steering pad, no mutation of gameplay variables.
+    // Place the selected unicorn on the known-clear spawn road to isolate
+    // joystick steering from a random building collision after smart switching.
+    await page.evaluate(()=>{
+      const u=unis[caps[0]];
+      u.x=270;u.y=270;u.vx=u.vy=0;u.dash=u.stun=0;
+    });
+    // Actual pointer drag across the DOM steering pad, no direct movement calls.
     const pad=page.locator('.showcase-touch-pad'),bounds=await pad.boundingBox();
     if(!bounds)throw Error(label+' no virtual joystick box');
     const x=bounds.x+bounds.width/2,y=bounds.y+bounds.height/2;
