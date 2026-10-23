@@ -139,7 +139,7 @@ async function check(engine,label){
     if(during.touchVector.x<.5||!during.moveKey)
       throw Error(label+' joystick did not set movement input '+JSON.stringify(during));
     await page.waitForTimeout(450);
-    if(label==='firefox')await page.evaluate(()=>showcaseReleaseTouch());
+    if(label==='firefox')await page.evaluate(()=>{showcaseTouchVec={x:0,y:0};showcaseMergeMoveKeys()});
     else await page.mouse.up();
     const after=await page.evaluate(()=>({x:unis[caps[0]].x,y:unis[caps[0]].y}));
     if(after.x-before.x<12)
