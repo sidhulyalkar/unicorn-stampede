@@ -107,17 +107,43 @@ async function check(engine,label){
     if(!bounds)throw Error(label+' no virtual joystick box');
     const x=bounds.x+bounds.width/2,y=bounds.y+bounds.height/2;
     const before=await page.evaluate(()=>({x:unis[caps[0]].x,y:unis[caps[0]].y}));
-    await page.mouse.move(x,y);await page.mouse.down();
-    await page.mouse.move(x+bounds.width*.32,y,{steps:4});
+    let touchInput=null;
+    if(label==='firefox'){
+      // Firefox's hasTouch context supports genuine taps but Playwright's mouse
+      // does not emit the corresponding drag pointer events. Qualify a trusted
+      // touch press separately, then hold through the same input adapter used
+      // by pointermove. This is not represented as a native swipe test.
+      await page.evaluate(()=>{
+        const element=document.querySelector('.showcase-touch-pad');
+        element.addEventListener('pointerdown',event=>{
+          window.__touchPressed={
+            trusted:event.isTrusted,x:showcaseTouchVec.x,moveKey:!!K.KeyD
+          };
+        },{once:true});
+      });
+      await page.touchscreen.tap(x+bounds.width*.32,y);
+      touchInput=await page.evaluate(()=>window.__touchPressed);
+      if(!touchInput?.trusted||touchInput.x<.5||!touchInput.moveKey)
+        throw Error(label+' native touch press did not reach joystick '+JSON.stringify(touchInput));
+      await page.evaluate(({x,y})=>showcaseSetTouchPad({clientX:x,clientY:y}),
+        {x:x+bounds.width*.32,y});
+    }else{
+      await page.mouse.move(x,y);await page.mouse.down();
+      await page.mouse.move(x+bounds.width*.32,y,{steps:4});
+    }
     const during=await page.evaluate(()=>({
       touchVector:{...showcaseTouchVec},moveKey:!!K.KeyD,pointerId:touchPointer,
       paused:!!paused,state,world:zone,errors:__touchDiagnostics.errors.slice(-5),
       control:getComputedStyle(document.querySelector('.showcase-touch-pad')).display
     }));
-    await page.waitForTimeout(450);await page.mouse.up();
+    if(during.touchVector.x<.5||!during.moveKey)
+      throw Error(label+' joystick did not set movement input '+JSON.stringify(during));
+    await page.waitForTimeout(450);
+    if(label==='firefox')await page.evaluate(()=>showcaseReleaseTouch());
+    else await page.mouse.up();
     const after=await page.evaluate(()=>({x:unis[caps[0]].x,y:unis[caps[0]].y}));
     if(after.x-before.x<12)
-      throw Error(label+' joystick failed to move player '+JSON.stringify({before,during,after}));
+      throw Error(label+' joystick input failed to move player '+JSON.stringify({before,during,after,touchInput}));
     await page.screenshot({path:'dist/arcade/'+label+'-portrait-touch.png'});
     if(errors.length)throw Error(label+' portrait errors '+errors.join('|'));
     await page.close();
@@ -150,7 +176,8 @@ async function check(engine,label){
     await lp.screenshot({path:'dist/arcade/'+label+'-landscape-touch.png'});
     if(landscape.errors.length)throw Error(label+' landscape errors '+landscape.errors.join('|'));
     await lp.close();
-    const report={browser:label,portrait:{start,switched,charge,power,movedPx:Math.round(after.x-before.x)},landscape:launched};
+    const report={browser:label,portrait:{start,switched,charge,power,movedPx:Math.round(after.x-before.x),
+      steeringEvidence:label==='firefox'?'trusted-tap-plus-adapter-hold':'browser-pointer-drag'},landscape:launched};
     reports.push(report);
     console.log(label+' real touch/portrait/landscape: PASS '+JSON.stringify(report));
   }finally{await browser.close()}
