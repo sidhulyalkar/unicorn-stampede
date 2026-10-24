@@ -24,3 +24,31 @@ addEventListener('keydown',e=>{
 },true);
 C.addEventListener('dblclick',e=>e.preventDefault());
 C.style.touchAction='none';
+
+// Bounty Arcade touch/pen title input. A tap does not fire mousemove, so relying
+// on the frozen mouse-only title regions made Start/selection unreliable.
+// Keep the original competition input code immutable.
+let showcaseTouchTitleAt=-10000;
+C.addEventListener('pointerdown',e=>{
+  if(state!=='title'||!['touch','pen'].includes(e.pointerType))return;
+  const rect=C.getBoundingClientRect(),scale=Math.min(rect.width/W,rect.height/H);
+  const left=rect.left+(rect.width-W*scale)/2,top=rect.top+(rect.height-H*scale)/2;
+  const x=(e.clientX-left)/scale,y=(e.clientY-top)/scale;
+  if(x<0||x>W||y<0||y>H)return; // true canvas content, not letterbox
+  e.preventDefault();e.stopImmediatePropagation();
+  showcaseTouchTitleAt=performance.now();
+  mx=x;my=y;
+  if(guide){guide=0;showcaseRefreshMenu();return}
+  if(y<565)return;
+  if(y<600){showcaseSetWorld(zone+1);return}
+  if(y<630){showcaseSetMode(mode+1);return}
+  if(y<670){showcaseStart();return}
+  if(x<W/2){train=!train;showcaseMenuTone(360);showcaseRefreshMenu()}
+  else{guide=1;showcaseMenuTone(400);showcaseRefreshMenu()}
+},true);
+// Some browsers synthesize mousedown after touch pointerdown. Stop it at the
+// capture phase, including when the touch just changed title -> active play.
+C.addEventListener('mousedown',e=>{
+  if(performance.now()-showcaseTouchTitleAt>850)return;
+  e.preventDefault();e.stopImmediatePropagation();
+},true);

@@ -64,6 +64,12 @@ jobs:
         env:
           ARCADE_TEST_ROOT: dist/arcade/extracted
         run: node scripts/showcase-v123-mission-browser.mjs
+      - name: Touchscreen and portable submission qualification
+        env:
+          ARCADE_TEST_ROOT: dist/arcade/extracted
+        run: node scripts/showcase-v124-touch-browser.mjs
+      - name: Final submission packet attestation
+        run: node scripts/showcase-v124-preflight.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: unicorn-stampede-arcade-preview
@@ -79,3 +85,8 @@ jobs:
             dist/arcade/qualification-v123.json
             dist/arcade/*-mission.png
             dist/arcade/*-first-run.png
+            dist/arcade/qualification-v124.json
+            dist/arcade/submission-v124.json
+            dist/arcade/submission-listing.txt
+            dist/arcade/*-portrait-touch.png
+            dist/arcade/*-landscape-touch.png

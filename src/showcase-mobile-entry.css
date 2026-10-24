@@ -1,0 +1,20 @@
+#showcase-mobile-entry{display:none}
+@media (max-width:640px) and (orientation:portrait){
+  #showcase-mobile-entry:not([hidden]){
+    position:fixed;z-index:16;left:16px;right:16px;bottom:max(56px,env(safe-area-inset-bottom));
+    display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:center;
+    padding:12px;border:1px solid #ffffff48;border-radius:18px;
+    background:linear-gradient(150deg,#101d31f2,#0c1423f5);
+    box-shadow:0 14px 40px #0009;color:#e8f7ff;
+    font:700 11px system-ui;text-align:center
+  }
+  #showcase-mobile-entry p{grid-column:1/-1;margin:0 0 3px;color:#ffeb91;letter-spacing:.1em}
+  #showcase-mobile-entry button{
+    min-height:50px;border:1px solid #d9eafa66;border-radius:12px;
+    background:#182b45;color:white;font:800 12px system-ui;cursor:pointer
+  }
+  #showcase-mobile-entry [data-action=start]{
+    background:#ffdd77;color:#182033;border-color:#ffe6a8
+  }
+  #showcase-mobile-entry [data-action=tutorial][aria-pressed=true]{border-color:#ffdd77}
+}
